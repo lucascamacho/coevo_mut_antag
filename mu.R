@@ -35,7 +35,7 @@ resultados[1,] <- z
 
 for(t in 1:tempo){
   for(i in 1:dim(matriz)[1]){
-    for(i in 1:dim(matriz[1])){
+    for(i in 1:dim(matriz)[1]){
       if(q[i,j] > 0){
         q[i,j] = exp(-alpha * ((z[j] - z[i])^2))
       }
