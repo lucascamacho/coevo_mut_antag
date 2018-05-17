@@ -2,7 +2,7 @@
 matriz <- matrix(1, ncol = 3, nrow = 3)
 diag(matriz) <- 0
 
-tempo <- 100
+tempo <- 10
 z <- runif(dim(matriz)[1], min = 0, max = 10)
 theta <- runif(dim(matriz)[1], min = 0, max = 10)
 intfor <- 0.1
@@ -55,9 +55,9 @@ for(t in 1:tempo){
         if(vmatriz[i,j] > 0){
           if(abs(z[j] - z[i]) < barreira){
             if(z[i] > z[j]){
-              s[i] = s[i] + (phi * (q[i,j] * (z[j] + barreira - z[1])))}
+              s[i] = s[i] + (phi * (q[i,j] * (z[j] + barreira - z[i])))}
             else{
-              s[i] = s[i] + (phi * (q[i,j] * (z[j] - barreira - z[1])))}
+              s[i] = s[i] + (phi * (q[i,j] * (z[j] - barreira - z[i])))}
           }
         }
       }
@@ -68,5 +68,3 @@ for(t in 1:tempo){
 }
 
 matplot(resultados)
-
-
