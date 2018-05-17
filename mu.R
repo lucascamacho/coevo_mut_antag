@@ -35,40 +35,39 @@ resultados[1,] <- z
 
 for(t in 1:tempo){
   for(i in 1:dim(matriz)[1]){
-    for(j in 1:dim(matriz)[1]){
+    for(i in 1:dim(matriz[1])){
       if(q[i,j] > 0){
-        q[i,j] = exp(-alpha * (z[j] - z[i])^2)
-      }   
-    }  
+        q[i,j] = exp(-alpha * ((z[j] - z[i])^2))
+      }
+    }
   }
-  
-  q = q / apply(q, 1, sum)
-  q <- intfor * q
-  s <- matrix(0, ncol = dim(matriz)[1], nrow = 1)
-  
-  # calcular os diferenciais de seleção
+
+  q = q /apply(q,1,sum)
+  q = intfor * q
+  s = matrix(0, ncol = dim(matriz)[1], nrow = 1)
+
   for(i in 1:dim(matriz)[1]){
-    s[i] = s[i] + (phi * (1 - intfor) * (theta[i] - z[i]))
-  } 
+    s[i] = s[i] + (phi * ((1 - intfor) * (theta[i] - z[i])))
+  }
+
   for(j in 1:ncol(matriz)){
     if(matriz[i,j] > 0){
-      s[i]=s[i]+phi.*q[i,j].*(z[j]-z[i])}
-    else {
+      s[i] = s[i] + (phi * (q[i,j] * (z[j] - z[i])))}
+    else{
       if(vmatriz[i,j] > 0){
         if(abs(z[j] - z[i]) < barreira){
-          if(z[1] > z[2]){
-          s[1] <- s[1] + (phi * (q[1,2] * (z[2] + barreira - z[1])))}
-            else {
-          s[1] <- s[1] + (phi * (q[1,2] * (z[2] - barreira - z[1])))}
-          
+          if(z[i] > z[j]){
+            s[i] = s[i] + (phi * (q[i,j] * (z[j] + barreira - z[1])))}
+          else{
+            s[i] = s[i] + (phi * (q[i,j] * (z[j] - barreira - z[1])))}
         }
       }
     }
   }
-  
+
   resultados <- rbind(resultados, s)
+
 }
 
 matplot(resultados)
-
 
