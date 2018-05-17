@@ -10,7 +10,7 @@ alpha <- 0.2
 antprob <- 0.1
 vmatriz <- matriz * 0
 phi <- 0.2
-barreira <- 2
+barreira <- 7
 
 ### transformando links
 for(i in 1:nrow(matriz)){
@@ -68,3 +68,4 @@ for(t in 1:tempo){
 }
 
 matplot(resultados)
+head(resultados)
