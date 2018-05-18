@@ -27,11 +27,11 @@ for (i in 1:length(antprob_vec)) {
   # coevolutionary model parameters
   phi = 0.2
   alpha = 0.2
-  theta = c(3, 7, 4, 4, 8)
-  init = c(10, 2, 8, 9, 5)
+  theta = c(2, 4, 6, 8, 10)
+  init = runif(n_sp, min = 0, max = 10)
   p = 0.8
   epsilon = 4
-  eq_dif = 0.00001
+  eq_dif = 0.0001
   t_max = 100
   # running coevolution simulation
   traits = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
