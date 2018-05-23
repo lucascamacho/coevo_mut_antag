@@ -28,9 +28,9 @@ CoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_di
   # initial trait values   
   z_mat[1, ] = init
   # simulation runs for a maximum of t_max timesteps
-  for (x in 1:(100 - 1)) { 
+  for (r in 1:(100 - 1)) { 
     # current z values
-    z = z_mat[x, ]
+    z = z_mat[r, ]
     # matrix with all interactions (mutualistic and antagonistic)
     A = M + V
     # matrix with all trait differences 
@@ -65,13 +65,13 @@ CoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_di
     # response to selection related to antagonisms 
     r_ant = phi * apply(sel_dif, 1, sum)
     # updating z values
-    z_mat[x+1, ] = z + r_env + r_mut + r_ant
+    z_mat[r+1, ] = z + r_env + r_mut + r_ant
     # computing the mean difference between old and new z values
-    dif = mean(abs(z - z_mat[x+1, ])) 
+    dif = mean(abs(z - z_mat[r+1, ])) 
     if (dif < eq_dif)
       break
   }
-  return(z_mat[1:(x+1), ])
+  return(z_mat[1:(r+1), ])
 }
 
 #-----------------------------------------------------------------------------------------------------#
