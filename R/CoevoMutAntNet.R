@@ -1,5 +1,4 @@
 #-----------------------------------------------------------------------------------------------------#
-
 CoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max) {
   # Simulates the coevolutionary dynamics of mutualists and antagonists in a network
   #
@@ -22,52 +21,26 @@ CoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_di
   #
   # Returns:
   #   A matrix containing, in each row t, the trait values (z) of all species at time t.
-  
-  # matrix to store z values
-  z_mat = matrix(NA, nrow = t_max, ncol = n_sp)
-  # initial trait values   
-  z_mat[1, ] = init
-  # simulation runs for a maximum of t_max timesteps
-  for (r in 1:(t_max - 1)) { 
-    # current z values
-    z = z_mat[r, ]
-    # matrix with all interactions (mutualistic and antagonistic)
-    A = M + V
-    # matrix with all trait differences 
-    z_dif = t(A * z) - A * z
-    # matrix Q
-    Q = A * (exp(-alpha * (z_dif ^ 2)))
-    # normalizing the matrix
-    Q_n = Q / apply(Q, 1, sum) 
-    # multiplying each row i of matrix Q by (1 - p[i])
-    Q_m = Q_n * (1 - p) 
-    
-    ### response to selection - environment ###
-    # response to selection related to the environment
-    r_env = phi * p * (theta - z)
-    
-    ### response to selection - mutualism ###
-    # calculating selection differentials 
-    sel_dif = Q_m * z_dif 
-    # response to selection related to mutualism
-    r_mut = phi * apply(sel_dif, 1, sum)
- 
-    ### response to selection - antagonism ###
-    # excluding values that are larger than the barrier
-    z_dif[abs(z_dif) > epsilon] = 0
-    # matrix with barrier (epsilon) values 
-    epsilon_plus = (z_dif < 0) * matrix(epsilon, n_sp, n_sp)
+  z_mat = matrix(NA, nrow = t_max, ncol = n_sp) # matrix to store z values
+  z_mat[1, ] = init # initial trait values
+  for (r in 1:(t_max - 1)) { # simulation runs for a maximum of t_max timesteps
+    z = z_mat[r, ] # current z values
+    A = M + V # matrix with all interactions (mutualistic and antagonistic)
+    z_dif = t(A * z) - A * z # matrix with all trait differences
+    Q = A * (exp(-alpha * (z_dif ^ 2))) # matrix Q
+    Q_n = Q / apply(Q, 1, sum) # normalizing the matrix
+    Q_m = Q_n * (1 - p) # multiplying each row i of matrix Q by (1 - p[i])
+    r_env = phi * p * (theta - z) # response to selection related to the environment
+    sel_dif_mut = M * Q_m * z_dif # calculating selection differentials to mutualism
+    r_mut = phi * apply(sel_dif_mut, 1, sum) # response to selection related to mutualism
+    z_dif[abs(z_dif) > epsilon] = 0 # excluding values that are larger than the barrier
+    epsilon_plus = (z_dif < 0) * matrix(epsilon, n_sp, n_sp) # matrix with barrier (epsilon) values
     epsilon_minus = (z_dif > 0) * matrix(-epsilon, n_sp, n_sp)
-    # adding barrier values to trait differences
-    z_dif = z_dif + epsilon_plus + epsilon_minus
-    # calculating selection differentials
-    sel_dif = Q_m * z_dif
-    # response to selection related to antagonisms 
-    r_ant = phi * apply(sel_dif, 1, sum)
-    # updating z values
-    z_mat[r+1, ] = z + r_env + r_mut + r_ant
-    # computing the mean difference between old and new z values
-    dif = mean(abs(z - z_mat[r+1, ])) 
+    z_dif = z_dif + epsilon_plus + epsilon_minus # adding barrier values to trait differences
+    sel_dif_ant = V * Q_m * z_dif # calculating selection differentials
+    r_ant = phi * apply(sel_dif_ant, 1, sum) # response to selection related to antagonisms
+    z_mat[r+1, ] = z + r_env + r_mut + r_ant # updating z values
+    dif = mean(abs(z - z_mat[r+1, ])) # computing the mean difference between old and new z values
     if (dif < eq_dif)
       break
   }

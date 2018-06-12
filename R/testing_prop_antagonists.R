@@ -1,18 +1,18 @@
 #-----------------------------------------------------------------------------------------------------#
-rm(list=ls())
 ### testing coevolutionary model ##
 
 # loading packages and functions
+setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
 library(ggplot2)
 library(cowplot)
 source("CoevoMutAntNet.R")
 
 # defining probability of link becoming antagonist
-antprob_vec = seq(0.1, 0.9, by = 0.1)
+antprob_vec = seq(0.1, 1, by = 0.1)
 
 for (i in 1:length(antprob_vec)) {
   # current probability value
-  antprob = antprob_vec[i]
+  antprob = 0.2antprob_vec[i]
   # defining number of species
   n_sp = 5
   # building matrix M (mutualisms)
@@ -24,12 +24,13 @@ for (i in 1:length(antprob_vec)) {
              nrow = n_sp, ncol = n_sp)
   V[antprob >= P] = 1
   M[antprob >= P] = 0
+  diag(V) <- 0
   # coevolutionary model parameters
-  phi = 0.2
+  phi = rep(0.2, 5)
   alpha = 0.2
   theta = c(2, 4, 6, 8, 10)
-  init = runif(n_sp, min = 0, max = 10)
-  p = 0.8
+  init = c(1, 2, 5, 6, 9)
+  p = rep(0.5, 5)
   epsilon = 4
   eq_dif = 0.0001
   t_max = 100

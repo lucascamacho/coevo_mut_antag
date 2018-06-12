@@ -1,70 +1,75 @@
-# definindo args
-matriz <- matrix(1, ncol = 3, nrow = 3)
-diag(matriz) <- 0
+# Code to create a matrix, transform a certain proportion of links in antagonists and simulate coevolution
+# Lucas Camacho (8604710)
 
-tempo <- 300
-z <- runif(dim(matriz)[1], min = 0, max = 10)
-theta <- runif(dim(matriz)[1], min = 0, max = 10)
+# create matrix
+M <- matrix(1, ncol = 3, nrow = 3)
+diag(M) <- 0
+n_sp <- dim(M)[1]
+
+# define args
+max_t <- 1000
+init <- runif(n_sp, min = 0, max = 10)
+theta <- runif(n_sp, min = 0, max = 10)
 intfor <- 0.9
 alpha <- 0.2
 antprob <- 0.2
-vmatriz <- matriz * 0
+A <- M * 0
 phi <- 0.2
-barreira <- 2
+epsilon <- 2
 
-### transformando links
-for(i in 1:nrow(matriz)){
-  for(j in 1:ncol(matriz)){
-    if(matriz[i,j] == 1){
-      sorte <- runif(1, min = 0, max = 1)
-      if(sorte <= antprob){
-        matriz[i,j] = 0
-        vmatriz[i,j] = 1
+### change links
+for(i in 1:nrow(M)){
+  for(j in 1:ncol(M)){
+    if(M[i,j] == 1){
+      lucky <- runif(1, min = 0, max = 1)
+      if(s <= antprob){
+        M[i,j] = 0
+        A[i,j] = 1
       }
     }  
   }
 }
 
-#somando a matriz de mutualismo e antagonismo
-q = matriz + vmatriz
+# sum the matrices to get the binary matrix of interactions
+Q = M + A
 
-#dinamica coevolutiva
+# begin dynamics simulation
 #forças de interação
-resultados <- matrix(NA, ncol = dim(matriz)[1])
-resultados[1,] <- z
+results <- matrix(NA, ncol = n_sp)
+results[1,] <- init
 
-for(t in 1:tempo){
-  for(i in 1:dim(matriz)[1]){
-    for(j in 1:dim(matriz)[1]){
-      if(q[i,j] >= 0){
-        q[i,j] = exp(-alpha * ((z[j] - z[i])^2))
+for(t in 1:max_t){
+  for(i in 1:n_sp){
+    for(j in 1:n_sp){
+      if(Q[i,j] >= 0){
+#        Q[i,j] = exp(-alpha * ((z[j] - z[i])^2))
       }
     }
   }
   
-  q = q /apply(q,1,sum)
-  q = intfor * q
-  s = matrix(0, ncol = dim(matriz)[1], nrow = 1)
+  Q = Q / apply(Q, 1, sum)
+  Q = intfor * Q
+  S = matrix(0, ncol = n_sp, nrow = 1)
   
-  for(i in 1:dim(matriz)[1]){
-    s[i] = s[i] + (phi * ((1 - intfor) * (theta[i] - z[i])))
-    for(j in 1:ncol(matriz)){
-      if(matriz[i,j] > 0){
-        s[i] = s[i] + (phi * (q[i,j] * (z[j] - z[i])))}
+  for(i in 1:n_sp){
+    S[i] = S[i] + (phi * ((1 - intfor) * (theta[i] - z[i])))
+    for(j in 1:n_sp){
+      if(M[i,j] > 0){
+        S[i] = S[i] + (phi * (Q[i,j] * (z[j] - z[i])))}
       else{
-        if(vmatriz[i,j] > 0){
-          if(abs(z[j] - z[i]) < barreira){
+        if(A[i,j] > 0){
+          if(abs(z[j] - z[i]) < epsilon){
             if(z[i] > z[j]){
-              s[i] = s[i] + (phi * (q[i,j] * (z[j] + barreira - z[i])))}
+              S[i] = S[i] + (phi * (q[i,j] * (z[j] + barreira - z[i])))}
             else{
-              s[i] = s[i] + (phi * (q[i,j] * (z[j] - barreira - z[i])))}
+              S[i] = S[i] + (phi * (q[i,j] * (z[j] - barreira - z[i])))}
           }
         }
       }
     }
   }
   
-  z <- s + z
+  z <- S + z
   resultados <- rbind(resultados, z)
 }
 
