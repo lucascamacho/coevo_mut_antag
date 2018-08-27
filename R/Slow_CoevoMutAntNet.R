@@ -1,23 +1,27 @@
-#library(ggplot2)
+#
+setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
+library(ggplot2)
+library(igraph)
+library(cowplot)
 
 #
-n_sp = 3
+set.seed(42)
+n_sp = 5
 M = matrix(1, ncol = n_sp, nrow = n_sp)
 diag(M) = 0
-t_max = 200
+t_max = 100
 z = runif(n_sp, 0, 10)
 theta = runif(n_sp, 0, 10)
-intfor = 0.1
+intfor = 0.99
 alpha = 0.2
 resultados = matrix(NA, ncol = n_sp, nrow = 1)
 resultados[1,] = z
-antprob = 0.2
+antprob = 0.9
 phi = 0.2
 V = M * 0
 barreira = 5
 
 #
-
 for(i in 1:n_sp){
   for(j in 1:n_sp){
     if(M[i,j] == 1){
@@ -31,13 +35,10 @@ for(i in 1:n_sp){
 }
 
 #
-
-
 Q = M + V
 G = Q
 
 #
-
 for(r in 1:t_max){
   #
   for(i in 1:n_sp){
@@ -63,11 +64,11 @@ for(r in 1:t_max){
       else{
         if(V[i,j] > 0){
           if(abs(z[j] - z[i]) < barreira){
-            if(z[i] < z[j]){
-              S[i] = S[i] + phi * Q[i,j] * (z[j] + barreira - z[i])
-            }
-            else{
-              S[i] = S[i] + phi * Q[i,j] * (z[j] - barreira - z[i])
+              if(z[i] < z[j]){
+                S[i] = S[i] + phi * Q[i,j] * (z[j] + barreira - z[i])
+              }
+              else{
+                S[i] = S[i] + phi * Q[i,j] * (z[j] - barreira - z[i])
             }
           }
         }
@@ -81,18 +82,17 @@ for(r in 1:t_max){
   
 }
 
-#matplot(resultados, type = "l", lty = 1, lwd = 2)
-
-# building data frame to use in ggplot
+#
 traits = as.data.frame(resultados)
 n_sp = ncol(traits)
 traits_vec = c(as.matrix(traits))
 traits_df = data.frame(species = rep(paste("sp", 1:n_sp, sep = ""), each = nrow(traits)),
                        time = rep(1:nrow(traits), times = n_sp),
                        trait = traits_vec)
-# plotting traits through time
+
+#
 plotar = ggplot(traits_df, aes(x = time, y = trait, color = species)) +
-  geom_point(size = 1.8, shape = 19, alpha = 0.6) + 
+  geom_line(size = 1.8, shape = 19, alpha = 0.8) + 
   ggtitle(paste("proportion antagonists = ", antprob)) +
   xlab("Time") + 
   ylab("Mean species trait (z)") +
@@ -103,3 +103,4 @@ plotar = ggplot(traits_df, aes(x = time, y = trait, color = species)) +
         legend.text = element_text(size = 12))
 
 print(plotar)
+#

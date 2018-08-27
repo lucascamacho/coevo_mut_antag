@@ -48,13 +48,66 @@ CoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_di
     z_mat[r+1, ] = z + r_env + r_mut + r_ant # updating z values
     
     dif = mean(abs(z - z_mat[r+1, ])) # computing the mean difference between old and new z values
-    if (dif < eq_dif) # if the difference is lower than eq_dif...
-      break # stop simulation
-
+    if (dif < eq_dif)
+      break
+    
+    dif2 = mean(abs(sapply(z_mat[r+1, ], "-", z_mat[r+1, ])))
+    data = append(data, dif2)
+    
   }
   
-  return(z_mat[1:(r+1), ]) # return final matrix with species traits
-
+  #return(z_mat[1:(r+1), ])
+  return(data)
+  
 }
 
-#-----------------------------------------------------------------------------------------------------#
+#
+n_sp = 100 
+antprob = 0.9
+phi = 0.2
+alpha = 0.2
+theta = runif(n_sp, 0, 10)
+init = runif(n_sp, 0, 10)
+p = 0.1
+epsilon = 5
+eq_dif = 0.0001
+t_max = 1000
+M = matrix(1, ncol = n_sp, nrow = n_sp)
+diag(M) = 0
+V = M * 0
+data = vector()
+
+# estimativa de freq de interacao ++ +- --
+# de 0 ate 10, prob de interacao, pra ver a frequ de interacao segue HW
+# 5 variaveis - para cada classe - media do trait 
+P = matrix(runif(n_sp*n_sp, min = 0, max = 1),
+           nrow = n_sp, ncol = n_sp)
+V[antprob >= P] = 1
+M[antprob >= P] = 0
+diag(V) <- 0
+
+#######
+traits = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
+
+# building data frame to use in ggplot
+traits = as.data.frame(traits)
+n_sp = ncol(traits)
+traits_vec = c(as.matrix(traits))
+traits_df = data.frame(species = rep(paste("sp", 1:n_sp, sep = ""), each = nrow(traits)),
+                       time = rep(1:nrow(traits), times = n_sp),
+                       trait = traits_vec)
+# plotting traits through time
+plotar = ggplot(traits_df, aes(x = time, y = trait, color = species)) +
+   geom_point(size = 1.8, alpha = 0.6) + 
+ #  ggtitle(paste("proportion antagonists = ", antprob)) +
+  ggtitle(" ") +
+  xlab("Time") + 
+  ylab("Mean Difference between traits mean(abs(z - z_mat[r+1, ]))") +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 11),
+        axis.text.y = element_text(size = 11),
+        axis.title = element_text(size = 14), 
+        legend.key.size = unit(0.6, "cm"),
+        legend.text = element_text(size = 12))
+
+plotar
