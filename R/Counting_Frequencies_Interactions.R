@@ -44,9 +44,9 @@ for(i in 1:length(antprob)){
 # prepare to plot and plotting the results
 data = data.frame(data)
 colnames(data) = c("antprob", "esp_AA", "obs_AA", "esp_AM", "obs_AM", "esp_MM", "obs_MM")
-test_data_long <- melt(data, id="antprob")  # convert to long format
-plotar = ggplot(data=test_data_long,
-         aes(x=antprob, y=value, colour=variable)) +
+test_data_long = melt(data, id="antprob")  # convert to long format
+plotar = ggplot(data = test_data_long,
+         aes(x = antprob, y = value, colour = variable)) +
          geom_point() +
          theme_bw()
 
