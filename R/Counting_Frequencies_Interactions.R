@@ -14,7 +14,7 @@ data = matrix(NA, ncol = 7, nrow = length(antprob))
 for(i in 1:length(antprob)){ 
 # loop to count the frequencies of aa, am and mm
 
-  n_sp = 100 # number of species
+  n_sp = 50 # number of species
   n_int = ((n_sp ** 2) - n_sp) / 2 # number of interactions in the matrix
   M = matrix(1, ncol = n_sp, nrow = n_sp) # Mutualism matrix
   diag(M) = 0 # no intraespecific interactions
