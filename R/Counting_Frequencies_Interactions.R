@@ -1,6 +1,7 @@
 # Counting the frequencies of AA, AM and MM in the M and V matrices.
 # load functions and packages
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
+source("Antagonize.R")
 source("CoevoMutAntNet.R")
 source("Counting.R")
 
@@ -18,14 +19,11 @@ for(i in 1:length(antprob)){
   n_int = ((n_sp ** 2) - n_sp) / 2 # number of interactions in the matrix
   M = matrix(1, ncol = n_sp, nrow = n_sp) # Mutualism matrix
   diag(M) = 0 # no intraespecific interactions
-  V = M * 0 # create antagonism interactions
-
-  # tranforming links
-  P = matrix(runif(n_sp*n_sp, min = 0, max = 1),
-             nrow = n_sp, ncol = n_sp) # P is a sort matrix
-  V[antprob[i] >= P] = 1 # if P is higher than antprob, transform to antagonism
-  M[antprob[i] >= P] = 0 # and turn that mutualism off
-  diag(V) <- 0 # no intraespecific interactions
+  
+  # Antagonize M
+  antagonize = Antagonize(M, antprob)
+  M = antagonize[[1]]
+  V = antagonize[[2]]
 
   # counting interactions frequencies
   c = Counting(M, V) #apply Counting function

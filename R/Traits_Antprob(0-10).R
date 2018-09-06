@@ -1,10 +1,11 @@
 # testing coevolutionary model
 # loading packages and functions
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
+source("CoevoMutAntNet.R")
+source("Antagonize.R")
 
 library(ggplot2)
 library(cowplot)
-source("CoevoMutAntNet.R")
 
 # defining probability of link becoming antagonist
 antprob_vec = seq(0.1, 1, 0.1)
@@ -15,13 +16,11 @@ for (i in 1:length(antprob_vec)) {
   n_sp = 5   # defining number of species
   M = matrix(1, ncol = n_sp, nrow = n_sp)   # building matrix M (mutualisms)
   diag(M) = 0 # no intraespecific interactions
-  V = M * 0   # building matrix V (antagonisms)
   
-  P = matrix(runif(n_sp*n_sp, min = 0, max = 1),
-             nrow = n_sp, ncol = n_sp) # P is a matrix of sort values to compare with antprob
-  V[antprob >= P] = 1 # if value of P is higher, interaction is antagonistic
-  M[antprob >= P] = 0 # and no mutualistic
-  diag(V) <- 0 # no intraespecific interactions
+  # Antagonize M
+  antagonize = Antagonize(M, antprob)
+  M = antagonize[[1]]
+  V = antagonize[[2]]
   
   # coevolutionary model parameters
   phi = 0.2

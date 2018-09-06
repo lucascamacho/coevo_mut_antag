@@ -1,29 +1,28 @@
 # This code create matrix of interactions of mutualism and antagonism,
 # simulate the coevolutionary process of the species and
-# calculate the mean trait value for cheaters, pure mutualistis and antagonists
+# calculate the mean trait value for cheaters, pure mutualistis and pure antagonists
 #
 # Load packages and functions
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
+source("Antagonize.R")
 source("CoevoMutAntNet.R")
 source("FindInteractors.R")
+
 library(ggplot2)
 library(reshape2)
 
 # initial conditions
-n_sp = 10
-#antprob = 0.2
+n_sp = 5
+antprob = 0.9
 
 # creating matrix of interactions
 M = matrix(1, ncol = n_sp, nrow = n_sp)
 diag(M) = 0
-V = M * 0
 
-# changing interactions from mutualism to antagonism
-P = matrix(runif(n_sp*n_sp, min = 0, max = 1),
-           nrow = n_sp, ncol = n_sp)
-V[antprob >= P] = 1
-M[antprob >= P] = 0
-diag(V) = 0
+# Antagonize M
+antagonize = Antagonize(M, antprob)
+M = antagonize[[1]]
+V = antagonize[[2]]
 
 # coevolution model parameters
 phi = 0.2
@@ -51,10 +50,11 @@ for(i in 1:nrow(z_mat)){
 }
 
 # prepare to plot and plotting the results
-#data = data.frame(data)
-#test_data_long = melt(data, id = "time")  # convert to long format
-#
-#plotar = ggplot(data = test_data_long,
-#                aes(x = time, y = value, colour = variable)) +
-#         geom_point(alpha = 0.4) +
-#         theme_bw()
+data = data.frame(data)
+test_data_long = melt(data, id = "time")  # convert to long format
+
+plotar = ggplot(data = test_data_long,
+                aes(x = time, y = value, colour = variable)) +
+         geom_point(alpha = 0.4) +
+         theme_bw()
+plotar
