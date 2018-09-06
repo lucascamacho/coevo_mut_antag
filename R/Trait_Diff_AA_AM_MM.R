@@ -12,8 +12,8 @@ library(ggplot2)
 library(reshape2)
 
 # initial conditions
-n_sp = 5
-antprob = 0.9
+n_sp = 10
+antprob = 0.25
 
 # creating matrix of interactions
 M = matrix(1, ncol = n_sp, nrow = n_sp)
