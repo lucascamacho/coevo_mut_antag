@@ -38,15 +38,18 @@ for(i in 1:length(antprob)){
   c = Counting(M, V)
   
   # the p value is the antprob in a particular timestep
-  data[i,1] = (2 * antprob[i] * (1 - antprob[i])) / ((1 - antprob[i]) ** 2) + ((2 * antprob[i] * (1 - antprob[i])))
-  data[i,2] =  (c[[2]] / n_int) / (c[[3]] / n_int) + (c[[2]] / n_int)
+  # frequency of cheaters without the AA interactions
+  #expected frequency of cheaters
+  data[i,1] = ((2 * antprob[i]) * (1 - antprob[i])) / 
+              (((2 * antprob[i]) * (1 - antprob[i])) + ((1 - antprob[i]) ** 2))
   
+  #observed frequency of cheaters
+  data[i,2] = (c[[2]] / n_int) / 
+              ((c[[2]] / n_int) + (c[[3]] / n_int))
 }
 
-
-
 # prepare to plot and plotting the results
-data = data.frame(data[1:98,])
+data = data.frame(data)
 colnames(data) = c("esp_p*", "obs_p*", "antprob")
 test_data_long = melt(data, id="antprob")  # convert to long format
 plotar = ggplot(data = test_data_long,
