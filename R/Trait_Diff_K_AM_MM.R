@@ -1,10 +1,15 @@
-# testing coevolutionary model
+# Simulate a coevolution process without the AA interactions
+# then, compute the mean trait value for groups of interaction types
+# balancing this mean by the quantity of interactions
+
 # loading packages and functions
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
 source("CoevoMutAntNet.R")
 source("Antagonize.R")
 source("EndInteraction.R")
-
+source("Counting.R")
+source("FindInteractors.R")
+source("SpDegree.R")
 
 library(ggplot2)
 library(cowplot)
@@ -24,6 +29,8 @@ end = EndInteraction(M, V, "antagonism")
 M = end[[1]]
 V = end[[2]]
 
+degree = SpDegree(M, V)
+
 # coevolutionary model parameters
 phi = 0.2
 alpha = 0.2
@@ -34,9 +41,22 @@ epsilon = 5
 eq_dif = 0.0001
 t_max = 1000
 
-# running coevolution simulation
-traits = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
+# simulate coevolution and calculate mean trait values for each interaction type
+z_mat = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
+index = FindInteractors(M, V)
 
+data = matrix(NA, nrow = nrow(z_mat), ncol = 5)
+data[,5] = seq(1,nrow(z_mat), 1)
+colnames(data) = c("AV_AM", "VAR_AM", "AV_MM", "VAR_MM", "time")
+
+for(i in 1:nrow(z_mat)){
+  av = mean(z_mat[i,])
+  var = var(z_mat[i,])
+  
+  # nova funcao contando AM e MM de cada espécie
+  # usar essa contagem 
+  
+}
 # building data frame to use in ggplot
 traits = as.data.frame(traits)
 n_sp = ncol(traits)
