@@ -14,8 +14,9 @@ source("SpDegree.R")
 library(ggplot2)
 library(cowplot)
 
+# initial conditions
 antprob = 0.25  # current probability value
-n_sp = 10   # defining number of species
+n_sp = 5   # defining number of species
 M = matrix(1, ncol = n_sp, nrow = n_sp)   # building matrix M (mutualisms)
 diag(M) = 0 # no intraespecific interactions
 
@@ -29,6 +30,7 @@ end = EndInteraction(M, V, "antagonism")
 M = end[[1]]
 V = end[[2]]
 
+# measure the degree of AM and MM for each specie
 degree = SpDegree(M, V)
 
 # coevolutionary model parameters
@@ -53,10 +55,12 @@ for(i in 1:nrow(z_mat)){
   av = mean(z_mat[i,])
   var = var(z_mat[i,])
   
+  
   # nova funcao contando AM e MM de cada espécie
   # usar essa contagem 
   
 }
+
 # building data frame to use in ggplot
 traits = as.data.frame(traits)
 n_sp = ncol(traits)
