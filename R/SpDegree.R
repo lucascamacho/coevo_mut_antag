@@ -10,14 +10,16 @@ SpDegree = function(M, V){
   # create a matrix with species in columms and 3 rows for degree of each interaction type
   degree = matrix(NA, ncol = ncol(M), nrow = 3)
   rownames(degree) = c("AA", "AM", "MM")
+  colnames(degree) = c(seq(1, ncol(M), 1))
   
   # using M and V to find the interaction classes
-
-which(V == 1)
-which(t(V) == 1)
+  v = (V == 1) == (t(V) == 1) # antagonism
+  v[V == 0] = FALSE
   
   c = (V == 1) != (t(V) == 1) # cheaters
+  
   m = (M == 1) == (t(M) == 1) # mutualism
+  m[M == 0] = FALSE
 
   #fill the degree matrix with the sum of interactions of certain class
   degree[1,] = apply(v, 2, sum)
@@ -29,5 +31,3 @@ which(t(V) == 1)
   return(degree)
   
 }
-which(V == t(V))
-V
