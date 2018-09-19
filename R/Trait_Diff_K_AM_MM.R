@@ -33,6 +33,9 @@ V = end[[2]]
 # measure the degree of AM and MM for each specie
 degree = SpDegree(M, V)
 
+# separate the species in groups by type of interaction
+index = FindInteractors(M, V)
+
 # coevolutionary model parameters
 phi = 0.2
 alpha = 0.2
@@ -47,37 +50,33 @@ t_max = 1000
 z_mat = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
 index = FindInteractors(M, V)
 
+#create matriz for data
 data = matrix(NA, nrow = nrow(z_mat), ncol = 5)
 data[,5] = seq(1,nrow(z_mat), 1)
 colnames(data) = c("AV_AM", "VAR_AM", "AV_MM", "VAR_MM", "time")
 
+# for each line of z_mat
 for(i in 1:nrow(z_mat)){
+  # average and variance of all traits in the network
   av = mean(z_mat[i,])
   var = var(z_mat[i,])
   
-  
-  # nova funcao contando AM e MM de cada espécie
-  # usar essa contagem 
-  
+  #calculating the average balanced by the degree and filling the data matriz
+  data[i,1] = 2 # average of cheaters
+  data[i,2] = 1 # variance of cheaters
+  data[i,3] = 2 # average of mutualisms
+  data[i,4] = 2 # variance of mutualisms
+
 }
 
 # building data frame to use in ggplot
-traits = as.data.frame(traits)
-n_sp = ncol(traits)
-traits_vec = c(as.matrix(traits))
-traits_df = data.frame(species = rep(paste("sp", 1:n_sp, sep = ""), each = nrow(traits)),
-                       time = rep(1:nrow(traits), times = n_sp),
-                       trait = traits_vec)
-# plotting traits through time
-plotar = ggplot(traits_df, aes(x = time, y = trait, color = species)) +
-  geom_line(size = 1.8, alpha = 0.6) + 
-  ggtitle(paste("proportion antagonists = ", antprob)) +
-  xlab("Time") + 
-  ylab("Mean species trait (z)") +
-  theme(axis.text.x = element_text(size = 11),
-        axis.text.y = element_text(size = 11),
-        axis.title = element_text(size = 14), 
-        legend.key.size = unit(0.6, "cm"),
-        legend.text = element_text(size = 12))
+data = data.frame(data)
+test_data_long = melt(data, id = "time")  # convert to long format
 
-print(plotar)
+# plot data
+plotar = ggplot(data = test_data_long,
+                aes(x = time, y = value, color = variable)) +
+  geom_point(alpha = 0.7) +
+  theme_bw()
+
+plotar
