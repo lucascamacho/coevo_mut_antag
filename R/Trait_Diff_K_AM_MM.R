@@ -59,12 +59,12 @@ colnames(data) = c("AV_AM", "VAR_AM", "AV_MM", "VAR_MM", "time")
 for(i in 1:nrow(z_mat)){
   # average and variance of all traits in the network
   av = mean(z_mat[i,])
-  var = var(z_mat[i,])
+  vari = var(z_mat[i,])
   
   #calculating the average balanced by the degree and filling the data matriz
-  data[i,1] = 2 # average of cheaters
+  data[i,1] = data[i,1] + (degree[2,index[[2]]] * z_mat[i, index[[2]]]) # average of cheaters
   data[i,2] = 1 # variance of cheaters
-  data[i,3] = 2 # average of mutualisms
+  data[i,3] = data[i,3] + (degree[3,index[[3]]] * z_mat[i, index[[3]]]) # average of mutualisms
   data[i,4] = 2 # variance of mutualisms
 
 }

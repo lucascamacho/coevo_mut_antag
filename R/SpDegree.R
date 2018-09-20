@@ -26,8 +26,7 @@ SpDegree = function(M, V){
   degree[2,] = apply(c, 2, sum)
   degree[3,] = apply(m, 2, sum)
   
-  # transform the matrix in data frame and return
-  degree = data.frame(degree)
+  # return the matrix with degree of species separating by interaction class
   return(degree)
   
 }

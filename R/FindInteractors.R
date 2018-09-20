@@ -23,6 +23,8 @@ FindInteractors = function(M, V){
   mm_index = c(unique(m1[m1 %in% m2]))
   
   index = list(aa_index, am_index, mm_index)
+  
+  index = lapply(index, sort)
   return(index)
   
 }
