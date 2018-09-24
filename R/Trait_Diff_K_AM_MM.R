@@ -4,19 +4,22 @@
 
 # loading packages and functions
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
-source("CoevoMutAntNet.R")
 source("Antagonize.R")
 source("EndInteraction.R")
-source("Counting.R")
-source("FindInteractors.R")
+source("ZeroLines.R")
 source("SpDegree.R")
+source("FindInteractors.R")
+source("CoevoMutAntNet.R")
+source("TraitDegreeBalanced.R")
+source("VarTraitDegreeBalanced.R")
 
 library(ggplot2)
+library(reshape)
 library(cowplot)
 
 # initial conditions
-antprob = 0.25  # current probability value
-n_sp = 5   # defining number of species
+#antprob = 0.02  # current probability value
+n_sp = 50   # defining number of species
 M = matrix(1, ncol = n_sp, nrow = n_sp)   # building matrix M (mutualisms)
 diag(M) = 0 # no intraespecific interactions
 
@@ -25,10 +28,15 @@ antagonize = Antagonize(M, antprob)
 M = antagonize[[1]]
 V = antagonize[[2]]
 
-# End antagonism AA
+# End the AA interactions
 end = EndInteraction(M, V, "antagonism")
 M = end[[1]]
 V = end[[2]]
+
+# check for zero lines
+#zero = ZeroLines(M, V, n_sp, antprob)
+#M = zero[[1]]
+#V = zero[[2]]
 
 # measure the degree of AM and MM for each specie
 degree = SpDegree(M, V)
@@ -46,37 +54,27 @@ epsilon = 5
 eq_dif = 0.0001
 t_max = 1000
 
-# simulate coevolution and calculate mean trait values for each interaction type
+# simulate coevolution and calculate mean and variance trait values for each interaction type
 z_mat = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
-index = FindInteractors(M, V)
 
 #create matriz for data
 data = matrix(NA, nrow = nrow(z_mat), ncol = 5)
 data[,5] = seq(1,nrow(z_mat), 1)
-colnames(data) = c("AV_AM", "VAR_AM", "AV_MM", "VAR_MM", "time")
+colnames(data) = c("MEAN_AM", "VAR_AM", "MEAN_MM", "VAR_MM", "time")
 
-# for each line of z_mat
-for(i in 1:nrow(z_mat)){
-  # average and variance of all traits in the network
-  av = mean(z_mat[i,])
-  vari = var(z_mat[i,])
-  
-  #calculating the average balanced by the degree and filling the data matriz
-  data[i,1] = data[i,1] + (degree[2,index[[2]]] * z_mat[i, index[[2]]]) # average of cheaters
-  data[i,2] = 1 # variance of cheaters
-  data[i,3] = data[i,3] + (degree[3,index[[3]]] * z_mat[i, index[[3]]]) # average of mutualisms
-  data[i,4] = 2 # variance of mutualisms
+# Apply function to get the traits balanced by degree and the variance
+traits = apply(z_mat, 1, TraitDegreeBalanced)
+var_traits = apply(z_mat, 1, VarTraitDegreeBalanced)
 
-}
+#apply function to get mean trait and variance balanced by interaction degree
+data[,1] = traits[1,]
+data[,2] = var_traits[1,]
+data[,3] = traits[2,]
+data[,4] = var_traits[2,]
 
-# building data frame to use in ggplot
-data = data.frame(data)
-test_data_long = melt(data, id = "time")  # convert to long format
-
-# plot data
-plotar = ggplot(data = test_data_long,
-                aes(x = time, y = value, color = variable)) +
-  geom_point(alpha = 0.7) +
-  theme_bw()
-
-plotar
+#data = data.frame(data)
+#par(mfrow=c(2,2))
+#plot(data$time, data$MEAN_AM,col="red")
+#plot(data$time, data$VAR_AM,col="red")
+#plot(data$time, data$MEAN_MM,col="red")
+#plot(data$time, data$VAR_MM,col="red")
