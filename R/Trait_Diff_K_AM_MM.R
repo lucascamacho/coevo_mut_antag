@@ -34,9 +34,9 @@ M = end[[1]]
 V = end[[2]]
 
 # check for zero lines
-#zero = ZeroLines(M, V, n_sp, antprob)
-#M = zero[[1]]
-#V = zero[[2]]
+zero = ZeroLines(M, V, n_sp, antprob)
+M = zero[[1]]
+V = zero[[2]]
 
 # measure the degree of AM and MM for each specie
 degree = SpDegree(M, V)

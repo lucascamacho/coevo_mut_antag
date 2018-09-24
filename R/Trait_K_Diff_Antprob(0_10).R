@@ -43,7 +43,7 @@ for(a in 1:length(antprob_vec)){
 }
 
 # prepare data2 and plot
-data = data.frame(data)
+data2 = data.frame(data2)
 par(mfrow=c(2,2))
 plot(data2$antprob, data2$MEAN_AM,col="red")
 plot(data2$antprob, data2$VAR_AM,col="red")

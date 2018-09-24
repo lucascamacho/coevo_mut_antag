@@ -16,9 +16,8 @@ ZeroLines = function(M, V, n_sp, antprob){
   
   for(z in 1:1000000){
     m = rowSums(M)
-    v = rowSums(V)
     
-    if(any(m == 0) | any(v == 0)){
+    if(any(m == 0)){
       M = matrix(1, ncol = n_sp, nrow = n_sp)   # building matrix M (mutualisms)
       diag(M) = 0 # no intraespecific interactions
       
