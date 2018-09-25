@@ -1,23 +1,27 @@
 ZeroLines = function(M, V, n_sp, antprob){
-  # Check if there are any lines full of zero`s in adjacency matrix
+  # Check if there are any lines full of zero's in M adjacency matrix
   # Args:
   #  M = Mutualistic adjacency matrix
   #  V = Antagonistic adjacency matrix
   #  n_sp = number os species
   #  antprob = probability of a link become antagonist
-  #  interaction = interaction to be ended
   #
   #  Return:
   #    In case of lines full of zeros, make new adjacency matrices
   #
-  #check the lines
+  # Obs: this function works with the Antagonize.R and EndInteraction.R functions.
+  #      Make sure to have then in your work directory
+
+  # load packages for new matrices if necessary
   source("Antagonize.R")
   source("EndInteraction.R")
   
+  # try several types get a M matrix without lines of zero's
   for(z in 1:1000000){
-    m = rowSums(M)
+    m = rowSums(M) # check for zero lines
     
-    if(any(m == 0)){
+    # make new matrices if there's a line full of zero's in M
+    if(any(m == 0)){ 
       M = matrix(1, ncol = n_sp, nrow = n_sp)   # building matrix M (mutualisms)
       diag(M) = 0 # no intraespecific interactions
       
@@ -32,11 +36,13 @@ ZeroLines = function(M, V, n_sp, antprob){
       V = end[[2]]     
     }
     
+    # if there are no zero lines, stop
     else{
       break
     }
   }
   
+  # return the current M and V matrices
   mats = list(M, V)
   return(mats)
 }

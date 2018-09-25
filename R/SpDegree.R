@@ -4,22 +4,22 @@ SpDegree = function(M, V){
   #    M: Mutualistic network of interactions
   #    V: Antagonistic network of interactions
   # Return:
-  #    matrix with species in collums and the degree fot each interaction type in rows
+  #    matrix with species in columns and the degree fot each interaction type in rows
   #
   
-  # create a matrix with species in columms and 3 rows for degree of each interaction type
+  # create a matrix with species in columns and 3 rows for degree of each interaction type (AA, AM and MM)
   degree = matrix(NA, ncol = ncol(M), nrow = 3)
   rownames(degree) = c("AA", "AM", "MM")
   colnames(degree) = c(seq(1, ncol(M), 1))
   
   # using M and V to find the interaction classes
   v = (V == 1) == (t(V) == 1) # antagonism
-  v[V == 0] = FALSE
+  v[V == 0] = FALSE # ignore the zero's
   
   c = (V == 1) != (t(V) == 1) # cheaters
   
   m = (M == 1) == (t(M) == 1) # mutualism
-  m[M == 0] = FALSE
+  m[M == 0] = FALSE # ignore the zero's
 
   #fill the degree matrix with the sum of interactions of certain class
   degree[1,] = apply(v, 2, sum)

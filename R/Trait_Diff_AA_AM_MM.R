@@ -1,6 +1,5 @@
-# This code create matrix of interactions of mutualism and antagonism,
-# simulate the coevolutionary process of the species and
-# calculate the mean trait value for cheaters, pure mutualistis and pure antagonists
+# Calculate the mean trait value for cheaters, pure mutualists and pure antagonists
+# We use the FindInteractors function to separate species in 3 groups (AA, AM and MM)
 #
 # Load packages and functions
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
@@ -19,7 +18,7 @@ antprob = 0.25
 M = matrix(1, ncol = n_sp, nrow = n_sp)
 diag(M) = 0
 
-# Antagonize M
+# Antagonize M (transform links in antagonisms)
 antagonize = Antagonize(M, antprob)
 M = antagonize[[1]]
 V = antagonize[[2]]
@@ -34,14 +33,16 @@ epsilon = 5
 eq_dif = 0.0001
 t_max = 1000
 
-# simulate coevolution and calculate mean trait values for each interaction type
+# simulate coevolution and find the cheaters, mutualists and antagonists
 z_mat = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
 index = FindInteractors(M, V)
 
+# create a data matrix
 data = matrix(NA, nrow = nrow(z_mat), ncol = 4)
 data[,4] = seq(1,nrow(z_mat), 1)
 colnames(data) = c("AA", "AM", "MM", "time")
 
+# loop to calculate the mean trait value of each group of species
 for(i in 1:nrow(z_mat)){
   data[i,1] = mean(z_mat[i,index[[1]]])
   data[i,2] = mean(z_mat[i,index[[2]]])

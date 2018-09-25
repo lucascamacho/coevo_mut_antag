@@ -1,6 +1,6 @@
 EndInteraction = function(M, V, interaction){
   # Choose a type of interaction to ignore in your adjacency matrices
-  # The interations are identified based on the index of species which has a 1
+  # The interactions are identified based on the index of species which has a 1
   # in V and the Transpose of V (in case of antagonism). 
   # These index are used to insert 0 on the matrices.
   #
@@ -19,14 +19,14 @@ EndInteraction = function(M, V, interaction){
   }
   
   # end interactions based on "interaction" parameter
-  if(interaction == "antagonism"){
+  if(interaction == "antagonism"){ # end antagonism based on index of V and V transpose
     index = V == t(V)
     V[index] = 0
     mats = list(M, V)
     return(mats)
   }
   
-  if(interaction == "cheaters"){
+  if(interaction == "cheaters"){ # end cheaters based on index of V and diff V transpose
     index = V != t(V)
     V[index] = 0
     M[index] = 0
@@ -35,7 +35,7 @@ EndInteraction = function(M, V, interaction){
   }
   
   else{
-    index = M == t(M)
+    index = M == t(M) # end mutualism based on index of M and M transpose
     M[index] = 0
     mats = list(M, V)
     return(mats)

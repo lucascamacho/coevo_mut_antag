@@ -1,6 +1,6 @@
 # Simulate a coevolution process without the AA interactions
 # then, compute the mean trait value for groups of interaction types
-# balancing this mean by the quantity of interactions
+# balancing this mean and variance of traits by the quantity of interactions.
 
 # loading packages and functions
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
@@ -18,12 +18,12 @@ library(reshape)
 library(cowplot)
 
 # initial conditions
-#antprob = 0.02  # current probability value
+antprob = 0.25  # current probability value
 n_sp = 50   # defining number of species
 M = matrix(1, ncol = n_sp, nrow = n_sp)   # building matrix M (mutualisms)
 diag(M) = 0 # no intraespecific interactions
 
-# Antagonize M
+# Antagonize M (transform links in antagonisms)
 antagonize = Antagonize(M, antprob)
 M = antagonize[[1]]
 V = antagonize[[2]]
@@ -33,7 +33,7 @@ end = EndInteraction(M, V, "antagonism")
 M = end[[1]]
 V = end[[2]]
 
-# check for zero lines
+# check for zero lines (otherwise the simulation returns an error)
 zero = ZeroLines(M, V, n_sp, antprob)
 M = zero[[1]]
 V = zero[[2]]
@@ -57,21 +57,22 @@ t_max = 1000
 # simulate coevolution and calculate mean and variance trait values for each interaction type
 z_mat = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
 
-#create matriz for data
+# create matriz for data
 data = matrix(NA, nrow = nrow(z_mat), ncol = 5)
 data[,5] = seq(1,nrow(z_mat), 1)
 colnames(data) = c("MEAN_AM", "VAR_AM", "MEAN_MM", "VAR_MM", "time")
 
-# Apply function to get the traits balanced by degree and the variance
+# apply function to get the mean and variance oftraits balanced by degree
 traits = apply(z_mat, 1, TraitDegreeBalanced)
 var_traits = apply(z_mat, 1, VarTraitDegreeBalanced)
 
-#apply function to get mean trait and variance balanced by interaction degree
+# allocate the results in data matrix
 data[,1] = traits[1,]
 data[,2] = var_traits[1,]
 data[,3] = traits[2,]
 data[,4] = var_traits[2,]
 
+# plot the results
 #data = data.frame(data)
 #par(mfrow=c(2,2))
 #plot(data$time, data$MEAN_AM,col="red")

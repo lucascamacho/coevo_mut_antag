@@ -1,4 +1,7 @@
 # testing coevolutionary model
+# this script returns a simple graph with species traits changing in time
+# due to coevolution
+
 # loading packages and functions
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
 source("CoevoMutAntNet.R")
@@ -7,24 +10,26 @@ source("EndInteraction.R")
 source("ZeroLines.R")
 
 library(ggplot2)
+library(reshape2)
 library(cowplot)
 
+# initial parameters
 antprob = 0.9  # current probability value
 n_sp = 5   # defining number of species
 M = matrix(1, ncol = n_sp, nrow = n_sp)   # building matrix M (mutualisms)
 diag(M) = 0 # no intraespecific interactions
 
-# Antagonize M
+# Antagonize M (transform links in antagonisms)
 antagonize = Antagonize(M, antprob)
 M = antagonize[[1]]
 V = antagonize[[2]]
 
-# End antagonism AA
+# End pure antagonism AA
 end = EndInteraction(M, V, "antagonism")
 M = end[[1]]
 V = end[[2]]
 
-# Check for zero Lines
+# Check for zero lines in the matrices
 zero = ZeroLines(M, V, n_sp, antprob)
 M = zero[[1]]
 V = zero[[2]]
@@ -42,13 +47,14 @@ t_max = 1000
 # running coevolution simulation
 traits = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
 
-# building data frame to use in ggplot
+# building data frame to use in ggplot2
 traits = as.data.frame(traits)
 n_sp = ncol(traits)
 traits_vec = c(as.matrix(traits))
 traits_df = data.frame(species = rep(paste("sp", 1:n_sp, sep = ""), each = nrow(traits)),
                        time = rep(1:nrow(traits), times = n_sp),
                        trait = traits_vec)
+
 # plotting traits through time
 plotar = ggplot(traits_df, aes(x = time, y = trait, color = species)) +
   geom_line(size = 1.8, alpha = 0.6) + 

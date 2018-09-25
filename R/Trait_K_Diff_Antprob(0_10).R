@@ -1,28 +1,28 @@
-# Great loop to describe how the last mean trait values in equilibrium change with the antprob
+# Great loop to describe how the mean trait values in equilibrium change with the antprob
 # remembering that we are calculating the mean trait value for different interaction types
-# for each simulation, we have 3 values of species trait at "equilibrium", each value
+# in each simulation, we have 3 values of species trait at "equilibrium", each value
 # representing a interaction type.
+# For each value of antprob, we are doing 10 simulations
 
-#sequence of antprob
+# set work directory and define antprob sequence
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
-library(ggplot2)
-library(cowplot)
-
 antprob_vec = seq(0.01, 1, 0.01)
 
 # second data frame for last line of z_mat for each simulation
-data2 = matrix(NA, ncol = 5, nrow = length(antprob_vec))
-colnames(data2) = c("MEAN_AM", "VAR_AM", "MEAN_MM", "VAR_MM", "antprob")
-data2[,5] = antprob_vec
+last_traits = matrix(NA, ncol = 5, nrow = length(antprob_vec))
+colnames(last_traits) = c("MEAN_AM", "VAR_AM", "MEAN_MM", "VAR_MM", "antprob")
+last_traits[,5] = antprob_vec
 
 # loop to coevolution simulation and get the last line of z_mat for each simulation
 for(a in 1:length(antprob_vec)){
-  antprob = antprob_vec[a]
-  print(antprob)
+  antprob = antprob_vec[a] # define a value fo antprob
+  print(antprob) # print this value to follow the simulation process
   
+  # create a small data matrix to get the mean of several simulations
   col_variables = matrix(NA, nrow = 10, ncol = 4)
   colnames(col_variables) = c("MEAN_AM", "VAR_AM", "MEAN_MM", "VAR_MM")
   
+  # for each value of antprob, simulate 10 times
   for(y in 1:10){
     source("Trait_Diff_K_AM_MM.R")
     col_variables[y,1] = tail(data[6,1])  
@@ -32,20 +32,20 @@ for(a in 1:length(antprob_vec)){
 
   }
   
-  means = apply(col_variables, 2, mean)
+  means = apply(col_variables, 2, mean) # calculate the mean of these 10 simulations
   
-  data2[a,1] = means[1]
-  data2[a,2] = means[2]
-  data2[a,3] = means[3]
-  data2[a,4] = means[4]
+  last_traits[a,1] = means[1] # allocate these means in our final data matrix
+  last_traits[a,2] = means[2]
+  last_traits[a,3] = means[3]
+  last_traits[a,4] = means[4]
   
   
 }
 
-# prepare data2 and plot
-data2 = data.frame(data2)
+# prepare last_traits and plot
+last_traits = data.frame(last_traits)
 par(mfrow=c(2,2))
-plot(data2$antprob, data2$MEAN_AM,col="red")
-plot(data2$antprob, data2$VAR_AM,col="red")
-plot(data2$antprob, data2$MEAN_MM,col="red")
-plot(data2$antprob, data2$VAR_MM,col="red")
+plot(last_traits$antprob, last_traits$MEAN_AM, col = "red")
+plot(last_traits$antprob, last_traits$VAR_AM, col = "red")
+plot(last_traits$antprob, last_traits$MEAN_MM, col = "red")
+plot(last_traits$antprob, last_traits$VAR_MM, col = "red")

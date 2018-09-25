@@ -8,7 +8,7 @@ Counting = function(M, V){
   # Obs: M and V are complementar matrix. The sum of these matrices must give all the interactions in the network
   #
   # Return:
-  # A list with the count of AA, AM and MM.
+  # A list with the number of AA, AM and MM interactions.
   
   n_cheat = (length(M[M != t(M)]) / 2) #counting cheaters
 
