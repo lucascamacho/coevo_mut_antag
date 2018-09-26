@@ -5,7 +5,6 @@ library(igraph)
 library(cowplot)
 
 #
-set.seed(42)
 n_sp = 5
 M = matrix(1, ncol = n_sp, nrow = n_sp)
 diag(M) = 0

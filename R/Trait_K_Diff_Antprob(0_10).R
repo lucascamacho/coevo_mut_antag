@@ -6,7 +6,7 @@
 
 # set work directory and define antprob sequence
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
-antprob_vec = seq(0.01, 1, 0.01)
+antprob_vec = seq(0.01, 0.99, 0.01)
 
 # second data frame for last line of z_mat for each simulation
 last_traits = matrix(NA, ncol = 5, nrow = length(antprob_vec))
@@ -42,10 +42,11 @@ for(a in 1:length(antprob_vec)){
   
 }
 
-# prepare last_traits and plot
-last_traits = data.frame(last_traits)
-par(mfrow=c(2,2))
-plot(last_traits$antprob, last_traits$MEAN_AM, col = "red")
-plot(last_traits$antprob, last_traits$VAR_AM, col = "red")
-plot(last_traits$antprob, last_traits$MEAN_MM, col = "red")
-plot(last_traits$antprob, last_traits$VAR_MM, col = "red")
+# prepare final data and plot in a single window
+data = data.frame(last_traits)
+par(mfrow = c(2,2))
+plot(data$antprob, data$MEAN_AM, pch = 19, col = "blue", xlab = "antprob (p)", ylab = "Mean Trait for Cheaters")
+plot(data$antprob, data$MEAN_MM, pch = 19, col = "blue", xlab = "antprob (p)", ylab = "Mean Trait for Mutualism")
+plot(data$antprob, data$VAR_AM, pch = 19, col = "red", xlab = "antprob (p)", ylab = "Delta Trait for Cheaters")
+plot(data$antprob, data$VAR_MM, pch = 19, col = "red", xlab = "antprob (p)", ylab = "Delta Trait for Mutualism")
+title("Traits of Cheaters and Mutualism (Balanced by degree Kmm and Kam)", line = -2, outer = TRUE)
