@@ -19,7 +19,7 @@ library(cowplot)
 
 # initial conditions
 #antprob = 0.25  # current probability value
-n_sp = 50   # defining number of species
+n_sp = 100   # defining number of species
 M = matrix(1, ncol = n_sp, nrow = n_sp)   # building matrix M (mutualisms)
 diag(M) = 0 # no intraespecific interactions
 
@@ -73,10 +73,10 @@ data[,3] = traits[2,]
 data[,4] = var_traits[2,]
 
 # plot the results
-data = data.frame(data)
-par(mfrow=c(2,2))
-plot(data$time, data$MEAN_AM, col="red", pch = 19, xlab = "time", ylab = "Mean Trait for Cheaters")
-plot(data$time, data$VAR_AM, col="red", pch = 19, xlab = "time", ylab = "Mean Trait for Mutualism")
-plot(data$time, data$MEAN_MM, col="red", pch = 19, xlab = "time", ylab = "Delta Trait for Cheaters")
-plot(data$time, data$VAR_MM, col="red", pch = 19, xlab = "time", ylab = "Delta Trait for Cheaters")
-title("Traits Dynamics of Cheaters and Mutualism (Balanced by degree Kmm and Kam)", line = -2, outer = TRUE)
+#data = data.frame(data)
+#par(mfrow=c(2,2))
+#plot(data$time, data$MEAN_AM, col="red", pch = 19, xlab = "time", ylab = "Mean Trait for Cheaters")
+#plot(data$time, data$VAR_AM, col="red", pch = 19, xlab = "time", ylab = "Mean Trait for Mutualism")
+#plot(data$time, data$MEAN_MM, col="red", pch = 19, xlab = "time", ylab = "Delta Trait for Cheaters")
+#plot(data$time, data$VAR_MM, col="red", pch = 19, xlab = "time", ylab = "Delta Trait for Cheaters")
+#title("Traits Dynamics of Cheaters and Mutualism (Balanced by degree Kmm and Kam)", line = -2, outer = TRUE)

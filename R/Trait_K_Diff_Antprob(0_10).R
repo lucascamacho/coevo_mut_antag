@@ -6,7 +6,7 @@
 
 # set work directory and define antprob sequence
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
-antprob_vec = seq(0.01, 0.99, 0.01)
+antprob_vec = seq(0.01, 1, 0.01)
 
 # second data frame for last line of z_mat for each simulation
 last_traits = matrix(NA, ncol = 5, nrow = length(antprob_vec))
@@ -35,11 +35,10 @@ for(a in 1:length(antprob_vec)){
   means = apply(col_variables, 2, mean) # calculate the mean of these 10 simulations
   
   last_traits[a,1] = means[1] # allocate these means in our final data matrix
-  last_traits[a,2] = means[2]
   last_traits[a,3] = means[3]
+  last_traits[a,2] = means[2]
   last_traits[a,4] = means[4]
-  
-  
+
 }
 
 # prepare final data and plot in a single window
