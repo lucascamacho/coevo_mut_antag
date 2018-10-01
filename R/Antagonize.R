@@ -1,5 +1,5 @@
 #---------------------------------------------------------------------------------------------------#
-Antagonize <- function(M, antprob){
+Antagonize = function(M, antprob){
   # Following a certain probability, transform interactions from mutualism to antagonisms. 
   #
   # Args:
@@ -7,7 +7,7 @@ Antagonize <- function(M, antprob){
   #   antprob = probability of a certain link became a antagonistic link
   #
   # Return:
-  #   intr = list of mutualistic and antagonistic networks, respectively
+  #   mats = list of mutualistic and antagonistic networks, respectively
   # 
   V = M * 0 # create V matrix with the same size of mat
   P = matrix(runif(dim(M)[1]*dim(M)[2], min = 0, max = 1),  # create matrix of probabilities
