@@ -57,7 +57,7 @@ test_data_long = melt(data, id="antprob")  # convert to long format
 
 plotar = ggplot(data = test_data_long,
                 aes(x = antprob, y = value, colour = variable)) +
-  geom_point(alpha = 0.4) +
+  geom_point(alpha = 0.7) +
   theme_bw()
 
-plotar
+ggsave(plotar, file = "Freq_p_NO_AA.pdf")

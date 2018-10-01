@@ -38,7 +38,6 @@ CoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_di
     r_mut = phi * apply(sel_dif_mut, 1, sum) # response to selection related to mutualism
     
     V[abs(z_dif) > epsilon] = 0 # excluding interactions of traits that are larger than the barrier
-    
     epsilon_plus = (z_dif < 0) * matrix(epsilon, n_sp, n_sp) # matrix with barrier (epsilon) values
     epsilon_minus = (z_dif > 0) * matrix(-epsilon, n_sp, n_sp) # matrix wih -epsilon values
     z_dif = z_dif + epsilon_plus + epsilon_minus # adding barrier values to trait differences

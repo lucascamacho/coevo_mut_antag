@@ -16,7 +16,7 @@ Antagonize <- function(M, antprob){
   M[antprob >= P] = 0 # if the probability is lower or equal than antprob,the link in M in zero
   V[antprob >= P] = 1 # and the link in V is 1
   diag(V) = 0 # diagonal's matrices must be zero
-  
+
   mats = list(M, V) # create list with the antagonistic and mutualistic matrices
   return(mats) # return a list with the antagonistic and mutualistic matrices
 }

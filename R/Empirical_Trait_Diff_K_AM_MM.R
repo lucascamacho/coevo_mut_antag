@@ -1,3 +1,4 @@
+# Using an empirical network, species rich and nested structure
 # Simulate a coevolution process without the AA interactions
 # then, compute the mean trait value for groups of interaction types
 # balancing this mean and variance of traits by the quantity of interactions.
@@ -8,8 +9,8 @@ source("Antagonize.R")
 source("EndInteraction.R")
 source("ZeroLines.R")
 source("SpDegree.R")
-source("Counting.R")
 source("FindInteractors.R")
+source("SquareMatrix.R")
 source("CoevoMutAntNet.R")
 source("TraitDegreeBalanced.R")
 source("VarTraitDegreeBalanced.R")
@@ -19,10 +20,11 @@ library(reshape)
 library(cowplot)
 
 # initial conditions
-#antprob = 0.5  # current probability value
-n_sp = 20 # defining number of species
-M = matrix(1, ncol = n_sp, nrow = n_sp)   # building matrix M (mutualisms)
-diag(M) = 0 # no intraespecific interactions
+#antprob = 0.25  # current probability value
+M = read.table() 
+M = SquareMatrix(M) # square the empirical matrix
+# read empirical matrix
+n_sp = dim(M)[1] + dim(M)[2]  # defining number of species
 
 # Antagonize M (transform links in antagonisms)
 antagonize = Antagonize(M, antprob)
@@ -41,9 +43,6 @@ V = zero[[2]]
 
 # measure the degree of AM and MM for each specie
 degree = SpDegree(M, V)
-
-# count the number of interactions
-c = Counting(M, V)
 
 # separate the species in groups by type of interaction
 index = FindInteractors(M, V)

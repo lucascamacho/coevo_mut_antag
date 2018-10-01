@@ -48,7 +48,7 @@ test_data_long = melt(data, id="antprob")  # convert to long format
 
 plotar = ggplot(data = test_data_long,
          aes(x = antprob, y = value, colour = variable)) +
-         geom_point() +
+         geom_point(alpha = 0.6) +
          theme_bw()
 
-plotar
+ggsave(plotar, file = "Counting_Frequencies_Interactions.pdf")

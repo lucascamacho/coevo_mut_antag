@@ -6,7 +6,7 @@
 
 # set work directory and define antprob sequence
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
-antprob_vec = seq(0.01, 1, 0.01)
+antprob_vec = seq(0.01, 0.95, 0.01)
 
 # second data frame for last line of z_mat for each simulation
 last_traits = matrix(NA, ncol = 5, nrow = length(antprob_vec))
@@ -16,7 +16,7 @@ last_traits[,5] = antprob_vec
 # loop to coevolution simulation and get the last line of z_mat for each simulation
 for(a in 1:length(antprob_vec)){
   antprob = antprob_vec[a] # define a value fo antprob
-  print(antprob) # print this value to follow the simulation process
+  #print(antprob) # print this value to follow the simulation process
   
   # create a small data matrix to get the mean of several simulations
   col_variables = matrix(NA, nrow = 10, ncol = 4)
@@ -24,11 +24,12 @@ for(a in 1:length(antprob_vec)){
   
   # for each value of antprob, simulate 10 times
   for(y in 1:10){
+    setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
     source("Trait_Diff_K_AM_MM.R")
     col_variables[y,1] = tail(data[6,1])  
-    col_variables[y,2] = tail(data[6,2])
+    col_variables[y,2] = tail(data[6,2]) / c[[2]]
     col_variables[y,3] = tail(data[6,3])
-    col_variables[y,4] = tail(data[6,4])
+    col_variables[y,4] = tail(data[6,4]) / c[[3]]
 
   }
   
