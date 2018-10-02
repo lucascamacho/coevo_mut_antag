@@ -79,8 +79,8 @@ data[,4] = var_traits[2,]
 # plot the results
 #data = data.frame(data)
 #par(mfrow=c(2,2))
-#plot(data$time, data$MEAN_AM, col="red", pch = 19, xlab = "time", ylab = "Mean Trait for Cheaters")
-#plot(data$time, data$VAR_AM, col="red", pch = 19, xlab = "time", ylab = "Mean Trait for Mutualism")
-#plot(data$time, data$MEAN_MM, col="red", pch = 19, xlab = "time", ylab = "Delta Trait for Cheaters")
-#plot(data$time, data$VAR_MM, col="red", pch = 19, xlab = "time", ylab = "Delta Trait for Cheaters")
+#plot(data$time, data$MEAN_AM, col="blue", pch = 19, xlab = "time", ylab = "Mean Trait for Cheaters")
+#plot(data$time, data$MEAN_MM, col="blue", pch = 19, xlab = "time", ylab = "Mean Trait for Mutualism")
+#plot(data$time, data$VAR_AM, col="red", pch = 19, xlab = "time", ylab = "Delta Trait for Cheaters")
+#plot(data$time, data$VAR_MM, col="red", pch = 19, xlab = "time", ylab = "Delta Trait for Mutualisms")
 #title("Traits Dynamics of Cheaters and Mutualism (Balanced by degree Kmm and Kam)", line = -2, outer = TRUE)

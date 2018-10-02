@@ -8,8 +8,8 @@ setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
 
 source("SquareMatrix.R")
 source("EmpAntagonize.R")
-source("EndInteraction.R")
-source("ZeroLines.R")
+source("EmpEndInteraction.R")
+source("Counting.R")
 source("SpDegree.R")
 source("FindInteractors.R")
 source("CoevoMutAntNet.R")
@@ -20,11 +20,11 @@ library(ggplot2)
 library(reshape)
 library(cowplot)
 
-
 # initial conditions
-antprob = 0.4 # current probability value
-M = as.matrix(read.table("~/Dropbox/Master/Code/coevo_mut_antag/data/B_SY-AP-IzzomtcPOW.txt")) # read empirical matrix
-n_sp = dim(M)[1] +  dim(M)[2] # defining number of species
+antprob = 0.2 # current probability value
+M = as.matrix(read.table("~/Dropbox/Master/Code/coevo_mut_antag/data/B_NS-PS-Galetti&Pizo-1996-SG2Wgt.txt")) # read empirical matrix
+M = SquareMatrix(M) # Square the M matrix
+n_sp = dim(M)[1] # defining number of species
 
 # Antagonize M (transform links in antagonisms)
 empantagonize = EmpAntagonize(M, antprob)
@@ -32,14 +32,12 @@ M = empantagonize[[1]]
 V = empantagonize[[2]]
 
 # End the AA interactions
-end = EndInteraction(M, V, "antagonism")
+end = EmpEndInteraction(M, V, "antagonism")
 M = end[[1]]
 V = end[[2]]
 
 # check for zero lines (otherwise the simulation returns an error)
-zero = ZeroLines(M, V, n_sp, antprob)
-M = zero[[1]]
-V = zero[[2]]
+# rever
 
 # measure the degree of AM and MM for each specie
 degree = SpDegree(M, V)
@@ -78,8 +76,8 @@ data[,4] = var_traits[2,]
 # plot the results
 data = data.frame(data)
 par(mfrow=c(2,2))
-plot(data$time, data$MEAN_AM, col="red", pch = 19, xlab = "time", ylab = "Mean Trait for Cheaters")
-plot(data$time, data$VAR_AM, col="red", pch = 19, xlab = "time", ylab = "Mean Trait for Mutualism")
-plot(data$time, data$MEAN_MM, col="red", pch = 19, xlab = "time", ylab = "Delta Trait for Cheaters")
-plot(data$time, data$VAR_MM, col="red", pch = 19, xlab = "time", ylab = "Delta Trait for Cheaters")
+plot(data$time, data$MEAN_AM, col="blue", pch = 19, xlab = "time", ylab = "Mean Trait for Cheaters")
+plot(data$time, data$MEAN_MM, col="blue", pch = 19, xlab = "time", ylab = "Mean Trait for Mutualism")
+plot(data$time, data$VAR_AM, col="red", pch = 19, xlab = "time", ylab = "Delta Trait for Cheaters")
+plot(data$time, data$VAR_MM, col="red", pch = 19, xlab = "time", ylab = "Delta Trait for Mutualisms")
 title("Traits Dynamics of Cheaters and Mutualism (Balanced by degree Kmm and Kam)", line = -2, outer = TRUE)
