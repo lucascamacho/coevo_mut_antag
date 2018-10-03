@@ -1,5 +1,3 @@
-#-----------------------------------------------------------------------------------------------------#
-
 RemoveNodesNoLinks = function(mat) {
   # Removes nodes with no links (degree = 0) from a network.
   #
@@ -9,7 +7,7 @@ RemoveNodesNoLinks = function(mat) {
   # Returns:
   #   A new matrix without the row(s) and/or column(s) corresponding to nodes with no links.
   #   A warning is printed indicating which nodes have been removed.
-
+  
   k_row = apply(mat, 1, sum) # degree of row nodes
   k_col = apply(mat, 2, sum) # degree of columns nodes
   if (any(k_row == 0)) { 
@@ -24,5 +22,3 @@ RemoveNodesNoLinks = function(mat) {
   }
   return(mat)
 }
-
-#-----------------------------------------------------------------------------------------------------#
