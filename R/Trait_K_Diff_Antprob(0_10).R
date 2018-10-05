@@ -16,7 +16,7 @@ last_traits[,5] = antprob_vec
 # loop to coevolution simulation and get the last line of z_mat for each simulation
 for(a in 1:length(antprob_vec)){
   antprob = antprob_vec[a] # define a value fo antprob
-  #print(antprob) # print this value to follow the simulation process
+  print(antprob) # print this value to follow the simulation process
   
   # create a small data matrix to get the mean of several simulations
   col_variables = matrix(NA, nrow = 10, ncol = 4)

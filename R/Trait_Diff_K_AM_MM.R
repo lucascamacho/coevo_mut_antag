@@ -20,7 +20,7 @@ library(cowplot)
 
 # initial conditions
 #antprob = 0.5  # current probability value
-n_sp = 20 # defining number of species
+n_sp = 100 # defining number of species
 M = matrix(1, ncol = n_sp, nrow = n_sp)   # building matrix M (mutualisms)
 diag(M) = 0 # no intraespecific interactions
 
