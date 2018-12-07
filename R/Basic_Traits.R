@@ -4,10 +4,11 @@
 
 # loading packages and functions
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
-source("CoevoMutAntNet.R")
+
 source("Antagonize.R")
 source("EndInteraction.R")
 source("ZeroLines.R")
+source("CoevoMutAntNet.R")
 
 library(ggplot2)
 library(reshape2)

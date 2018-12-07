@@ -1,4 +1,4 @@
-#For empirical networks
+# For empirical networks
 # Great loop to describe how the mean trait values in equilibrium change with the antprob
 # remembering that we are calculating the mean trait value for different interaction types
 # in each simulation, we have 3 values of species trait at "equilibrium", each value
