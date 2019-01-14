@@ -21,4 +21,17 @@ def CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_ma
        Returns:
             A matrix containing, in each row t, the trait values (z) of all 
             species at time t'''
-
+    # load modules
+    import numpy as np
+    import pandas as pd
+    # generate an matrix to allocate the species traits
+    z_mat = np.zeros((t_max, n_sp))
+    z_mat[0,] = init
+    #for loop to change the traits in time
+    for r in range(t_max):
+        z = z_mat[r,]
+        A = M + V
+        z_dif = np.transpose(A * z) - (A * z)
+        Q = A * (np.exp(-alpha * (z_dif ** 2)))
+        np.fill_diagonal(Q, 0)
+        Q_n = Q / Q.apply(np.sum, axis = 1)
