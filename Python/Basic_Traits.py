@@ -8,6 +8,7 @@ import numpy as np
 from Antagonize import Antagonize
 from EndInteraction import EndInteraction
 from ZeroLines import ZeroLines
+import matplotlib.pyplot as plt
 
 os.chdir("/Users/glyptodon/Dropbox/Master/Code/coevo_mut_antag/Python/")
 
