@@ -7,7 +7,6 @@ setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
 
 source("Antagonize.R")
 source("EndInteraction.R")
-source("ZeroLines.R")
 source("SpDegree.R")
 source("Counting.R")
 source("FindInteractors.R")
@@ -34,11 +33,6 @@ V = antagonize[[2]]
 end = EndInteraction(M, V, "antagonism")
 M = end[[1]]
 V = end[[2]]
-
-# check for zero lines (otherwise the simulation returns an error)
-zero = ZeroLines(M, V, n_sp, antprob)
-M = zero[[1]]
-V = zero[[2]]
 
 # measure the degree of AM and MM for each specie
 degree = SpDegree(M, V)

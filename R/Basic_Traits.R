@@ -7,7 +7,6 @@ setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
 
 source("Antagonize.R")
 source("EndInteraction.R")
-source("ZeroLines.R")
 source("CoevoMutAntNet.R")
 
 library(ggplot2)
@@ -15,8 +14,8 @@ library(reshape2)
 library(cowplot)
 
 # initial parameters
-antprob = 0.7  # current probability value
-n_sp = 5   # defining number of species
+antprob = 0.7 # current probability value
+n_sp = 10 # defining number of species
 M = matrix(1, ncol = n_sp, nrow = n_sp)   # building matrix M (mutualisms)
 diag(M) = 0 # no intraespecific interactions
 
@@ -29,11 +28,6 @@ V = antagonize[[2]]
 end = EndInteraction(M, V, "antagonism")
 M = end[[1]]
 V = end[[2]]
-
-# Check for zero lines in the matrices
-zero = ZeroLines(M, V, n_sp, antprob)
-M = zero[[1]]
-V = zero[[2]]
 
 # coevolutionary model parameters
 phi = 0.2
@@ -68,6 +62,6 @@ plotar = ggplot(traits_df, aes(x = time, y = trait, color = species)) +
         legend.key.size = unit(0.6, "cm"),
         legend.text = element_text(size = 12))
 
-pdf("Basic_Traits.pdf")
+#pdf("Basic_Traits.pdf")
 plotar
-dev.off()
+#dev.off()

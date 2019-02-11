@@ -30,6 +30,7 @@ CoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_di
     Q = A * (exp(-alpha * (z_dif ^ 2))) # matrix Q
     diag(Q) = 0 # intraespecific effects are not allowed
     Q_n = Q / apply(Q, 1, sum) # normalizing the matrix
+    Q_n[is.nan(Q_n)] = 0 # transform NaN values to 0 when a species don't have interactions
     Q_m = Q_n * (1 - p) # multiplying each row i of matrix Q by (1 - p)
     
     r_env = phi * p * (theta - z) # response to selection related to the environment
