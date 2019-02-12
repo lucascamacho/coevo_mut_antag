@@ -20,8 +20,8 @@ library(reshape2)
 library(cowplot)
 
 # initial conditions
-antprob = 0.4 # current probability value
-net = "~/Dropbox/Master/Code/coevo_mut_antag/data/B_NS-PS-Mack-1996.txt"
+#antprob = 0.4 # current probability value
+net = "~/Dropbox/Master/Code/coevo_mut_antag/data/B_NS-PS-Galetti&Pizo-1996-SG2Wgt.txt"
 M = as.matrix(read.table(net)) # read empirical matrix
 M = SquareMatrix(M) # Square the M matrix
 n_sp = dim(M)[1] # defining number of species
