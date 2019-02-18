@@ -17,6 +17,7 @@ source("VarTraitDegreeBalanced.R")
 library(ggplot2)
 library(reshape)
 library(cowplot)
+library(dplyr)
 
 # initial conditions
 #antprob = 0.5  # current probability value
@@ -56,26 +57,51 @@ t_max = 1000
 # simulate coevolution and calculate mean and variance trait values for each interaction type
 z_mat = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
 
-# create matriz for data
-data = matrix(NA, nrow = nrow(z_mat), ncol = 5)
-data[,5] = seq(1,nrow(z_mat), 1)
-colnames(data) = c("MEAN_AM", "VAR_AM", "MEAN_MM", "VAR_MM", "time")
+# APPLY FUNCTIONS NEW
+traits = t(apply(z_mat, 1, TraitDegreeBalanced))
+colnames(traits) = c("AM", "MM")
+var_traits = t(apply(z_mat, 1, VarTraitDegreeBalanced))
+colnames(var_traits) = c("AM", "MM")
 
-# apply function to get the mean and variance of traits balanced by degree
-traits = apply(z_mat, 1, TraitDegreeBalanced)
-var_traits = apply(z_mat, 1, VarTraitDegreeBalanced)
+#OTIMIZAR ------
+traitsAM = traits[,1]
+type = rep("AM", times = length(traitsAM))
+traitsAM = data.frame(traitsAM, type)
 
-# allocate the results in data matrix
-data[,1] = traits[1,]
-data[,2] = var_traits[1,]
-data[,3] = traits[2,]
-data[,4] = var_traits[2,]
+traitsMM = traits[,2]
+type = rep("MM", times = length(traitsMM))
+traitsMM = data.frame(traitsMM, type)
 
-# plot the results
-#data = data.frame(data)
-#par(mfrow=c(2,2))
-#plot(data$time, data$MEAN_AM, col="blue", pch = 19, xlab = "time", ylab = "Mean Trait for Cheaters")
-#plot(data$time, data$MEAN_MM, col="blue", pch = 19, xlab = "time", ylab = "Mean Trait for Mutualism")
-#plot(data$time, data$VAR_AM, col="red", pch = 19, xlab = "time", ylab = "Delta Trait for Cheaters")
-#plot(data$time, data$VAR_MM, col="red", pch = 19, xlab = "time", ylab = "Delta Trait for Mutualisms")
-#title("Traits Dynamics of Cheaters and Mutualism (Balanced by degree Kmm and Kam)", line = -2, outer = TRUE)
+vartraitsAM = var_traits[,1]
+type = rep("AM", times = length(vartraitsAM))
+vartraitsAM = data.frame(vartraitsAM, type)
+
+vartraitsMM = var_traits[,2]
+type = rep("MM", times = length(vartraitsMM))
+vartraitsMM = data.frame(vartraitsMM, type)
+
+traitsAM = as.matrix(traitsAM)
+traitsMM = as.matrix(traitsMM)
+
+colnames(traitsAM) = NULL
+colnames(traitsMM) = NULL
+
+new_traits = rbind(traitsAM, traitsMM)
+
+vartraitsAM = as.matrix(vartraitsAM)
+vartraitsMM = as.matrix(vartraitsMM)
+
+colnames(vartraitsAM) = NULL
+colnames(vartraitsMM) = NULL
+
+new_vartraits = rbind(vartraitsAM, vartraitsMM)
+
+data = cbind(new_traits, new_vartraits)
+data = data[,-2]
+
+data = data.frame(data)
+
+data[,1] = as.numeric(as.character(data[,1]))
+data[,2] = as.numeric(as.character(data[,2]))
+
+#

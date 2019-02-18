@@ -6,47 +6,52 @@
 
 # set work directory and define antprob sequence
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
-antprob_vec = seq(0.01, 0.95, 0.01)
+antprob_vec = seq(0.01, 1, 0.01)
+library(dplyr)
 
 # second data frame for last line of z_mat for each simulation
-last_traits = matrix(NA, ncol = 5, nrow = length(antprob_vec))
-colnames(last_traits) = c("MEAN_AM", "VAR_AM", "MEAN_MM", "VAR_MM", "antprob")
-last_traits[,5] = antprob_vec
+last_traits = matrix()
+colnames(last_traits) = c("mean", "var", "type")
 
 # loop to coevolution simulation and get the last line of z_mat for each simulation
-for(a in 1:length(antprob_vec)){
+for(a in 1:length(antprob_vec)){ #
   antprob = antprob_vec[a] # define a value fo antprob
   print(antprob) # print this value to follow the simulation process
-  
-  # create a small data matrix to get the mean of several simulations
-  col_variables = matrix(NA, nrow = 10, ncol = 4)
-  colnames(col_variables) = c("MEAN_AM", "VAR_AM", "MEAN_MM", "VAR_MM")
+
+  # OTIMIZAR -----------  
+  col_variables = matrix()
+  colnames(col_variables) = NULL
   
   # for each value of antprob, simulate 10 times
-  for(y in 1:10){
-    setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
+  for(y in 1:100){ 
     source("Trait_Diff_K_AM_MM.R")
-    col_variables[y,1] = tail(data[6,1])  
-    col_variables[y,2] = tail(data[6,2]) / c[[2]]
-    col_variables[y,3] = tail(data[6,3])
-    col_variables[y,4] = tail(data[6,4]) / c[[3]]
-
+    g.data = data[!duplicated(data$X3, fromLast=TRUE),]
+    g.data[1,2] = g.data[1,2] / c[[2]]
+    g.data[2,2] = g.data[2,2] / c[[3]]
+    
+    col_variables = bind_rows(as.data.frame(col_variables), g.data)
+    
   }
   
-  means = apply(col_variables, 2, mean) # calculate the mean of these 10 simulations
+  col_variables = col_variables[-1,-1]
+  colnames(col_variables) = c("mean", "var", "type")
   
-  last_traits[a,1] = means[1] # allocate these means in our final data matrix
-  last_traits[a,3] = means[3]
-  last_traits[a,2] = means[2]
-  last_traits[a,4] = means[4]
-
+  final_m_AM = mean(col_variables$mean[which(col_variables$type == "AM")])
+  final_var_AM = mean(col_variables$var[which(col_variables$type == "AM")])
+  final_m_MM = mean(col_variables$mean[which(col_variables$type == "MM")])
+  final_var_MM = mean(col_variables$var[which(col_variables$type == "MM")])
+  
+  quase = matrix(c(final_m_AM, final_m_MM, final_var_AM, final_var_MM), nrow = 2, ncol = 2)
+  
+  last_traits = bind_rows(as.data.frame(last_traits), as.data.frame(quase))
+  
 }
 
-# prepare final data and plot in a single window
-data = data.frame(last_traits)
-par(mfrow = c(2,2))
-plot(data$antprob, data$MEAN_AM, pch = 19, col = "blue", xlab = "antprob (p)", ylab = "Mean Trait for Cheaters")
-plot(data$antprob, data$MEAN_MM, pch = 19, col = "blue", xlab = "antprob (p)", ylab = "Mean Trait for Mutualism")
-plot(data$antprob, data$VAR_AM, pch = 19, col = "red", xlab = "antprob (p)", ylab = "Delta Trait for Cheaters")
-plot(data$antprob, data$VAR_MM, pch = 19, col = "red", xlab = "antprob (p)", ylab = "Delta Trait for Mutualism")
-title("Traits of Cheaters and Mutualism (Balanced by degree Kmm and Kam)", line = -2, outer = TRUE)
+last_traits = last_traits[-1,]
+last_traits[,3] = rep(c("AM", "MM"), times = 100)
+last_traits[,4] = rep(1:100, each=2) / 100
+
+
+## ggplot
+plot = ggplot(data = last_traits) + geom_points(aes(x = last_traits$V4, y = last_traits$V1, 
+                                                    color = last_traits$V3))
