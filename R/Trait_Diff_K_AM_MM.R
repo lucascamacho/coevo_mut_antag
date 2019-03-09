@@ -11,18 +11,13 @@ source("SpDegree.R")
 source("Counting.R")
 source("FindInteractors.R")
 source("CoevoMutAntNet.R")
-source("TraitDegreeBalanced.R")
 source("VarTraitDegreeBalanced.R")
-
 library(ggplot2)
-library(reshape)
-library(cowplot)
-library(dplyr)
 
 # initial conditions
-#antprob = 0.5  # current probability value
-n_sp = 100 # defining number of species
-M = matrix(1, ncol = n_sp, nrow = n_sp)   # building matrix M (mutualisms)
+#antprob = 0.96 # current probability value
+n_sp = 50 # defining number of species
+M = matrix(1, ncol = n_sp, nrow = n_sp) # building matrix M (mutualisms)
 diag(M) = 0 # no intraespecific interactions
 
 # Antagonize M (transform links in antagonisms)
@@ -57,51 +52,22 @@ t_max = 1000
 # simulate coevolution and calculate mean and variance trait values for each interaction type
 z_mat = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
 
-# APPLY FUNCTIONS NEW
-traits = t(apply(z_mat, 1, TraitDegreeBalanced))
-colnames(traits) = c("AM", "MM")
-var_traits = t(apply(z_mat, 1, VarTraitDegreeBalanced))
-colnames(var_traits) = c("AM", "MM")
+# apply the calculations of our metrics in z_mat
+dif_traits = apply(z_mat, 1, VarTraitDegreeBalanced)
+var_traits = apply(z_mat, 1, var)
+time_traits = seq(1, nrow(z_mat), 1)
 
-#OTIMIZAR ------
-traitsAM = traits[,1]
-type = rep("AM", times = length(traitsAM))
-traitsAM = data.frame(traitsAM, type)
+# create data frames to each variable
+var_time = data.frame(time_traits, var_traits)
+dif_time_AM = data.frame(time_traits, dif_traits[1,])
+dif_time_MM = data.frame(time_traits, dif_traits[2,])
 
-traitsMM = traits[,2]
-type = rep("MM", times = length(traitsMM))
-traitsMM = data.frame(traitsMM, type)
-
-vartraitsAM = var_traits[,1]
-type = rep("AM", times = length(vartraitsAM))
-vartraitsAM = data.frame(vartraitsAM, type)
-
-vartraitsMM = var_traits[,2]
-type = rep("MM", times = length(vartraitsMM))
-vartraitsMM = data.frame(vartraitsMM, type)
-
-traitsAM = as.matrix(traitsAM)
-traitsMM = as.matrix(traitsMM)
-
-colnames(traitsAM) = NULL
-colnames(traitsMM) = NULL
-
-new_traits = rbind(traitsAM, traitsMM)
-
-vartraitsAM = as.matrix(vartraitsAM)
-vartraitsMM = as.matrix(vartraitsMM)
-
-colnames(vartraitsAM) = NULL
-colnames(vartraitsMM) = NULL
-
-new_vartraits = rbind(vartraitsAM, vartraitsMM)
-
-data = cbind(new_traits, new_vartraits)
-data = data[,-2]
-
-data = data.frame(data)
-
-data[,1] = as.numeric(as.character(data[,1]))
-data[,2] = as.numeric(as.character(data[,2]))
-
+# ggplots to variables (off the #'s for tests)
+#var_plot = ggplot(data = var_time) + 
+#           geom_point(aes(x = time_traits, y = var_traits), alpha = 0.7) + 
+#           theme_bw()
 #
+#dif_plot = ggplot() +
+#           geom_point(aes(x = time_traits, y = dif_time_AM[,2]), color = "red") +
+#           geom_point(aes(x = time_traits, y = dif_time_MM[,2]), color = "blue") +
+#           theme_bw()

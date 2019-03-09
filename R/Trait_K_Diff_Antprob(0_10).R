@@ -1,4 +1,4 @@
-# Great loop to describe how the mean trait values in equilibrium change with the antprob
+# Loop to describe how the mean trait values in equilibrium change with the antprob
 # remembering that we are calculating the mean trait value for different interaction types
 # in each simulation, we have 3 values of species trait at "equilibrium", each value
 # representing a interaction type.
@@ -6,52 +6,73 @@
 
 # set work directory and define antprob sequence
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
+library(ggplot2)
+library(reshape2)
+
 antprob_vec = seq(0.01, 1, 0.01)
-library(dplyr)
 
-# second data frame for last line of z_mat for each simulation
-last_traits = matrix()
-colnames(last_traits) = c("mean", "var", "type")
+# data frame for var and time
+data_time_var = matrix(NA, nrow = 100, ncol = 3)
+data_time_var[,1] = antprob_vec
 
-# loop to coevolution simulation and get the last line of z_mat for each simulation
-for(a in 1:length(antprob_vec)){ #
-  antprob = antprob_vec[a] # define a value fo antprob
-  print(antprob) # print this value to follow the simulation process
+# data frame for am and mm diff traits
+data_diffs = matrix(NA, nrow = 100, ncol = 3)
+data_diffs[,1] = antprob_vec
+colnames(data_diffs) = c("pvalue", "AM", "MM")
 
-  # OTIMIZAR -----------  
-  col_variables = matrix()
-  colnames(col_variables) = NULL
+for(a in 1:length(antprob_vec)){
+  antprob = antprob_vec[a]
+  print(antprob)
+
+  data_times = vector()  
+  data_vars = vector()
+
+  data_am = vector()
+  data_mm = vector()
   
-  # for each value of antprob, simulate 10 times
-  for(y in 1:100){ 
+  for(y in 1:100){
     source("Trait_Diff_K_AM_MM.R")
-    g.data = data[!duplicated(data$X3, fromLast=TRUE),]
-    g.data[1,2] = g.data[1,2] / c[[2]]
-    g.data[2,2] = g.data[2,2] / c[[3]]
     
-    col_variables = bind_rows(as.data.frame(col_variables), g.data)
+    data_times = append(data_times, tail(var_time)[6,1])
+    data_vars = append(data_vars, tail(var_time)[6,2])
     
+    data_am = append(data_am, tail(dif_time_AM)[6,2])
+    data_mm = append(data_mm, tail(dif_time_MM)[6,2])
   }
   
-  col_variables = col_variables[-1,-1]
-  colnames(col_variables) = c("mean", "var", "type")
+  data_time_var[a,2] = mean(data_times)
+  data_time_var[a,3] = mean(data_vars)
   
-  final_m_AM = mean(col_variables$mean[which(col_variables$type == "AM")])
-  final_var_AM = mean(col_variables$var[which(col_variables$type == "AM")])
-  final_m_MM = mean(col_variables$mean[which(col_variables$type == "MM")])
-  final_var_MM = mean(col_variables$var[which(col_variables$type == "MM")])
-  
-  quase = matrix(c(final_m_AM, final_m_MM, final_var_AM, final_var_MM), nrow = 2, ncol = 2)
-  
-  last_traits = bind_rows(as.data.frame(last_traits), as.data.frame(quase))
-  
+  data_diffs[a,2] = mean(data_am)
+  data_diffs[a,3] = mean(data_mm)
 }
 
-last_traits = last_traits[-1,]
-last_traits[,3] = rep(c("AM", "MM"), times = 100)
-last_traits[,4] = rep(1:100, each=2) / 100
+time_plot = ggplot(data = as.data.frame(data_time_var)) + 
+            geom_point(aes(x = data_time_var[,1], y = data_time_var[,2]), alpha = 0.7, size = 2) + 
+            theme_minimal(base_size = 16) +
+            ggtitle("Change of time to reach equilibrium by P") +
+            xlab("Frequency of antagonisms (P)") + 
+            ylab("Average time to reach equilibrium of simulation")
+ggsave(time_plot, file = "time.pdf", dpi = 600, width = 12, height = 8, units = "in")
 
+var_plot = ggplot(data = as.data.frame(data_time_var)) + 
+           geom_point(aes(x = data_time_var[,1], y = data_time_var[,3]), alpha = 0.7, size = 2) + 
+           theme_minimal(base_size = 16) +
+           ggtitle("Variance of species traits by P") +
+           xlab("Frequency of antagonisms (P)") + 
+           ylab("Average variance of species traits")
+ggsave(var_plot, file = "variance.pdf", dpi = 600, width = 12, height = 8, units = "in")
 
-## ggplot
-plot = ggplot(data = last_traits) + geom_points(aes(x = last_traits$V4, y = last_traits$V1, 
-                                                    color = last_traits$V3))
+d <- melt(data_diffs, id.vars="pvalue")
+
+diffs_plot = ggplot(data = as.data.frame(data_diffs)) + 
+             geom_point(aes(x = pvalue, y = AM, col="red"), size = 2) +
+             geom_point(aes(x = pvalue, y = MM, col="blue"), size = 2) +
+             theme_minimal(base_size = 16) +
+             guides(color=guide_legend("Interaction")) +
+             ggtitle("Average total difference of species separated by type of interactions by P") +
+             scale_color_manual(labels = c("MM", "AM"), values = c("blue", "red")) +
+             xlab("Frequency of antagonisms (P)") + 
+             ylab("Average total difference of species traits balanced by the degrees")
+
+ggsave(diffs_plot, file = "diffs.png", dpi = 600, width = 12, height = 8, units = "in")
