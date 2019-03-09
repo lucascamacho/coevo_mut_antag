@@ -1,11 +1,12 @@
+#-----------------------------------------------------------------------------------------------------#
 VarTraitDegreeBalanced = function(z_mat){
-  # Calculate the absolutte difference of traits between species by interaction type 
+  # Calculate the absolute difference of traits between species by interaction type 
   # Args:
   #  z_mat: matrix of species traits. Rows are time steps and columns are species
   # 
   # Return:
   # vector containing the absolutte difference of traits by interaction type (AM and MM)
-
+  #
   # check if there are cheaters in the network
   # if there are no cheaters, insert NA and calculate only for mutualists
   if(sum(index[[2]]) == 0 & sum(index[[3]]) == 0){
@@ -68,4 +69,5 @@ VarTraitDegreeBalanced = function(z_mat){
       }
     }
   }
-}  
+}
+#-----------------------------------------------------------------------------------------------------#

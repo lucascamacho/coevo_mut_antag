@@ -1,14 +1,15 @@
+#-----------------------------------------------------------------------------------------------------#
 FindInteractors = function(M, V){
-  # Identify which species are Mutualists, Antagonists and Cheaters in M and V
+  # Identify which species are Mutualists MM, Antagonists AA and Cheaters AM in M and V matrices.
   #
   # Args:
   # M: binary adjacency matrix of mutualistic interactions
   # V: binary adjacency matrix of antagonistic interactions
   #
   # Return:
-  # single data.frame with index of mutualists, antagonists and cheaters in the adjancency matrix M or V
+  # single data.frame with index of mutualists, antagonists and cheaters 
+  # in the adjancency matrix M or V.
   #
-  
   # antagonism
   # comparing the adjacency matrix V with his Transpose
   v = (V == 1) == (t(V) == 1)
@@ -32,5 +33,5 @@ FindInteractors = function(M, V){
   index = list(aa_index, am_index, mm_index)
   index = lapply(index, sort)
   return(index)
-  
 }
+#-----------------------------------------------------------------------------------------------------#

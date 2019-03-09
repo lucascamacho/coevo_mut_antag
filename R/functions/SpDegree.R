@@ -1,14 +1,15 @@
+#-----------------------------------------------------------------------------------------------------#
 SpDegree = function(M, V){
   # Count the number of AA, AM and MM interactions for all the species in the network
   # Args:
-  #    M: Mutualistic network of interactions
-  #    V: Antagonistic network of interactions
+  #  M: Mutualistic network of interactions
+  #  V: Antagonistic network of interactions
   # Return:
-  #    matrix with species in columns and the degree fot each interaction type in rows
+  #  degree: matrix with species in columns and the degree fot each interaction type in rows
   #
-  
   # create a matrix with species in columns and 3 rows for degree of each interaction type (AA, AM and MM)
-  degree = matrix(NA, ncol = ncol(M), nrow = 3)
+  #
+  degree = matrix(NA, ncol = ncol(M), nrow = 3) # create matrix to insertthe results
   rownames(degree) = c("AA", "AM", "MM")
   colnames(degree) = c(seq(1, ncol(M), 1))
   
@@ -28,5 +29,5 @@ SpDegree = function(M, V){
   
   # return the matrix with degree of species separating by interaction class
   return(degree)
-  
 }
+#-----------------------------------------------------------------------------------------------------#

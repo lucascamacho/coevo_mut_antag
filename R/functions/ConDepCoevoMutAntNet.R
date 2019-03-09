@@ -1,7 +1,8 @@
 #-----------------------------------------------------------------------------------------------------#
 ConDepCoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max) {
   # Simulates the coevolutionary dynamics of mutualists and antagonists in a network
-  #
+  # with context dependent interactions. The interactions change in time following a 
+  # certain probability p.
   # Args:
   #   n_sp: total number of species in the network
   #   M: square adjacency matrix representing the mutualistic interactions
@@ -21,18 +22,18 @@ ConDepCoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon,
   #
   # Returns:
   #   A matrix containing, in each row t, the trait values (z) of all species at time t.
-  source("MutualizeAntagonize.R")
+  source("MutualizeAntagonize.R") # load function to change interactions
   
   z_mat = matrix(NA, nrow = t_max, ncol = n_sp) # matrix to store z values
   z_mat[1, ] = init # initial trait values
-  w_t_vm = vector() #vectors to track in which timestep occurs the interaction changes
-  w_t_mv = vector()
+  
+  w_time = vector() #vectors to track in which timestep occurs the interaction changes
+  
   for (r in 1:(t_max - 1)) { # simulation runs for a maximum of t_max timesteps
-    mutualizeantagonize = MutualizeAntagonize(M, V, r) # changing interactions and track the timestep
-    M = mutualizeantagonize[[1]]
-    V = mutualizeantagonize[[2]]
-    w_t_vm = append(w_t_vm, mutualizeantagonize[[3]])
-    w_t_mv = append(w_t_mv, mutualizeantagonize[[4]])
+    mutualizeantagonize = MutualizeAntagonize(M, V, r) # run the interactions changer
+    M = mutualizeantagonize[[1]] # define new M matrix
+    V = mutualizeantagonize[[2]] # define new V matrix
+    w_time = append(w_time, mutualizeantagonize[[3]]) # vector with timesteps of change
     
     z = z_mat[r, ] # current z values
     A = M + V # matrix with all interactions (mutualistic and antagonistic)

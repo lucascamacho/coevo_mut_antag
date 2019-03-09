@@ -1,3 +1,4 @@
+#-----------------------------------------------------------------------------------------------------#
 EndInteraction = function(M, V, interaction){
   # Choose a type of interaction to ignore in your adjacency matrices
   # The interactions are identified based on the index of species which has a 1
@@ -41,3 +42,4 @@ EndInteraction = function(M, V, interaction){
     return(mats)
   }
 }
+#-----------------------------------------------------------------------------------------------------#

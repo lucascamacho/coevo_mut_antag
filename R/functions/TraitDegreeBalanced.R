@@ -1,3 +1,4 @@
+#-----------------------------------------------------------------------------------------------------#
 TraitDegreeBalanced = function(z_mat){
   # Calculate the z-score of mean trait value for cheaters and mutualists balanced by degree
   # 
@@ -6,7 +7,7 @@ TraitDegreeBalanced = function(z_mat){
   #
   #Return:
   #  vector with z-score of mean trait value for cheaters and mutualists species
-  
+  #
   # create empty vectors
   to_sum_c = c()
   to_sum_m = c()
@@ -61,3 +62,4 @@ TraitDegreeBalanced = function(z_mat){
     return(t_final)
   }
 }
+#-----------------------------------------------------------------------------------------------------#
