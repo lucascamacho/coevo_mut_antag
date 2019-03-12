@@ -1,13 +1,13 @@
 # Consistency test
 # Counting the frequencies of AM and MM in the M and V matrices.
-# then check if p = freqAM / freqMM + freqAM
+# then check if p = freqAM / freqMM + freqAM.
 
 # load functions and packages
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
 
-source("Antagonize.R")
-source("EndInteraction.R")
-source("Counting.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/EndInteraction.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Counting.R")
 
 library(ggplot2)
 library(reshape2)
@@ -17,6 +17,7 @@ antprob = seq(0.01, 1, 0.01)
 data = matrix(NA, ncol = 3, nrow = length(antprob))
 data[,3] = antprob
 
+# loop
 for(i in 1:length(antprob)){ 
   # loop to count the frequencies of AA, AM and MM
   
@@ -60,4 +61,5 @@ plotar = ggplot(data = test_data_long,
   geom_point(alpha = 0.7) +
   theme_bw()
 
-ggsave(plotar, file = "Freq_p_NO_AA.pdf")
+plotar
+#ggsave(plotar, file = "Freq_p_NO_AA.pdf")

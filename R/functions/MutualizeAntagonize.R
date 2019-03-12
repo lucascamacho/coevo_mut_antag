@@ -18,7 +18,7 @@ MutualizeAntagonize = function(M, V, r){
   #
   p = runif(1, 0, 1) # probability of changing interactions
 
-  if(p <= 0.25 & any(M == TRUE) == TRUE){ # if the interaction change
+  if(p <= 0.01 & any(M == TRUE) == TRUE){ # if the interaction change
     w_time = r # change a mutualism to antagonism
     change_m = which(M == 1)
     int_change_m = sample(change_m, 1)

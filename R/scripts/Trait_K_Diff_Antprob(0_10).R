@@ -7,12 +7,13 @@
 # set work directory and define antprob sequence
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
 library(ggplot2)
+library(ggridges)
 library(reshape2)
 
 antprob_vec = seq(0.01, 1, 0.01)
 
 # data frame for var and time
-data_time_var = matrix(NA, nrow = 100, ncol = 3)
+data_time_var = matrix(NA, nrow = 100, ncol = 5)
 data_time_var[,1] = antprob_vec
 
 # data frame for am and mm diff traits
@@ -31,7 +32,7 @@ for(a in 1:length(antprob_vec)){
   data_mm = vector()
   
   for(y in 1:100){
-    source("Trait_Diff_K_AM_MM.R")
+    source("~/Dropbox/Master/Code/coevo_mut_antag/R/scripts/Trait_Diff_K_AM_MM.R")
     
     data_times = append(data_times, tail(var_time)[6,1])
     data_vars = append(data_vars, tail(var_time)[6,2])
@@ -42,13 +43,23 @@ for(a in 1:length(antprob_vec)){
   
   data_time_var[a,2] = mean(data_times)
   data_time_var[a,3] = mean(data_vars)
+  data_time_var[a,4] = tail(sort(data_times))[2]
+  data_time_var[a,5] = head(sort(data_times))[5]
   
   data_diffs[a,2] = mean(data_am)
   data_diffs[a,3] = mean(data_mm)
 }
 
+# save the data files
+save(data_time_var, file = "Data_Time_Var.RData")
+save(data_diffs, file = "Data_Diffs.RData")
+
+# Adicionar colunas 4 e 5 para maior e menor valor de tempo em cada 100 valores
 time_plot = ggplot(data = as.data.frame(data_time_var)) + 
-            geom_point(aes(x = data_time_var[,1], y = data_time_var[,2]), alpha = 0.7, size = 2) + 
+            geom_point(aes(x = data_time_var[,1], y = data_time_var[,2]), alpha = 0.7, size = 2) +
+            geom_errorbar(data = as.data.frame(data_time_var), mapping = aes(x = data_time_var[,1], 
+                                                              ymax = data_time_var[,4],
+                                                              ymin = data_time_var[,5])) +
             theme_minimal(base_size = 16) +
             ggtitle("Change of time to reach equilibrium by P") +
             xlab("Frequency of antagonisms (P)") + 
@@ -56,11 +67,11 @@ time_plot = ggplot(data = as.data.frame(data_time_var)) +
 ggsave(time_plot, file = "time.pdf", dpi = 600, width = 12, height = 8, units = "in")
 
 var_plot = ggplot(data = as.data.frame(data_time_var)) + 
-           geom_point(aes(x = data_time_var[,1], y = data_time_var[,3]), alpha = 0.7, size = 2) + 
+           geom_point(aes(x = data_time_var[,1], y = log(data_time_var[,3])), alpha = 0.7, size = 2) + 
            theme_minimal(base_size = 16) +
            ggtitle("Variance of species traits by P") +
            xlab("Frequency of antagonisms (P)") + 
-           ylab("Average variance of species traits")
+           ylab("Log of Average variance of species traits")
 ggsave(var_plot, file = "variance.pdf", dpi = 600, width = 12, height = 8, units = "in")
 
 d <- melt(data_diffs, id.vars="pvalue")

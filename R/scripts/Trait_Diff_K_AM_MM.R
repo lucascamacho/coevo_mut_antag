@@ -5,18 +5,18 @@
 # loading packages and functions
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
 
-source("Antagonize.R")
-source("EndInteraction.R")
-source("SpDegree.R")
-source("Counting.R")
-source("FindInteractors.R")
-source("CoevoMutAntNet.R")
-source("VarTraitDegreeBalanced.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/EndInteraction.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/SpDegree.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Counting.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/FindInteractors.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/VarTraitDegreeBalanced.R")
 library(ggplot2)
 
 # initial conditions
-#antprob = 0.96 # current probability value
-n_sp = 50 # defining number of species
+#antprob = 0.9 # current probability value
+n_sp = 30 # defining number of species
 M = matrix(1, ncol = n_sp, nrow = n_sp) # building matrix M (mutualisms)
 diag(M) = 0 # no intraespecific interactions
 
@@ -66,8 +66,11 @@ dif_time_MM = data.frame(time_traits, dif_traits[2,])
 #var_plot = ggplot(data = var_time) + 
 #           geom_point(aes(x = time_traits, y = var_traits), alpha = 0.7) + 
 #           theme_bw()
-#
+
 #dif_plot = ggplot() +
 #           geom_point(aes(x = time_traits, y = dif_time_AM[,2]), color = "red") +
 #           geom_point(aes(x = time_traits, y = dif_time_MM[,2]), color = "blue") +
 #           theme_bw()
+
+#var_plot
+#dif_plot

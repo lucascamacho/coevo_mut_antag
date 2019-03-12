@@ -1,5 +1,5 @@
 # Great loop to describe how the last mean trait values in equilibrium change with the antprob
-# remembering that we are calculating the mean trait value for different interaction types
+# We are calculating the mean trait value for different interaction types
 # for each simulation, we have 3 values of species trait at "equilibrium", each value
 # representing a interaction type.
 
@@ -15,7 +15,7 @@ last_traits[,4] = antprob_vec
 for(a in 1:length(antprob_vec)){
   antprob = antprob_vec[a]
 
-  source("Trait_Diff_AA_AM_MM.R")
+  source("~/Dropbox/Master/Code/coevo_mut_antag/R/scripts/Trait_Diff_AA_AM_MM.R")
 
   last_traits[a,1] = tail(data)[6,1]
   last_traits[a,2] = tail(data)[6,2]

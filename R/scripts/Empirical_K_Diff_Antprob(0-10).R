@@ -1,6 +1,6 @@
-# For empirical networks
-# Great loop to describe how the mean trait values in equilibrium change with the antprob
-# remembering that we are calculating the mean trait value for different interaction types
+# For empirical networks:
+# Great loop to describe how the mean trait values in equilibrium change with the antprob.
+# We are calculating the mean trait value for different interaction types
 # in each simulation, we have 3 values of species trait at "equilibrium", each value
 # representing a interaction type.
 # For each value of antprob, we are doing 10 simulations
@@ -26,7 +26,7 @@ for(a in 1:length(antprob_vec)){
   # for each value of antprob, simulate 10 times
   for(y in 1:10){
     setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
-    source("Empirical_Trait_Diff_K_AM_MM.R")
+    source("~/Dropbox/Master/Code/coevo_mut_antag/R/scripts/Empirical_Trait_Diff_K_AM_MM.R")
     col_variables[y,1] = tail(data[6,1])  
     col_variables[y,2] = tail(data[6,2]) / c[[2]]
     col_variables[y,3] = tail(data[6,3])
@@ -45,11 +45,11 @@ for(a in 1:length(antprob_vec)){
 
 # prepare final data and plot in a single window
 data = data.frame(last_traits)
-pdf("GALLETI_Trait_KDiff_AM_MM.pdf")
+#pdf("GALLETI_Trait_KDiff_AM_MM.pdf")
 par(mfrow = c(2,2))
 plot(data$antprob, data$MEAN_AM, pch = 19, col = "blue", xlab = "antprob (p)", ylab = "Mean Trait for Cheaters")
 plot(data$antprob, data$MEAN_MM, pch = 19, col = "blue", xlab = "antprob (p)", ylab = "Mean Trait for Mutualism")
 plot(data$antprob, data$VAR_AM, pch = 19, col = "red", xlab = "antprob (p)", ylab = "Delta Trait for Cheaters")
 plot(data$antprob, data$VAR_MM, pch = 19, col = "red", xlab = "antprob (p)", ylab = "Delta Trait for Mutualism")
 title("Traits of Cheaters and Mutualism (Balanced by degree Kmm and Kam)", line = -2, outer = TRUE)
-dev.off()
+#dev.off()

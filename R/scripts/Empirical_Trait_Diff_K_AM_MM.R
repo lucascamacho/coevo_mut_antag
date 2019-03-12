@@ -1,4 +1,4 @@
-# Using an empirical network, species rich and nested structure
+# Using an empirical network:
 # Simulate a coevolution process without the AA interactions
 # then, compute the mean trait value for groups of interaction types
 # balancing this mean and variance of traits by the quantity of interactions.
@@ -6,21 +6,21 @@
 # loading packages and functions
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
 
-source("SquareMatrix.R")
-source("EmpAntagonize.R")
-source("SpDegree.R")
-source("Counting.R")
-source("FindInteractors.R")
-source("CoevoMutAntNet.R")
-source("TraitDegreeBalanced.R")
-source("VarTraitDegreeBalanced.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/SquareMatrix.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/EmpAntagonize.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/SpDegree.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Counting.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/FindInteractors.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/TraitDegreeBalanced.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/VarTraitDegreeBalanced.R")
 
 library(ggplot2)
 library(reshape2)
 library(cowplot)
 
 # initial conditions
-#antprob = 0.4 # current probability value
+antprob = 0.4 # current probability value
 net = "~/Dropbox/Master/Code/coevo_mut_antag/data/B_NS-PS-Galetti&Pizo-1996-SG2Wgt.txt"
 M = as.matrix(read.table(net)) # read empirical matrix
 M = SquareMatrix(M) # Square the M matrix
@@ -69,10 +69,10 @@ data[,3] = traits[2,]
 data[,4] = var_traits[2,]
 
 # plot the results
-#data = data.frame(data)
-#par(mfrow=c(2,2))
-#plot(data$time, data$MEAN_AM, col="blue", pch = 19, xlab = "time", ylab = "Mean Trait for Cheaters")
-#plot(data$time, data$MEAN_MM, col="blue", pch = 19, xlab = "time", ylab = "Mean Trait for Mutualism")
-#plot(data$time, data$VAR_AM, col="red", pch = 19, xlab = "time", ylab = "Delta Trait for Cheaters")
-#plot(data$time, data$VAR_MM, col="red", pch = 19, xlab = "time", ylab = "Delta Trait for Mutualisms")
-#title("Traits Dynamics of Cheaters and Mutualism (Balanced by degree Kmm and Kam)", line = -2, outer = TRUE)
+data = data.frame(data)
+par(mfrow=c(2,2))
+plot(data$time, data$MEAN_AM, col="blue", pch = 19, xlab = "time", ylab = "Mean Trait for Cheaters")
+plot(data$time, data$MEAN_MM, col="blue", pch = 19, xlab = "time", ylab = "Mean Trait for Mutualism")
+plot(data$time, data$VAR_AM, col="red", pch = 19, xlab = "time", ylab = "Delta Trait for Cheaters")
+plot(data$time, data$VAR_MM, col="red", pch = 19, xlab = "time", ylab = "Delta Trait for Mutualisms")
+title("Traits Dynamics of Cheaters and Mutualism (Balanced by degree Kmm and Kam)", line = -2, outer = TRUE)

@@ -1,12 +1,13 @@
-# Calculate the mean trait value for cheaters, pure mutualists and pure antagonists
-# We use the FindInteractors function to separate species in 3 groups (AA, AM and MM)
-#
+# Calculate the mean trait value for cheaters, pure mutualists and pure antagonists.
+# We use the FindInteractors function to separate species in 3 groups (AA, AM and MM).
+# Then, we calculate the mean trait for each group and plot these means
+
 # Load packages and functions
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
 
-source("Antagonize.R")
-source("CoevoMutAntNet.R")
-source("FindInteractors.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/FindInteractors.R")
 
 library(ggplot2)
 library(reshape2)

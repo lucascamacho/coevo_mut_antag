@@ -1,13 +1,13 @@
-# testing coevolutionary model
-# this script returns a simple graph with species traits changing in time
-# due to coevolution
+# Basic script to test the Antagonize function and simulate coevolution.
+# This script returns a simple graph with species traits changing in time
+# due to coevolution. 
 
 # loading packages and functions
-setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
+setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/scripts/")
 
-source("Antagonize.R")
-source("EndInteraction.R")
-source("CoevoMutAntNet.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/EndInteraction.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
 
 library(ggplot2)
 library(reshape2)
@@ -15,7 +15,7 @@ library(cowplot)
 
 # initial parameters
 antprob = 0.2 # current probability value
-n_sp = 5 # defining number of species
+n_sp = 10 # defining number of species
 M = matrix(1, ncol = n_sp, nrow = n_sp)   # building matrix M (mutualisms)
 diag(M) = 0 # no intraespecific interactions
 

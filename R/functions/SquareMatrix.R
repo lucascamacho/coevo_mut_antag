@@ -1,3 +1,4 @@
+#---------------------------------------------------------------------------------------------------#
 SquareMatrix <- function(rec.mat){
   # Mirrors the rectangular matrix to transform it into a square matrix
   #
@@ -19,3 +20,4 @@ SquareMatrix <- function(rec.mat){
   return(cor.sq)
   
 }
+#---------------------------------------------------------------------------------------------------#

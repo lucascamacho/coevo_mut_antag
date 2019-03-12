@@ -1,12 +1,14 @@
-# Consistency test
+# Consistency test for the frequency of antagonisms (AM).
 # Counting the frequencies of AA, AM and MM in the M and V matrices.
+# We expect that the frequencies of AA, AM and MM follow the proportions:
+# AA = p ^ 2, AM = 2p(1 - p), MM = (1 - p) ^ 2.
 
 # load functions and packages
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
 
-source("Antagonize.R")
-source("CoevoMutAntNet.R")
-source("Counting.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Counting.R")
 
 library(ggplot2)
 library(reshape2)
@@ -52,4 +54,6 @@ plotar = ggplot(data = test_data_long,
          geom_point(alpha = 0.6) +
          theme_bw()
 
-ggsave(plotar, file = "Counting_Frequencies_Interactions.pdf")
+# plot and save the plot
+plotar
+#ggsave(plotar, file = "Counting_Frequencies_Interactions.pdf")

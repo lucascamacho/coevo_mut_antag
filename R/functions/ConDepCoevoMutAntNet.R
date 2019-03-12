@@ -22,7 +22,8 @@ ConDepCoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon,
   #
   # Returns:
   #   A matrix containing, in each row t, the trait values (z) of all species at time t.
-  source("MutualizeAntagonize.R") # load function to change interactions
+  # load function to change interactions
+  source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/MutualizeAntagonize.R")
   
   z_mat = matrix(NA, nrow = t_max, ncol = n_sp) # matrix to store z values
   z_mat[1, ] = init # initial trait values
@@ -64,7 +65,7 @@ ConDepCoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon,
     
   }
   
-  return(list(z_mat[1:(r+1), ], w_t_vm, w_t_mv)) # return final matrix with species traits
+  return(list(z_mat[1:(r+1), ], w_time)) # return final matrix with species traits
   
 }
 
