@@ -15,7 +15,7 @@ library(reshape2)
 library(cowplot)
 
 # initial parameters
-antprob = 0.8 # current probability value
+antprob = 0.1 # current probability value
 n_sp = 10 # defining number of species
 M = matrix(1, ncol = n_sp, nrow = n_sp)   # building matrix M (mutualisms)
 diag(M) = 0 # no intraespecific interactions
@@ -47,8 +47,8 @@ traits = simulation[[1]]
 w_time = as.data.frame(simulation[[2]])
 
 #prepare data frame with tracked timesteps
-#colnames(w_time) = "xplace"
-#w_time$yplace = 1
+colnames(w_time) = "xplace"
+w_time$yplace = 1
 
 # building data frame to use in ggplot2
 traits = as.data.frame(traits)
@@ -64,6 +64,7 @@ plotar = ggplot() +
                                 color = species),size = 1.8, alpha = 0.7) +
 #  geom_text(data = w_time, aes(x=xplace, y=yplace),label = "*", size = 7) +
   ggtitle(paste("Q = 1%, initial proportion of antagonists = ", antprob)) +
+  geom_text(data = w_time, aes(x=xplace, y=yplace),label = "*", size = 7) +
   xlab("Time") + 
   ylab("Mean species trait (z)") +
   theme(axis.text.x = element_text(size = 11),
@@ -72,6 +73,6 @@ plotar = ggplot() +
         legend.key.size = unit(0.6, "cm"),
         legend.text = element_text(size = 12))
 
-ggsave(plotar, filename = "10_Basic_Traits.png", width = 19, height = 11, units = "cm")
+#ggsave(plotar, filename = "10_Basic_Traits.png", width = 19, height = 11, units = "cm")
 plotar
-dev.off()
+#dev.off()
