@@ -7,7 +7,6 @@
 # set work directory and define antprob sequence
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
 library(ggplot2)
-library(ggridges)
 library(reshape2)
 
 antprob_vec = seq(0.01, 1, 0.01)
@@ -65,18 +64,18 @@ time_plot = ggplot(data = as.data.frame(data_time_var)) +
                                                               ymax = data_time_var[,4],
                                                               ymin = data_time_var[,5])) +
             theme_minimal(base_size = 16) +
-            ggtitle("Gráfico do tempo para a simulação atingir o equilíbrio por P") +
+#            ggtitle("Gráfico do tempo para a simulação atingir o equilíbrio por P") +
             xlab("Frequência de antagonismos (P)") + 
             ylab("Tempo para atingir o equilíbrio da simulação")
-ggsave(time_plot, file = "time.pdf", dpi = 600, width = 12, height = 8, units = "in")
+ggsave(time_plot, file = "time.png", dpi = 600, width = 12, height = 8, units = "in")
 
 var_plot = ggplot(data = as.data.frame(data_time_var)) + 
            geom_point(aes(x = data_time_var[,1], y = log(data_time_var[,3])), alpha = 0.7, size = 2) + 
            theme_minimal(base_size = 16) +
-           ggtitle("Gráfico do log da variância dos traits das espécies no equilíbrio por P") +
+#           ggtitle("Gráfico do log da variância dos traits das espécies no equilíbrio por P") +
            xlab("Frequência de antagonismos (P)") + 
            ylab("Log da variância dos traits das espécies no equilíbrio")
-ggsave(var_plot, file = "variance.pdf", dpi = 600, width = 12, height = 8, units = "in")
+ggsave(var_plot, file = "variance.png", dpi = 600, width = 12, height = 8, units = "in")
 
 d <- melt(data_diffs, id.vars="pvalue")
 
@@ -85,9 +84,9 @@ diffs_plot = ggplot(data = as.data.frame(data_diffs)) +
              geom_point(aes(x = pvalue, y = MM, col="blue"), size = 2) +
              theme_minimal(base_size = 16) +
              guides(color=guide_legend("Interação")) +
-             ggtitle("Gráfico da diferença média total das espécies separadas pelo tipo de interação por P") +
+#             ggtitle("Gráfico da diferença média total das espécies separadas pelo tipo de interação por P") +
              scale_color_manual(labels = c("MM", "AM"), values = c("blue", "red")) +
              xlab("Frequência de antagonismos (P)") + 
-             ylab("Diferença média total das espécies separadas pelo tipo de interação")
+             ylab("Diferença média de traços das espécies separadas pelo tipo de interação")
 
-ggsave(diffs_plot, file = "diffs.pdf", dpi = 600, width = 12, height = 8, units = "in")
+ggsave(diffs_plot, file = "diffs.png", dpi = 600, width = 12, height = 8, units = "in")
