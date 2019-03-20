@@ -24,6 +24,7 @@ ConDepCoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon,
   #   A matrix containing, in each row t, the trait values (z) of all species at time t.
   # load function to change interactions
   source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/MutualizeAntagonize.R")
+  source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/BalanDiver.R")  
   
   z_mat = matrix(NA, nrow = t_max, ncol = n_sp) # matrix to store z values
   z_mat[1, ] = init # initial trait values
@@ -58,6 +59,8 @@ ConDepCoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon,
     r_ant = phi * apply(sel_dif_ant, 1, sum) # response to selection related to antagonisms
     
     z_mat[r+1, ] = z + r_env + r_mut + r_ant # updating z values
+    
+    # 
     
     dif = mean(abs(z - z_mat[r+1, ])) # computing the mean difference between old and new z values
     if (dif < eq_dif) # if the difference is lower than eq_dif...

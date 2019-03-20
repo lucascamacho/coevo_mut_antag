@@ -15,8 +15,8 @@ library(reshape2)
 library(cowplot)
 
 # initial parameters
-antprob = 0.1 # current probability value
-n_sp = 10 # defining number of species
+antprob = 0.5 # current probability value
+n_sp = 15 # defining number of species
 M = matrix(1, ncol = n_sp, nrow = n_sp)   # building matrix M (mutualisms)
 diag(M) = 0 # no intraespecific interactions
 
@@ -63,7 +63,7 @@ plotar = ggplot() +
   geom_path(data=traits_df, aes(x = time, y = trait, group=species, 
                                 color = species),size = 1.8, alpha = 0.7) +
 #  geom_text(data = w_time, aes(x=xplace, y=yplace),label = "*", size = 7) +
-  ggtitle(paste("Q = 1%, initial proportion of antagonists = ", antprob)) +
+  ggtitle(paste("Q = 10%, initial proportion of antagonists = ", antprob)) +
   geom_text(data = w_time, aes(x=xplace, y=yplace),label = "*", size = 7) +
   xlab("Time") + 
   ylab("Mean species trait (z)") +

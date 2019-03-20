@@ -9,17 +9,17 @@ library(igraph)
 library(cowplot)
 
 # initial conditions
-n_sp = 10
+n_sp = 5
 M = matrix(1, ncol = n_sp, nrow = n_sp)
 diag(M) = 0
 t_max = 100
 z = runif(n_sp, 0, 10)
 theta = runif(n_sp, 0, 10)
-intfor = 0.99
+intfor = 0.5
 alpha = 0.2
 resultados = matrix(NA, ncol = n_sp, nrow = 1)
 resultados[1,] = z
-antprob = 0.25
+antprob = 0.2
 phi = 0.2
 V = M * 0
 barreira = 5
