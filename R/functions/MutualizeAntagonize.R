@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------------------------------#
-MutualizeAntagonize = function(M, V, r){
+MutualizeAntagonize = function(M, V, r, prob_change){
   # In each timestep of a simulation, transform a random mutualism link in antagonism,
   # also, transform a antagonist link in mutualism. These function tracks in which
   # timestep occurs the interactions shifts.
@@ -10,6 +10,7 @@ MutualizeAntagonize = function(M, V, r){
   #  M: adjancency matrix of mutualistic interactions
   #  V: adjacency matrix of antagonistic interactions
   #  r: timestep of simulation
+  #  prob_change: Probability that in each timestep the interaction shift between M and V
   #
   # Return:
   #  M: new adjancency matrix of mutualistic interactions
@@ -18,7 +19,7 @@ MutualizeAntagonize = function(M, V, r){
   #
   p = runif(1, 0, 1) # probability of changing interactions
 
-  if(p <= 0.01 & any(M == TRUE) == TRUE){ # if the interaction change
+  if(p <= prob_change & any(M == TRUE) == TRUE){ # if the interaction change
     w_time = r # change a mutualism to antagonism
     change_m = which(M == 1)
     int_change_m = sample(change_m, 1)
@@ -26,11 +27,11 @@ MutualizeAntagonize = function(M, V, r){
     V[int_change_m] = 1
     
     change_v = which(V == 1) # change a antagonism to a mutualism
-    if(change_v == change_m){ # don`t change the same interaction changed before`
-      change_v = which(V == 1)
+    int_change_v = sample(change_v, 1) # choose an V interaction to change
+    if(int_change_v == int_change_m){ # don`t change the same interaction changed before
+      int_change_v = sample(change_v, 1)
     }
     
-    int_change_v = sample(change_v, 1)
     V[int_change_v] = 0
     M[int_change_v] = 1
     

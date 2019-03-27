@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------------------------------#
-ConDepCoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max) {
+ConDepCoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max, prob_change) {
   # Simulates the coevolutionary dynamics of mutualists and antagonists in a network
   # with context dependent interactions. The interactions change in time following a 
   # certain probability p.
@@ -15,6 +15,7 @@ ConDepCoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon,
   #   epsilon: barrier value for antagonistic interactions
   #   eq_dif: value to determine when equilibrium is reached
   #   t_max: maximum number of timesteps allowed
+  #   prob_change: probability that in each timestep the interaction shift between M and V
   #   
   # Obs: 
   #   All vectors need to have first the row species attributes and then the column species
@@ -32,7 +33,7 @@ ConDepCoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon,
   w_time = vector() #vectors to track in which timestep occurs the interaction changes
   
   for (r in 1:(t_max - 1)) { # simulation runs for a maximum of t_max timesteps
-    mutualizeantagonize = MutualizeAntagonize(M, V, r) # run the interactions changer
+    mutualizeantagonize = MutualizeAntagonize(M, V, r, prob_change) # run the interactions changer
     M = mutualizeantagonize[[1]] # define new M matrix
     V = mutualizeantagonize[[2]] # define new V matrix
     w_time = append(w_time, mutualizeantagonize[[3]]) # vector with timesteps of change

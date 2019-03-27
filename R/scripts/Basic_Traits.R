@@ -8,6 +8,7 @@ setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/scripts/")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/EndInteraction.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/BalanDiver.R")
 
 library(ggplot2)
 library(reshape2)

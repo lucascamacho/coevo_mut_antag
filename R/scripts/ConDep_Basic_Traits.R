@@ -16,7 +16,7 @@ library(cowplot)
 
 # initial parameters
 antprob = 0.5 # current probability value
-n_sp = 15 # defining number of species
+n_sp = 10 # defining number of species
 M = matrix(1, ncol = n_sp, nrow = n_sp)   # building matrix M (mutualisms)
 diag(M) = 0 # no intraespecific interactions
 
@@ -39,10 +39,12 @@ p = 0.1
 epsilon = 5
 eq_dif = 0.0001
 t_max = 1000
+prob_change = 0.01
 
 # running coevolution simulation
 simulation = ConDepCoevoMutAntNet(n_sp, M, V, phi, alpha, 
-                                  theta, init, p, epsilon, eq_dif, t_max)
+                                  theta, init, p, epsilon, eq_dif, t_max, prob_change)
+
 traits = simulation[[1]]
 w_time = as.data.frame(simulation[[2]])
 
@@ -63,7 +65,7 @@ plotar = ggplot() +
   geom_path(data=traits_df, aes(x = time, y = trait, group=species, 
                                 color = species),size = 1.8, alpha = 0.7) +
 #  geom_text(data = w_time, aes(x=xplace, y=yplace),label = "*", size = 7) +
-  ggtitle(paste("Q = 10%, initial proportion of antagonists = ", antprob)) +
+  ggtitle(paste("Q =", prob_change, ", initial proportion of antagonists = ", antprob)) +
   geom_text(data = w_time, aes(x=xplace, y=yplace),label = "*", size = 7) +
   xlab("Time") + 
   ylab("Mean species trait (z)") +
