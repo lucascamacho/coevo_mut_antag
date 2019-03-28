@@ -32,9 +32,32 @@ for(i in 1:nrow(data)){
 load(file = "~/Dropbox/Master/Code/coevo_mut_antag/data/Mean_Balan_PQ.RData")
 data = as.data.frame(data)
 
-box_plot = ggplot(data = data) +
-  geom_boxplot(aes(x = as.character(prob_change), y = mean)) +
+box_plot_mean = ggplot(data = data) +
+  geom_boxplot(aes(x = as.character(prob_change), y = mean, 
+                   fill = as.factor(prob_change))) +
+  geom_point(aes(x = as.character(prob_change), y = mean, 
+                 fill = as.factor(prob_change)), size = 1, 
+             shape = 21, position = position_jitterdodge()) +
   facet_wrap(~antprob) +
-  theme_classic()
+  theme_bw(base_size = 16) +
+  scale_fill_discrete(name = "Q") +
+  labs(x = "Valores de probabilidade de mudança de interação no tempo", 
+       y = "Média dos valores de Balançância das espécies")  
 
-box_plot
+box_plot_var = ggplot(data = data) +
+  geom_boxplot(aes(x = as.character(prob_change), y = var, 
+                   fill = as.factor(prob_change))) +
+  geom_point(aes(x = as.character(prob_change), y = var, 
+                 fill = as.factor(prob_change)), size = 1, 
+             shape = 21, position = position_jitterdodge()) +
+  facet_wrap(~antprob) +
+  theme_bw(base_size = 16) +
+  scale_fill_discrete(name = "Q") +
+  labs(x = "Valores de probabilidade de mudança de interação no tempo", 
+       y = "Valores de Discrepância (Variância) das espécies")  
+
+
+ggsave(box_plot_mean, fil = "boxplot_balancancia.pdf", 
+       dpi = 600, width = 12, height = 8, units = "in")
+ggsave(box_plot_var, filename = "boxplot_discrepancia.pdf", 
+       dpi = 600, width = 12, height = 8, units = "in")
