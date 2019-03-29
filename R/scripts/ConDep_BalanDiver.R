@@ -16,7 +16,7 @@ library(cowplot)
 
 # initial parameters
 #antprob = 0.8 # current probability value
-n_sp = 10 # defining number of species
+n_sp = 5 # defining number of species
 M = matrix(1, ncol = n_sp, nrow = n_sp)   # building matrix M (mutualisms)
 diag(M) = 0 # no intraespecific interactions
 

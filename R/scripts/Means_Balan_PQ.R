@@ -7,6 +7,7 @@
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/scripts")
 library(ggplot2)
 library(reshape2)
+library(viridis)
 
 antprob_vec = c(0.2, 0.5, 0.8)
 prob_change_vec = c(0, 0.01, 0.1)
@@ -29,8 +30,9 @@ for(i in 1:nrow(data)){
   data[i,4] = prob_change
 }
 
-load(file = "~/Dropbox/Master/Code/coevo_mut_antag/data/Mean_Balan_PQ.RData")
+#load(file = "~/Dropbox/Master/Code/coevo_mut_antag/data/Mean_Balan_PQ.RData")
 data = as.data.frame(data)
+
 
 box_plot_mean = ggplot(data = data) +
   geom_boxplot(aes(x = as.character(prob_change), y = mean, 
@@ -42,7 +44,7 @@ box_plot_mean = ggplot(data = data) +
   theme_bw(base_size = 16) +
   scale_fill_discrete(name = "Q") +
   labs(x = "Valores de probabilidade de mudança de interação no tempo", 
-       y = "Média dos valores de Balançância das espécies")  
+       y = "Média dos valores de Direcionalidade das espécies")  
 
 box_plot_var = ggplot(data = data) +
   geom_boxplot(aes(x = as.character(prob_change), y = var, 
@@ -57,7 +59,7 @@ box_plot_var = ggplot(data = data) +
        y = "Valores de Discrepância (Variância) das espécies")  
 
 
-ggsave(box_plot_mean, fil = "boxplot_balancancia.pdf", 
+ggsave(box_plot_mean, fil = "boxplot_balancancia.png", 
        dpi = 600, width = 12, height = 8, units = "in")
-ggsave(box_plot_var, filename = "boxplot_discrepancia.pdf", 
+ggsave(box_plot_var, filename = "boxplot_discrepancia.png", 
        dpi = 600, width = 12, height = 8, units = "in")

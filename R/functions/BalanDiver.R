@@ -9,8 +9,8 @@ BalanDiver = function(z_mat){
   #  baladiver: list with 2 vectors. A fluctuations calc vector and a vars vector.
   #
   # calculate the species fluctuations in time
-  balan = abs(z_mat[nrow(z_mat), ] - z_mat[1, ]) / sum(abs(apply(z_mat, 2, 
-                                                                 function(x) x[-1] - x[-length(x)])))
+  balan = abs(z_mat[nrow(z_mat), ] - z_mat[1, ]) / apply(abs(diff(z_mat)), 2, sum)
+  
   # traits variance for each timestep
   diver = apply(z_mat, 1, var)
   
