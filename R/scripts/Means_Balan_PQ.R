@@ -30,13 +30,13 @@ for(i in 1:nrow(data)){
   data[i,4] = prob_change
 }
 
-#load(file = "~/Dropbox/Master/Code/coevo_mut_antag/data/Mean_Balan_PQ.RData")
+load(file = "~/Dropbox/Master/Code/coevo_mut_antag/data/Mean_Balan_PQ.RData")
 data = as.data.frame(data)
 
 
 box_plot_mean = ggplot(data = data) +
-  geom_boxplot(aes(x = as.character(prob_change), y = mean, 
-                   fill = as.factor(prob_change))) +
+  geom_violin(aes(x = as.character(prob_change), y = mean, 
+                   fill = as.factor(prob_change)), alpha = 0.4) +
   geom_point(aes(x = as.character(prob_change), y = mean, 
                  fill = as.factor(prob_change)), size = 1, 
              shape = 21, position = position_jitterdodge()) +
@@ -47,8 +47,8 @@ box_plot_mean = ggplot(data = data) +
        y = "Média dos valores de Direcionalidade das espécies")  
 
 box_plot_var = ggplot(data = data) +
-  geom_boxplot(aes(x = as.character(prob_change), y = var, 
-                   fill = as.factor(prob_change))) +
+  geom_violin(aes(x = as.character(prob_change), y = var, 
+                   fill = as.factor(prob_change)), alpha = 0.4) +
   geom_point(aes(x = as.character(prob_change), y = var, 
                  fill = as.factor(prob_change)), size = 1, 
              shape = 21, position = position_jitterdodge()) +
@@ -59,7 +59,7 @@ box_plot_var = ggplot(data = data) +
        y = "Valores de Discrepância (Variância) das espécies")  
 
 
-ggsave(box_plot_mean, fil = "boxplot_balancancia.png", 
+ggsave(box_plot_mean, fil = "boxplot_direcionalidade.png", 
        dpi = 600, width = 12, height = 8, units = "in")
 ggsave(box_plot_var, filename = "boxplot_discrepancia.png", 
        dpi = 600, width = 12, height = 8, units = "in")
