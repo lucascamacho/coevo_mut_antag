@@ -7,7 +7,7 @@ a certain average trait of species changes due to mutualism and antagonism. Latt
 ## Technical specifications
 
 I run my simulations in two different computers:
-- Desktop MacPro (Mid 2010) 2x2,4 GHz Quad-Core Intel Xeon, 6GB DDR3, macOS High Sierra 10.13.6
+- Desktop MacPro (Mid 2010) 2x2.4 GHz Quad-Core Intel Xeon, 6GB DDR3, macOS High Sierra 10.13.6
 - Notebook MacBook Pro 
 
 The softwares used was:
@@ -18,41 +18,25 @@ The softwares used was:
 
 ### Repository organization
 
-What things you need to install the software and how to install them
+This repository is organized in folders which contain different aspects of my master's project:
 
-```
-Give examples
-```
+- Code: separate in functions and scripts. You will find all the R files to run my simulations.
+- Data: the networks of interactions that i use and the RData files which the results of all my simulations
+- Output: figures, pdf's, graphs, etc. All the visual results of my projects are here
+- Manuscript: the RMarkdown files that compose my master's dissertation.
 
-### Installing
 
-A step by step series of examples that tell you how to get a development env running
+### Running my simulations
 
-Say what the step will be
+I deeply recommend to run my scripts looking at the working directory that i'am using. Some parts of my script
+depends on R packages that must be previous installed (see the used packages list below) and my scripts are directed
+to my own working directory. Please, remember to use your own working directory when run the simulations.
 
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
+List of R packages used:
+- ggplot2
+- reshape2
+- cowplot
+- MASS
 
 ### And coding style tests
 
