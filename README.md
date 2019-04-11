@@ -2,7 +2,7 @@
 
 My Master's dissertation that explore how the coevolution happens when cheaters shows up in mutualistic networks. Also, i wanna know how the fluctuations in
 interactions signals between positive and negative influence the coevolutionary process of species. For that, i use a mathematical model that describes how
-a certain average trait of species changes due to mutualism and antagonism. Latter i insert fluctuations in interaction signal's in time.
+a certain average trait of species changes due to mutualism and antagonism together.
 
 ## Technical specifications
 
