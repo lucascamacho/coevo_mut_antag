@@ -8,15 +8,15 @@ setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/scripts/")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/EndInteraction.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
-source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/BalanDiver.R")
 
 library(ggplot2)
 library(reshape2)
 library(cowplot)
+library(MASS)
 
 # initial parameters
-antprob = 0.2 # current probability value
-n_sp = 5 # defining number of species
+antprob = 0.9 # current probability value
+n_sp = 10 # defining number of species
 M = matrix(1, ncol = n_sp, nrow = n_sp)   # building matrix M (mutualisms)
 diag(M) = 0 # no intraespecific interactions
 
@@ -29,19 +29,45 @@ V = antagonize[[2]]
 end = EndInteraction(M, V, "antagonism")
 M = end[[1]]
 V = end[[2]]
+M+V
+#write.matrix(M+V, file = "~/Dropbox/Master/Code/coevo_mut_antag/R/a_binary_1.txt")
 
 # coevolutionary model parameters
 phi = 0.2
 alpha = 0.2
-theta = runif(n_sp, 0, 10)
-init = runif(n_sp, 0, 10)
+theta = runif(n_sp, 0, 5)
+init = runif(n_sp, 0, 5)
 p = 0.1
-epsilon = 5
+epsilon = 4
 eq_dif = 0.0001
 t_max = 1000
 
+#
+save_matrix = function(M, V, init){
+  A = M + V # matrix with all interactions (mutualistic and antagonistic)
+  z_dif = t(A * init) - A * init # matrix with all trait differences
+  
+  dex = which(abs(z_dif) > 3)
+  M[dex] = 0
+  V[dex] = 0
+  
+  lista = list(M, V)
+  return(lista)
+}
+
+salv = save_matrix(M, V, init)
+M = salv[[1]]
+V = salv[[2]]
+M+V
+#write.matrix(M+V, file = "~/Dropbox/Master/Code/coevo_mut_antag/R/a_binary_2.txt")
+
 # running coevolution simulation
-traits = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
+simulation = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
+traits = simulation[[1]]
+q = simulation[[2]]
+
+#write.matrix(q[[1]], file = "~/Dropbox/Master/Code/coevo_mut_antag/R/q_1.txt")
+#write.matrix(q[[nrow(traits) - 1]], file = "~/Dropbox/Master/Code/coevo_mut_antag/R/q_final.txt")
 
 # building data frame to use in ggplot2
 traits = as.data.frame(traits)

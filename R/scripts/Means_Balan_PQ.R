@@ -7,10 +7,9 @@
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/scripts")
 library(ggplot2)
 library(reshape2)
-library(viridis)
 
 antprob_vec = c(0.2, 0.5, 0.8)
-prob_change_vec = c(0, 0.01, 0.1)
+prob_change_vec = c(0, 0.1, 0.5)
 combs = expand.grid(antprob_vec, prob_change_vec)
 combs = combs[rep(seq_len(nrow(combs)), 1000), ]
 
@@ -30,36 +29,36 @@ for(i in 1:nrow(data)){
   data[i,4] = prob_change
 }
 
-load(file = "~/Dropbox/Master/Code/coevo_mut_antag/data/Mean_Balan_PQ.RData")
+#save(data, file = "~/Dropbox/Master/Code/coevo_mut_antag/data/RUNFREE_Mean_Balan_PQ.RData")
+#load(file = "~/Dropbox/Master/Code/coevo_mut_antag/data/Mean_Balan_PQ.RData")
+
 data = as.data.frame(data)
 
-
 box_plot_mean = ggplot(data = data) +
-  geom_violin(aes(x = as.character(prob_change), y = mean, 
-                   fill = as.factor(prob_change)), alpha = 0.4) +
   geom_point(aes(x = as.character(prob_change), y = mean, 
-                 fill = as.factor(prob_change)), size = 1, 
-             shape = 21, position = position_jitterdodge()) +
+                 color = as.factor(prob_change)), size = 1, 
+             shape = 21, alpha = 0.4, position = position_jitterdodge()) +
+  geom_violin(aes(x = as.character(prob_change), y = mean, 
+                  fill = as.factor(prob_change))) +
   facet_wrap(~antprob) +
   theme_bw(base_size = 16) +
   scale_fill_discrete(name = "Q") +
   labs(x = "Valores de probabilidade de mudança de interação no tempo", 
-       y = "Média dos valores de Direcionalidade das espécies")  
+       y = "Média dos valores de Direcionalidade das espécies")
 
 box_plot_var = ggplot(data = data) +
-  geom_violin(aes(x = as.character(prob_change), y = var, 
-                   fill = as.factor(prob_change)), alpha = 0.4) +
   geom_point(aes(x = as.character(prob_change), y = var, 
-                 fill = as.factor(prob_change)), size = 1, 
-             shape = 21, position = position_jitterdodge()) +
+                 color = as.factor(prob_change)), size = 1, 
+             shape = 21, alpha = 0.3, position = position_jitterdodge()) +
+  geom_violin(aes(x = as.character(prob_change), y = var, 
+                  color  = as.factor(prob_change))) +
   facet_wrap(~antprob) +
   theme_bw(base_size = 16) +
   scale_fill_discrete(name = "Q") +
   labs(x = "Valores de probabilidade de mudança de interação no tempo", 
-       y = "Valores de Discrepância (Variância) das espécies")  
+       y = "Valores de Discrepância (Variância) das espécies")
 
-
-ggsave(box_plot_mean, fil = "boxplot_direcionalidade.png", 
-       dpi = 600, width = 12, height = 8, units = "in")
-ggsave(box_plot_var, filename = "boxplot_discrepancia.png", 
-       dpi = 600, width = 12, height = 8, units = "in")
+#ggsave(box_plot_mean, fil = "boxplot_balancancia.pdf", 
+#       dpi = 600, width = 12, height = 8, units = "in")
+#ggsave(box_plot_var, filename = "boxplot_discrepancia.pdf", 
+#       dpi = 600, width = 12, height = 8, units = "in")

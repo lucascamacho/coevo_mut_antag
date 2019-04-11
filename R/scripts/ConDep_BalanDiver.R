@@ -15,8 +15,8 @@ library(reshape2)
 library(cowplot)
 
 # initial parameters
-#antprob = 0.8 # current probability value
-n_sp = 5 # defining number of species
+#antprob = 0.3 # current probability value
+n_sp = 10 # defining number of species
 M = matrix(1, ncol = n_sp, nrow = n_sp)   # building matrix M (mutualisms)
 diag(M) = 0 # no intraespecific interactions
 
@@ -33,13 +33,13 @@ V = end[[2]]
 # coevolutionary model parameters
 phi = 0.2
 alpha = 0.2
-theta = runif(n_sp, 0, 10)
-init = runif(n_sp, 0, 10)
+theta = runif(n_sp, 0, 7)
+init = runif(n_sp, 0, 7)
 p = 0.1
-epsilon = 5
+epsilon = 4
 eq_dif = 0.0001
 t_max = 1000
-#prob_change = 0.5
+#prob_change = 0.2
 
 # running coevolution simulation
 simulation = ConDepCoevoMutAntNet(n_sp, M, V, phi, alpha, 
@@ -62,6 +62,7 @@ diver = balandiver[[2]]
 
 #diver_plot = ggplot(data = diver) +
 #  geom_path(aes(x = time, y = diver)) +
+#  geom_smooth(aes(x = time, y = ))
 #  ggtitle(paste("Q =", prob_change, ", initial proportion of antagonists = ", antprob)) +
 #  geom_text(data = w_time, aes(x=xplace, y=yplace),label = "*", size = 7) +
 #  theme_bw()

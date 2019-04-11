@@ -56,4 +56,4 @@ plotar = ggplot(data = test_data_long,
 
 # plot and save the plot
 plotar
-#ggsave(plotar, file = "Counting_Frequencies_Interactions.pdf")
+ggsave(plotar, file = "Counting_Frequencies_Interactions.png")

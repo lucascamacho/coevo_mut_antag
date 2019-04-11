@@ -61,5 +61,4 @@ plotar = ggplot(data = test_data_long,
   geom_point(alpha = 0.7) +
   theme_bw()
 
-plotar
-#ggsave(plotar, file = "Freq_p_NO_AA.pdf")
+ggsave(plotar, file = "Freq_p_NO_AA.png")
