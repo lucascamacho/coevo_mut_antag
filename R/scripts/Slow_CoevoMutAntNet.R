@@ -5,7 +5,6 @@
 # load packages
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
 library(ggplot2)
-library(igraph)
 library(cowplot)
 
 # initial conditions
