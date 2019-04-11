@@ -12,16 +12,18 @@ I run my simulations in two different computers:
 
 The softwares used was:
 - R 3.5.0
+- RStudio 1.1.453
 - Zotero 5.0.61
 - TexMaker 5.0.2
 - GitHub Desktop 1.6.5
+- Dropbox 70.4.93
 
 ### Repository organization
 
 This repository is organized in folders which contain different aspects of my master's project:
 
-- Code: separate in functions and scripts. You will find all the R files to run my simulations.
-- Data: the networks of interactions that i use and the RData files which the results of all my simulations
+- Code: separate in functions and scripts. You will find all the R files to run my simulations
+- Data: the networks of interactions that i use and the RData files with the results of all my simulations
 - Output: figures, pdf's, graphs, etc. All the visual results of my projects are here
 - Manuscript: the RMarkdown files that compose my master's dissertation.
 
