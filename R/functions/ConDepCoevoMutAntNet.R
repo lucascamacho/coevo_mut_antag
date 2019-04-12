@@ -26,11 +26,13 @@ ConDepCoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon,
   # load function to change interactions
   source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/MutualizeAntagonize.R")
   source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/BalanDiver.R")
+  source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Counting.R")
   
   z_mat = matrix(NA, nrow = t_max, ncol = n_sp) # matrix to store z values
   z_mat[1, ] = init # initial trait values
   w_time = vector() #vectors to track in which timestep occurs the interaction changes
-
+  contar = list()
+  
   for (r in 1:(t_max - 1)) { # simulation runs for a maximum of t_max timesteps
     z = z_mat[r, ] # current z values
     
@@ -38,6 +40,7 @@ ConDepCoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon,
     M = mutualizeantagonize[[1]] # define new M matrix
     V = mutualizeantagonize[[2]] # define new V matrix
     w_time = append(w_time, mutualizeantagonize[[3]]) # vector with timesteps of change
+    contar[[r]] = Counting(M, V)
     
     A = M + V # matrix with all interactions (mutualistic and antagonistic)
     z_dif = t(A * z) - A * z # matrix with all trait differences
@@ -68,7 +71,7 @@ ConDepCoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon,
     
   }
   
-  return(list(z_mat[1:(r+1), ], w_time)) # return final matrix with species traits
+  return(list(z_mat[1:(r+1), ], w_time, contar)) # return final matrix with species traits
   
 }
 

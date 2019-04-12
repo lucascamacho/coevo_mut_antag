@@ -16,7 +16,7 @@ library(cowplot)
 
 # initial parameters
 antprob = 0.5 # current probability value
-n_sp = 10 # defining number of species
+n_sp = 5 # defining number of species
 M = matrix(1, ncol = n_sp, nrow = n_sp)   # building matrix M (mutualisms)
 diag(M) = 0 # no intraespecific interactions
 
@@ -47,6 +47,7 @@ simulation = ConDepCoevoMutAntNet(n_sp, M, V, phi, alpha,
 
 traits = simulation[[1]]
 w_time = as.data.frame(simulation[[2]])
+contar = simulation[[3]]
 
 #prepare data frame with tracked timesteps
 colnames(w_time) = "xplace"

@@ -23,7 +23,6 @@ CoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_di
   #   A matrix containing, in each row t, the trait values (z) of all species at time t.
   z_mat = matrix(NA, nrow = t_max, ncol = n_sp) # matrix to store z values
   z_mat[1, ] = init # initial trait values
-  q_mats = list()
 
   for (r in 1:(t_max - 1)) { # simulation runs for a maximum of t_max timesteps
     z = z_mat[r, ] # current z values
@@ -33,10 +32,7 @@ CoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_di
     diag(Q) = 0 # intraespecific effects are not allowed
     Q_n = Q / apply(Q, 1, sum) # normalizing the matrix
     Q_n[is.nan(Q_n)] = 0 # transform NaN values to 0 when a species don't have interactions
-    Q_m = Q_n * (1 - p) # multiplying each row i of matrix Q by (1 - p)
-    
-    q_mats[[r]] = Q_n
-    
+
     r_env = phi * p * (theta - z) # response to selection related to the environment
     
     sel_dif_mut = M * Q_m * z_dif # calculating selection differentials to mutualism
@@ -55,11 +51,10 @@ CoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_di
     dif = mean(abs(z - z_mat[r+1, ])) # computing the mean difference between old and new z values
     if (dif < eq_dif) # if the difference is lower than eq_dif...
       break # stop simulation
-  
+    
   }
-  
-  lista = list(z_mat[1:(r+1), ], q_mats)
-  return(lista) # return final matrix with species traits
+
+  return(z_mat[1:(r+1), ]) # return final matrix with species traits
 
 }
 #-----------------------------------------------------------------------------------------------------#

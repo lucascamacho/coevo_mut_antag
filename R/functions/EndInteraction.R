@@ -1,33 +1,30 @@
 #-----------------------------------------------------------------------------------------------------#
 EndInteraction = function(M, V, interaction){
-  # Choose a type of interaction to ignore in your adjacency matrices
-  # The interactions are identified based on the index of species which has a 1
-  # in V and the Transpose of V (in case of antagonism). 
-  # These index are used to insert 0 on the matrices.
+  # Choose a type of outcome combination to ignore in your matrices. 
+  #  The combination of outcomes choosed will be turned to 0.
   #
   #Args:
-  # M: mutualistic adjacency matrix
-  # V: antagonistic adjacency matrix
-  # interaction: type on interaction you want to ignore (mutualism MM, antagonism AA or cheaters AM)
+  #   M: matrix of positive interaction outcomes
+  #   V: matrix of negative interaction outcomes
+  #   interaction: type of combination of outcomes you want to ignore
   #
   #Return:
-  # list of matrices M and V with 0 in interactions MM, AA or AM 
-  #
+  #  list of matrices M and V with 0 in interactions MM, AA or AM
   
-  # check the interaction parameter
-  if(interaction != "mutualism" & interaction != "antagonism" & interaction != "cheaters"){
-    stop("Choose a valid interaction type")
+  # check the choosed parameter
+  if(interaction != "mutualism" & interaction != "antagonism" & interaction != "interference"){
+    stop("Choose between interference, antagonism and mutualism in interaction parameter")
   }
   
-  # end interactions based on "interaction" parameter
-  if(interaction == "antagonism"){ # end antagonism based on index of V and V transpose
+  # end outcomes combinations based on "interaction" parameter
+  if(interaction == "interference"){ # end AA
     index = V == t(V)
     V[index] = 0
     mats = list(M, V)
     return(mats)
   }
   
-  if(interaction == "cheaters"){ # end cheaters based on index of V and diff V transpose
+  if(interaction == "antagonism"){ # end AM
     index = V != t(V)
     V[index] = 0
     M[index] = 0
@@ -35,8 +32,8 @@ EndInteraction = function(M, V, interaction){
     return(mats)
   }
   
-  else{
-    index = M == t(M) # end mutualism based on index of M and M transpose
+  if(interaction == "mutualism"){ # end MM
+    index = M == t(M)
     M[index] = 0
     mats = list(M, V)
     return(mats)
