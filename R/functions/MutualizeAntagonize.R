@@ -19,42 +19,62 @@ MutualizeAntagonize = function(M, V, r, prob_change){
   #
   p = runif(1, 0, 1) # probability of changing interactions
   
-  if(p <= prob_change){ # if the interaction change
-     w_time = r # change a mutualism to antagonism
-     
-     j = runif(1, 0, 1)
-     
-     if(j <= 0.5){
-       dex = sample(1:dim(M)[1], 2)
-         if(M[dex[1], dex[2]] == 1){
-           M[dex[1], dex[2]] == 0
-           diag(M) = 0
-           mats = list(M, V, w_time) # create list with results
-           return(mats) # return the results
-         }
-       else{
-         M[dex[1], dex[2]] == 1
-         diag(M) = 0
-         mats = list(M, V, w_time) # create list with results
-         return(mats) # return the results
-       }
-     }
-     else{
-       dex = sample(1:dim(V)[1], 2)
-       if(V[dex[1], dex[2]] == 1){
-         V[dex[1], dex[2]] == 0
-         diag(V) = 0
-         mats = list(M, V, w_time) # create list with results
-         return(mats) # return the results
-       }
-       else{
-         V[dex[1], dex[2]] == 1
-         diag(V) = 0
-         mats = list(M, V, w_time) # create list with results
-         return(mats) # return the results
-       }
-     }
-  }   
+  if(p <= prob_change){
+    #identificar sinal MM e transformar em AM
+    inter = (M == 1) == (t(M) == 1)
+    inter[M == 0] = FALSE
+    mm_posit = which(m == TRUE)
+    ch = sample(mm_posit, 1)
+    M[ch] = 0
+    V[ch] = 1
+    
+    #identificar sinal AM e transformar em MM
+    am_posit = which(M != t(M))
+    zero = M[am_posit] == 0
+    
+    index = am_posit[zero]
+    M[index] = 1
+    V[index] = 0
+    
+    
+  }
+}  
+  #  if(p <= prob_change){ # if the interaction change
+  #   w_time = r # change a mutualism to antagonism
+  #   
+  #   j = runif(1, 0, 1)
+  #  
+  #  if(j <= 0.5){
+  #    dex = sample(1:dim(M)[1], 2)
+  #      if(M[dex[1], dex[2]] == 1){
+  #        M[dex[1], dex[2]] == 0
+  #        diag(M) = 0
+  #        mats = list(M, V, w_time) # create list with results
+  #        return(mats) # return the results
+  #      }
+  #    else{
+  #      M[dex[1], dex[2]] == 1
+  #      diag(M) = 0
+  #      mats = list(M, V, w_time) # create list with results
+  #      return(mats) # return the results
+  #    }
+  #  }
+  #  else{
+  #    dex = sample(1:dim(V)[1], 2)
+  #    if(V[dex[1], dex[2]] == 1){
+  #       V[dex[1], dex[2]] == 0
+  #      diag(V) = 0
+  #       mats = list(M, V, w_time) # create list with results
+  #      return(mats) # return the results
+  #    }
+  #    else{
+  #      #V[dex[1], dex[2]] == 1
+         #diag(V) = 0
+         #         mats = list(M, V, w_time) # create list with results
+         #   return(mats) # return the results
+      #      }
+#    }
+#  }   
 #    change_m = which(M == 1)
 #    int_change_m = sample(change_m, 1)
 #    M[int_change_m] = 0
@@ -72,11 +92,11 @@ MutualizeAntagonize = function(M, V, r, prob_change){
 #    mats = list(M, V, w_time) # create list with results
 #    return(mats) # return the results
 #  }
-  else{ # if the interaction doesn't change
-    w_time = NULL
-    mats = list(M, V, w_time) # create list with the antagonistic and mutualistic matrices
-    return(mats) # return a list with the antagonistic and mutualistic matrices
-  }
-     
-}
+  #  else{ # if the interaction doesn't change
+  #  w_time = NULL
+  # mats = list(M, V, w_time) # create list with the antagonistic and mutualistic matrices
+  # return(mats) # return a list with the antagonistic and mutualistic matrices
+  #  }
+  #     
+#}
 #-----------------------------------------------------------------------------------------------------#

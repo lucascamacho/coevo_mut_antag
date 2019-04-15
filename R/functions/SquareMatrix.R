@@ -1,12 +1,11 @@
-#---------------------------------------------------------------------------------------------------#
-SquareMatrix <- function(rec.mat){
+#-----------------------------------------------------------------------#
+SquareMatrix = function(rec.mat){
   # Mirrors the rectangular matrix to transform it into a square matrix
   #
   #Args:
-  #      rec.mat = Rectangular adjacency matrix
+  #  rec.mat = rectangular matrix
   #Return:
-  #      cor.sq = Square adjacency matrix
-  #
+  #  cor.sq = square adjacency matrix
   rownames(rec.mat) <- paste("A", 1:nrow(rec.mat), sep="")  
   sq.1 <- matrix(0, nrow(rec.mat), nrow(rec.mat))
   sq.1 <- rbind(sq.1, t(rec.mat))
@@ -18,6 +17,5 @@ SquareMatrix <- function(rec.mat){
   cor.sq <- cbind(sq.1, sq.2)
   
   return(cor.sq)
-  
 }
-#---------------------------------------------------------------------------------------------------#
+#-----------------------------------------------------------------------#
