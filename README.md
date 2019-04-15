@@ -34,8 +34,8 @@ will find a guide to my model and R code in the main page of this repository and
 Please, let me know if these tutorials and guides are useful or has some erros or inconsistencies sending me an email (lucas.camacho@usp.br). Check below the lists of 
 guides and tutorials available:
 
-- [Guide_coevo_mut_antag](): Guide showing my project basic ideas, my model and how do i implement it on R. These guides ends in a single plot showing the average species traits
-changing in time.  
+- [Guide_coevo_mut_antag](https://github.com/lucascamacho/coevo_mut_antag/blob/master/Guide_coevo_mut_antag.Rmd): Guide showing my project basic ideas, my model and how do 
+i implement it on R. These guides ends in a single plot showing the average species traits changing in time.  
 
 
 ### Running my simulations
