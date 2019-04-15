@@ -24,7 +24,7 @@ This repository is organized in folders which contain different aspects of my ma
 
 - Code: separate in functions and scripts. You will find all the R files to run my simulations
 - Data: the networks of interactions that i use and the RData files with the results of all my simulations
-- Output: figures, pdf's, graphs, etc. All the visual results of my projects are here
+- Output: figures, pdf's, graphs, etc. All the visual results of my project are here
 - Manuscript: the RMarkdown files that compose my master's dissertation.
 
 ### Running my simulations
@@ -33,10 +33,10 @@ Some parts of my script depends on R packages that must be previous installed (s
 scripts are directed to my own working directory. Please, remember to use your own working directory when run the simulations.
 
 List of R packages used:
-- ggplot2
-- reshape2
-- cowplot
-- MASS
+- [ggplot2](https://ggplot2.tidyverse.org)
+- [cowplot](https://cran.r-project.org/web/packages/cowplot/vignettes/introduction.html)
+- [reshape2](https://cran.r-project.org/web/packages/reshape2/index.html)
+- [MASS](https://cran.r-project.org/web/packages/MASS/index.html)
 
 ## Authors
 
