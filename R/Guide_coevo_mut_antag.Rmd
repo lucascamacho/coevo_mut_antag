@@ -1,0 +1,339 @@
+---
+title: "Guide to coevo_mut_antag code"
+author: "Lucas Arantes Camacho"
+date: "27/06/2018"
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+fontsize: 12pt
+link-citations: yes
+mainfont: Times New Roman
+csl: small.csl
+bibliography: master_mutantag.bib
+---
+
+<style>
+body {
+text-align: justify}
+</style>
+
+## Introduction
+
+Hello everyone.
+
+I write this guide to help the understanding of the model that we gonna work and explain the code to run the simulations. For that, we gonna start speaking a little bit about our model, how it works and after i will explain step-by-step what the R code does. Hope it helps.
+
+
+## General idea
+
+Coevolution is defined as reciprocal evolutionary change of interacting species in a community and is a major process breaking and creating interactions between species in communities [@bascompte_plant-animal_2007]. In the last 20 years, the study of coevolution and ecological interactions use network theory tools to help answering questions about the mechanism of coevolution acting in species traits. Nowadays, we already understand how the coevolution creates complementarity of interacting species and convergence of species in the same trophic level in mutualistic networks of interactions [@guimaraes_jr_evolution_2011]. We also know that asymmetry in selective pressures and network structure has an effect in the coevolutionary dynamics of antagonistic networks [@andreazzi_network_2017].
+Despite the fact that these studies helps the creation of a theoretical map of how coevolution act in traits of species and how interactions change the coevolutionary process, there is compelling evidence that ecological interactions are context dependent in nature [@ushio_fluctuating_2018, @kolb_ecological_2007, @bronstein_conditional_1994]. The interactions are context-dependet if the outcomes or the magnitude change depending on the biotic of abiotic context [@chamberlain_how_2014]. One simple example is the insect-plant interaction between the fly *Moegistorhynchus longirostri* and the tubular flower *Lapeirousia anceps*, where the fly has a long proboscis to pollinate the flower. But, the proboscis length varies geographically, resulting in efficient pollination in one area and unnefficient pollination in other. In other words, the costs and benefits of fly`s visits are changing [@pauw_flies_2009]. Using networks only with mutualism or antagonism is a convenction to disentangle the effects of these types of interactions in evolutionary process, but in real communities, species are experiencing mutualistic and antagonistic interactions at the same time. More than that, ecological interactions are not static in nature, but variable in space and time. In this way, we are trying to take a step further in coevolutinary studies, merging the evolutionary effects of antagonisms and mutalisms in the same network of ecological interactions. Here we gonna answer 2 questions about networks of mutualism and antagonism:
+
+1. How is it the coevolutionary dynamics in these networks?
+2. What is the effect of network structure in coevolutionary dynamics?
+
+For that, we gonna use computational simulations of a mathematical model that merge the coevolutionary effects of mutualism, antagonism and other seletive pressures, like abiotic factors.
+
+## The model
+
+We are trying to describe how a certain average trait $Z$ of a specie $i$ change in time due to coevolution and other selective pressures (abiotic conditions for example). For that, we have our model.
+
+$$Z_{ i } ^ { (t+1) } = Z_{ i } ^ { t } + \varphi_{ i }[\sum_{j} m_{ij}^{t}(Z_{j}^{t} - Z_{i}^{t}) + \sum_{j}v_{ij}^{t}(Z_{j}^{t} + \epsilon_{ij} - Z_{i}^{t}) + p_{i}(\theta_{i} - Z_{i}^{t})]$$
+
+This trait $Z$ of specie $i$ in the timestep $t+1$ depends of $Z$ one timestep further $Z_{i}^{t}$. The traits change also depends on the heritability and additive genetic variance of $Z$ which is given by the $\varphi_{i}$ parameter. After that we have 3 components changing the trait $Z$: the mutualism, the antagonism and the environment.
+Let`s see the mutualism component first.
+
+$$\sum_{j} m_{ij}^{t}(Z_{j}^{t} - Z_{i}^{t})$$
+
+In this component we have $m_{ij}^{t}$ that is the mutualistic evolutionary effects of a species $j$ to the specie $i$. These component favours the trait matching between $Z_{i}$ and $Z_{j}$. In other words, these values $Z_{i}$ and $Z_{j}$ tend to become more similar.
+The second component is the antagonist component
+
+$$\sum_{j}v_{ij}^{t}(Z_{j}^{t} + \epsilon_{ij} - Z_{i}^{t})$$
+
+Similar to mutualism, we also have an evolutionary antagonistic effect of $j$ in $i$ which is $v_{ij}^{t}$. Note that we have a parameter $\epsilon$, which is our "trait barrier" or the maximum differente of $Z_{i}$ and $Z_{j}$ so that antagonistic interaction can exist. Finally, we have the environment component
+
+$$p_{i}(\theta_{i} - Z_{i}^{t})$$
+
+which $\theta_{i}$ are the vector with the environmental optima for each specie.
+
+For the antagonism and mutualism component we have the evolutionary effects of these interactions, that we called $v_{ij}^{t}$ and $m_{ij}^{t}$. These evolutionary effects are defined as a relative effect of specie $j$ in $i$ normalized by all the other interactions that $i$ has with other species. We have
+
+
+$$m_{ ij }^{ (t) } = M_{ ij }^{ (t) }\frac {e^{-\alpha(Z_{j}^{(t)} - Z_{i}^{(t)})^{2}}}{\sum_{k,i \neq k}^{N} e^{-\alpha(Z_{k}^{(t)} - Z_{i}^{(t)})^{2}}}$$
+
+$$v_{ ij }^{ (t) } = V_{ ij }^{ (t) }\frac {e^{-\alpha(Z_{j}^{(t)} - Z_{i}^{(t)})^{2}}}{\sum_{k,i \neq k}^{N} e^{-\alpha(Z_{k}^{(t)} - Z_{i}^{(t)})^{2}}}$$
+
+where $M_{ij}^{(t)}$ and $V_{ij}^{(t)}$ are the elements from the adjacency matrix that give us the species interactions and $\alpha$ is the sensibility of selection to trait matching.
+
+## The code
+
+Now, let's construct a code in R that simulates the coevolution process following these model. First, we start by set our parameters of interest and construct our matrices of mutualistic (M) and antagonistic (V) interactions.
+
+```{r}
+# fixate the random parameters (necessary only for this guide)
+set.seed(42)
+# number of species
+n_sp = 3
+# probability of an interaction become antagonistic
+antprob = 0.3
+# herdability and additive genetic variance parameter
+phi = 0.2 
+# sensibility of evolution to trait matching parameter
+alpha = 0.2 
+# optimas of Z`s to environment
+theta = runif(n_sp, 0, 10) 
+# initial Z values
+init = runif(n_sp, 0, 10)
+# importance of invironment to changes in Z
+p = 0.01 
+ # value of max difference between Z`s (barrier)
+epsilon = 5
+# difference between Z to stop simulation
+eq_dif = 0.0001
+# max timesteps of simulation
+t_max = 1000 
+
+# Mutualistic adjacency matrix
+M = matrix(1, ncol = n_sp, nrow = n_sp) 
+# no intraespecific interactions
+diag(M) = 0
+# Antagonistic adjacency matrix filled with 0 (no interactions)
+V = M * 0 
+```
+
+Great, we have our parameters defined, a matrix of mutualism completely connected and an empty antagonism matrix. Now, we have to transform some links of our M network in antagonists links. For each interaction in our mutualistic matrix, we are going to "roll a dice" and, following the probability of a certain link became antagonist which is our *antprob* parameter, transform or not the interaction in antagonism.
+
+```{r}
+  # create a matrix rolling the dice to every interaction
+  P = matrix(runif(n_sp*n_sp, min = 0, max = 1),
+             nrow = n_sp, ncol = n_sp) 
+  # 1 in the V matrix if the number sort is lower than antprob
+  V[antprob >= P] = 1 
+  # 0 in the M matrix if the number sort is lower than antprob
+  M[antprob >= P] = 0 
+  # diagonal of v is zero (we are not interested in effects of a species in herself)
+  diag(V) <- 0 
+  # no intraespecifi antagonistic interactions
+  diag(V) <- 0 
+```
+
+Let's look to our matrices and see which interactions became antagonistic
+
+```{r echo=TRUE}
+M
+V
+```
+
+Great, but there a couple of things we have to see at this point.
+First, when we transform an interaction in antagonism we are defining an explorer and a victim. In these scenario, we introduce an antagonistic effect of $j$ in $i$, but not necessarily an antagonistic effect of $i$ in $j$. The V matrix tell us the antagonistic interactions of species in the collums to the species in the rows. In our V matrix, there are a antagonistic effect of specie 1 on specie 2 but not otherwise.
+Second (and more intuitive), the V and M matrix are complementar. The sum of V and M gives us all the interactions in the network.
+
+Ok, we have our interactions, now we can start thinking in the simulations.
+For start, let's create a empty matrix called *z_mat* which is our results matrix. In the matrix z_mat we have the species in the collums and the timesteps of simulation in the rows. The first line of z_mat is the initial trait values.
+
+```{r}
+  # matrix to store z values
+  z_mat = matrix(NA, nrow = t_max, ncol = n_sp) 
+  # initial trait values
+  z_mat[1, ] = init 
+```
+
+Ok, know we are entering in a loop, which means that these process will happend several times. Let's start by just saying to R which are our initial values of $Z$. After this, we get all the interactions that we have in our network just getting the sum of M and V. 
+
+```{r}
+    # current z values
+    z = z_mat[1, ]
+    # matrix with all interactions (mutualistic and antagonistic)
+    A = M + V 
+```
+
+We start our simulation by calculating the evolutionary effects between the species in the network. That's our famous **Q matrix**. To get the Q matrix, we gonna calculate the trait difference between all species in the network. See how our differences of traits matrix (z_dif) looks like.
+
+```{r echo=TRUE}
+    # matrix with all trait differences
+    z_dif = t(A * z) - A * z 
+    z_dif
+```
+
+Ok, now we calculate the $e^{-\alpha(Z_{j}^{(t)} - Z_{i}^{(t)})^{2}}$ part using the trait differences that we already have. We are not interested in intraespecific interactions, so we gonna insert "0" in the diagonal of the matrix
+
+```{r, echo = TRUE}
+    # matrix Q
+    Q = A * (exp(-alpha * (z_dif ^ 2)))
+    Q
+    # intraespecific effects are not allowed
+    diag(Q) = 0 
+    Q
+```
+
+Now we gonna normalize our Q matrix and get $\frac {e^{-\alpha(Z_{j}^{(t)} - Z_{i}^{(t)})^{2}}}{\sum_{k,i \neq k}^{N} e^{-\alpha(Z_{k}^{(t)} - Z_{i}^{(t)})^{2}}}$
+
+```{r, echo = TRUE}
+    # normalizing the Q matrix
+    Q_n = Q / apply(Q, 1, sum) 
+    Q_n
+```
+
+Great, we already have our normalized matrix of evolutionary effects between the interacting species in the network. But, we have a parameter that says how much the environment is important to trait changes (*p*). If we are considering *p* as the importance of environment, *(1 - p)* should be the importance of interactions to trait changes. We gonna multiply these importance of interactions to our Q matrix. 
+
+```{r, echo = TRUE}
+    # multiplying each row i of matrix Q by (1 - p)
+    Q_m = Q_n * (1 - p)
+    Q_m
+```
+
+Ok, we are ready to calculate our selection differentials. Basically, calculate how much the $Z$ trait will change. We start doing it for the environment. For that, we compute $p_{i}(\theta_{i} - Z_{i}^{t})$
+
+```{r}
+    # response to selection related to the environment
+    r_env = phi * p * (theta - z)
+```
+
+Great, now the mutualism part. First we get only the mutualistic interactions and multiply the evolutionary effects by the trait differences between interacting species. We are just computing $\sum_{j} m_{ij}^{t}(Z_{j}^{t} - Z_{i}^{t})$. 
+
+```{r}
+    # calculating selection differentials to mutualism
+    sel_dif_mut = M * Q_m * z_dif 
+    # response to selection related to mutualism
+    r_mut = phi * apply(sel_dif_mut, 1, sum) 
+```
+
+Ok, finally we compute the antagonism part of trait changes. Before that, we have some conditions in antagonistic interactions. First, the trait difference between $i$ and $j$ has to be minor than our parameter $\epsilon$. The second condition tell us that if the trait of $i$ is minor than $j$, we have the sum of $\epsilon$ in the trait differences $(Z_{j}^{t} + \epsilon_{ij} - Z_{i}^{t})$. Otherwise, we have the subtract of $\epsilon$ in trait differences $Z_{j}^{t} - \epsilon_{ij} - Z_{i}^{t}$. In other words, in one situation we are increasing the trait values for the victins and another situation we are decreasing these trait values.
+
+```{r}
+    # excluding interactions of traits that are larger than the barrier
+    V[abs(z_dif) > epsilon] = 0 
+    
+    # matrix with barrier (epsilon) values
+    epsilon_plus = (z_dif < 0) * matrix(epsilon, n_sp, n_sp) 
+    # matrix wih -epsilon values
+    epsilon_minus = (z_dif > 0) * matrix(-epsilon, n_sp, n_sp) 
+    # adding barrier values to trait differences
+    z_dif = z_dif + epsilon_plus + epsilon_minus 
+```
+
+See in the code above how we create a matrix for each situation of increasing and decreasing the trait value of the victim, them we just apply these computations to our trait differences.
+Ok, now we are ready to calculate the selection differentials due to antagonism using our V matrix, the Q matrix and the trait differences between species.
+
+```{r}
+    # calculating selection differentials
+    sel_dif_ant = V * Q_m * z_dif 
+    # response to selection related to antagonisms
+    r_ant = phi * apply(sel_dif_ant, 1, sum)
+```
+
+We have our selection differentials. Now we update our initial $z$ values. The next line of our result matrix is equal to the sum of initial $z$ values and our already calculated selection differentials.
+
+```{r}
+    # updating z values
+    z_mat[2, ] = z + r_env + r_mut + r_ant 
+```
+
+Remember we are on a loop? These process will be repeated several times. There's a certain moment in the simulation where the traits doesn't change too much. We can define a certain moment, where the changing in $Z$ is very low that we can just stop our simulations, the traits is in equilibrium. We define in this way
+
+```{r}
+    # computing the mean difference between old and new z values
+    dif = mean(abs(z - z_mat[2, ])) 
+    if (dif < eq_dif) # if the difference in very low
+      break # stop the simulation
+```
+
+Of course, maybe these equilibrium state doesn't happend, so the simulation will go until we reach the maximum time of simulations (t_max)
+
+Ok, now we just gonna say to R show to us our resulting matrix z_mat, now with a second line of trait values.
+
+```{r}
+ # return z_matrix
+ return(z_mat[1:2, ]) 
+```
+
+And that's end our simulation process. We just simulate one timestep, these process will happend until reach our t_max already defined in the parameters or will stop when the traits become very similar. Below we have our complete code inside a *for* loop and the final graph showing the timesteps in the x axis and the trait values in y axis.
+
+```{r, echo = TRUE, results = "hide"}
+  # simulation runs for a maximum of t_max timesteps
+  for (r in 1:(t_max - 1)) { 
+    # current z values
+    z = z_mat[r, ] 
+    # matrix with all interactions (mutualistic and antagonistic)
+    A = M + V
+    # matrix with all trait differences
+    z_dif = t(A * z) - A * z 
+    # matrix Q
+    Q = A * (exp(-alpha * (z_dif ^ 2))) 
+    # intraespecific effects are not allowed
+    diag(Q) = 0 
+    # normalizing the matrix
+    Q_n = Q / apply(Q, 1, sum) 
+    # multiplying each row i of matrix Q by (1 - p[i])
+    Q_m = Q_n * (1 - p) 
+    
+    # response to selection related to the environment
+    r_env = phi * p * (theta - z) 
+    
+    # calculating selection differentials to mutualism
+    sel_dif_mut = M * Q_m * z_dif 
+    # response to selection related to mutualism
+    r_mut = phi * apply(sel_dif_mut, 1, sum) 
+    
+    # excluding interactions of traits that are larger than the barrier
+    V[abs(z_dif) > epsilon] = 0 
+    
+    # matrix with barrier (epsilon) values
+    epsilon_plus = (z_dif < 0) * matrix(epsilon, n_sp, n_sp) 
+    # matrix wih -epsilon values
+    epsilon_minus = (z_dif > 0) * matrix(-epsilon, n_sp, n_sp)
+    # adding barrier values to trait differences
+    z_dif = z_dif + epsilon_plus + epsilon_minus
+    # calculating selection differentials
+    sel_dif_ant = V * Q_m * z_dif 
+    # response to selection related to antagonisms
+    r_ant = phi * apply(sel_dif_ant, 1, sum) 
+    
+    # updating z values
+    z_mat[r+1, ] = z + r_env + r_mut + r_ant 
+    
+    # computing the mean difference between old and new z values
+    dif = mean(abs(z - z_mat[r+1, ])) 
+    if (dif < eq_dif)
+      break
+  }
+  
+  return(z_mat[1:(r+1), ])
+```
+
+```{r echo=FALSE}
+  library(ggplot2)  
+  traits = z_mat[1:(r+1), ]
+
+  # building data frame to use in ggplot
+  traits = as.data.frame(traits)
+  n_sp = ncol(traits)
+  traits_vec = c(as.matrix(traits))
+  traits_df = data.frame(species = rep(paste("sp", 1:n_sp, sep = ""), each = nrow(traits)),
+                         time = rep(1:nrow(traits), times = n_sp),
+                         trait = traits_vec)
+  # plotting traits through time
+  plotar = ggplot(traits_df, aes(x = time, y = trait, color = species)) +
+    geom_line(size = 1.8, alpha = 0.6) + 
+    ggtitle(paste("proportion antagonists = ", antprob)) +
+    xlab("Time") + 
+    ylab("Mean species trait (z)") +
+    theme(axis.text.x = element_text(size = 11),
+          axis.text.y = element_text(size = 11),
+          axis.title = element_text(size = 14), 
+          legend.key.size = unit(0.6, "cm"),
+          legend.text = element_text(size = 12))
+
+  print(plotar)
+```
+
+You can find the R code in our [GITHUB](https://github.com/lucascamacho/coevo_mut_antag) repository, in the CoevoMutAntag.R file.
+
+I really hope these guide helps the understanding of the code. I also hope that we can schedule a Skype meeting to talk about next steps of our research.
+
+Thank`s a lot for your time reading these guide.
+
+Bye
+
+# References

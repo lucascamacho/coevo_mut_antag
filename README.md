@@ -27,6 +27,17 @@ This repository is organized in folders which contain different aspects of my ma
 - Output: figures, pdf's, graphs, etc. All the visual results of my project are here
 - Manuscript: the RMarkdown files that compose my master's dissertation.
 
+### Tutorial and guides
+
+To improve the understanding of the coevolutionary model and the simulations, i prepare a small guides and tutorials to help people know how my model and code works. You 
+will find a guide to my model and R code in the main page of this repository and some tutorials together with some scripts in R/scripts folder. I hope this guide helps people that are interested in some level in my work and my results. also, and equally importante, i hope this guides and tutorials will increase the understanding about what i've been doing.
+Please, let me know if these tutorials and guides are useful or has some erros or inconsistencies sending me an [email](emailto: lucas.camacho@usp.br). Check below the lists of 
+guides and tutorials available:
+
+- [Guide_coevo_mut_antag](): Guide showing my project basic ideas, my model and how do i implement it on R. These guides ends in a single plot showing the average species traits
+changing in time.  
+
+
 ### Running my simulations
 
 Some parts of my script depends on R packages that must be previous installed (see the used packages list below) and my 
