@@ -24,14 +24,14 @@ Hello everyone.
 
 I write this guide to help the understanding of the model that we gonna work and explain the code to run the simulations. For that, we gonna start speaking a little bit about our model, how it works and after i will explain step-by-step what the R code does. Hope it helps.
 
-
 ## General idea
 
 Coevolution is defined as reciprocal evolutionary change of interacting species in a community and is a major process breaking and creating interactions between species in communities [@bascompte_plant-animal_2007]. In the last 20 years, the study of coevolution and ecological interactions use network theory tools to help answering questions about the mechanism of coevolution acting in species traits. Nowadays, we already understand how the coevolution creates complementarity of interacting species and convergence of species in the same trophic level in mutualistic networks of interactions [@guimaraes_jr_evolution_2011]. We also know that asymmetry in selective pressures and network structure has an effect in the coevolutionary dynamics of antagonistic networks [@andreazzi_network_2017].
+
 Despite the fact that these studies helps the creation of a theoretical map of how coevolution act in traits of species and how interactions change the coevolutionary process, there is compelling evidence that ecological interactions are context dependent in nature [@ushio_fluctuating_2018, @kolb_ecological_2007, @bronstein_conditional_1994]. The interactions are context-dependet if the outcomes or the magnitude change depending on the biotic of abiotic context [@chamberlain_how_2014]. One simple example is the insect-plant interaction between the fly *Moegistorhynchus longirostri* and the tubular flower *Lapeirousia anceps*, where the fly has a long proboscis to pollinate the flower. But, the proboscis length varies geographically, resulting in efficient pollination in one area and unnefficient pollination in other. In other words, the costs and benefits of fly`s visits are changing [@pauw_flies_2009]. Using networks only with mutualism or antagonism is a convenction to disentangle the effects of these types of interactions in evolutionary process, but in real communities, species are experiencing mutualistic and antagonistic interactions at the same time. More than that, ecological interactions are not static in nature, but variable in space and time. In this way, we are trying to take a step further in coevolutinary studies, merging the evolutionary effects of antagonisms and mutalisms in the same network of ecological interactions. Here we gonna answer 2 questions about networks of mutualism and antagonism:
 
-1. How is it the coevolutionary dynamics in these networks?
-2. What is the effect of network structure in coevolutionary dynamics?
+1. What happends with the coevolutionary process of mutualisms in the presence of antagonisms?
+2. How context-dependent interactions influences the coevolutionary process?
 
 For that, we gonna use computational simulations of a mathematical model that merge the coevolutionary effects of mutualism, antagonism and other seletive pressures, like abiotic factors.
 
@@ -39,17 +39,17 @@ For that, we gonna use computational simulations of a mathematical model that me
 
 We are trying to describe how a certain average trait $Z$ of a specie $i$ change in time due to coevolution and other selective pressures (abiotic conditions for example). For that, we have our model.
 
-$$Z_{ i } ^ { (t+1) } = Z_{ i } ^ { t } + \varphi_{ i }[\sum_{j} m_{ij}^{t}(Z_{j}^{t} - Z_{i}^{t}) + \sum_{j}v_{ij}^{t}(Z_{j}^{t} + \epsilon_{ij} - Z_{i}^{t}) + p_{i}(\theta_{i} - Z_{i}^{t})]$$
+$$Z_{ i } ^ { (t+1) } = Z_{ i } ^ { t } + \varphi_{ i }[\sum_{j} m_{ij}^{t}(Z_{j}^{t} - Z_{i}^{t}) + \sum_{j}v_{ij}^{t}(Z_{j}^{t} \pm \epsilon_{ij} - Z_{i}^{t}) + p_{i}(\theta_{i} - Z_{i}^{t})]$$
 
 This trait $Z$ of specie $i$ in the timestep $t+1$ depends of $Z$ one timestep further $Z_{i}^{t}$. The traits change also depends on the heritability and additive genetic variance of $Z$ which is given by the $\varphi_{i}$ parameter. After that we have 3 components changing the trait $Z$: the mutualism, the antagonism and the environment.
 Let`s see the mutualism component first.
 
 $$\sum_{j} m_{ij}^{t}(Z_{j}^{t} - Z_{i}^{t})$$
 
-In this component we have $m_{ij}^{t}$ that is the mutualistic evolutionary effects of a species $j$ to the specie $i$. These component favours the trait matching between $Z_{i}$ and $Z_{j}$. In other words, these values $Z_{i}$ and $Z_{j}$ tend to become more similar.
+In this component we have $m_{ij}^{t}$ that is the mutualistic evolutionary effects of a species $j$ to the specie $i$. These component favours the trait matching between $Z_{i}$ and $Z_{j}$. In other words, these values $Z_{i}$ and $Z_{j}$ tend to become more similar in time.
 The second component is the antagonist component
 
-$$\sum_{j}v_{ij}^{t}(Z_{j}^{t} + \epsilon_{ij} - Z_{i}^{t})$$
+$$\sum_{j}v_{ij}^{t}(Z_{j}^{t} \pm \epsilon_{ij} - Z_{i}^{t})$$
 
 Similar to mutualism, we also have an evolutionary antagonistic effect of $j$ in $i$ which is $v_{ij}^{t}$. Note that we have a parameter $\epsilon$, which is our "trait barrier" or the maximum differente of $Z_{i}$ and $Z_{j}$ so that antagonistic interaction can exist. Finally, we have the environment component
 
@@ -328,12 +328,8 @@ And that's end our simulation process. We just simulate one timestep, these proc
   print(plotar)
 ```
 
-You can find the R code in our [GITHUB](https://github.com/lucascamacho/coevo_mut_antag) repository, in the CoevoMutAntag.R file.
+You can find the R code in my [GITHUB](https://github.com/lucascamacho/coevo_mut_antag) repository, in the CoevoMutAntag.R file.
 
-I really hope these guide helps the understanding of the code. I also hope that we can schedule a Skype meeting to talk about next steps of our research.
-
-Thank`s a lot for your time reading these guide.
-
-Bye
+Good Bye
 
 # References

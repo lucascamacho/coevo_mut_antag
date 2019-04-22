@@ -11,9 +11,9 @@ library(reshape2)
 antprob_vec = c(0.2, 0.5, 0.8)
 prob_change_vec = c(0, 0.1, 0.5)
 combs = expand.grid(antprob_vec, prob_change_vec)
-combs = combs[rep(seq_len(nrow(combs)), 1000), ]
+combs = combs[rep(seq_len(nrow(combs)), 100), ]
 
-data = matrix(NA, nrow = 9000, ncol = 4)
+data = matrix(NA, nrow = 900, ncol = 4)
 colnames(data) = c("mean", "var", "antprob", "prob_change")
 
 for(i in 1:nrow(data)){

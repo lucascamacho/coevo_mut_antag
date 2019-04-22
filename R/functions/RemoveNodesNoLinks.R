@@ -1,4 +1,5 @@
-RemoveNodesNoLinks = function(mat) {
+#-----------------------------------------------------------------------------------------------------#
+RemoveNodesNoLinks = function(mat){
   # Removes nodes with no links (degree = 0) from a network.
   #
   # Args:
@@ -22,3 +23,4 @@ RemoveNodesNoLinks = function(mat) {
   }
   return(mat)
 }
+#-----------------------------------------------------------------------------------------------------#

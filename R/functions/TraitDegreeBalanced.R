@@ -1,21 +1,20 @@
-#-----------------------------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------------------------------#
 TraitDegreeBalanced = function(z_mat){
-  # Calculate the z-score of mean trait value for antagonists and mutualists balanced by degree
+  # Calculate the z-score of mean trait value for species involved in positive or negative outcomes
+  # of interactions.
   # 
   #Args:  
-  #  z_mat: matriz of species traits after simulations, rows are time steps and columns are species
+  #  z_mat: matriz of species traits after simulations, rows are timesteps and columms are species
   #
   #Return:
-  #  vector with z-score of mean trait value for antagonists and mutualists species
+  #  t_final: vector with z-score of mean trait value for species involved in MM and AM interactions.
   #
-  # create empty vectors
-  to_sum_c = c()
-  to_sum_m = c()
+  to_sum_c = vector()
+  to_sum_m = vector()
 
-  for(g in 1:length(z_mat)){ # loop for each specie
-    
+  for(g in 1:length(z_mat)){ # loop to multiply the species trait by their degree (Kmm or Kam)
     # antagonisms
-    trait_k_c = degree[g, 2] * z_mat[g] # trait * degree of cheaters
+    trait_k_c = degree[g, 2] * z_mat[g] # trait * degree of antagonists
     to_sum_c = append(to_sum_c, trait_k_c) # insert these values in vector
     
     # mutualisms

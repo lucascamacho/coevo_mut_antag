@@ -1,8 +1,8 @@
-#-----------------------------------------------------------------------------------------------------#
-ConDepCoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max, prob_change) {
-  # Simulates the coevolutionary dynamics of mutualists and antagonists in a network
+#-------------------------------------------------------------------------------------------------------------#
+ConDepCoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max, prob_change){
+  # Simulates the coevolutionary dynamics of mutualists and antagonists outcomes in a network
   # with context dependent interactions. The interactions change in time following a 
-  # certain probability p.
+  # certain probability prob_change.
   # Args:
   #   n_sp: total number of species in the network
   #   M: square adjacency matrix representing the mutualistic interactions
@@ -23,15 +23,11 @@ ConDepCoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon,
   #
   # Returns:
   #   A matrix containing, in each row t, the trait values (z) of all species at time t.
-  # load function to change interactions
   source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/MutualizeAntagonize.R")
-  source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/BalanDiver.R")
-  source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Counting.R")
   
   z_mat = matrix(NA, nrow = t_max, ncol = n_sp) # matrix to store z values
   z_mat[1, ] = init # initial trait values
   w_time = vector() #vectors to track in which timestep occurs the interaction changes
-  contar = list()
   
   for (r in 1:(t_max - 1)) { # simulation runs for a maximum of t_max timesteps
     z = z_mat[r, ] # current z values
@@ -40,7 +36,6 @@ ConDepCoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon,
     M = mutualizeantagonize[[1]] # define new M matrix
     V = mutualizeantagonize[[2]] # define new V matrix
     w_time = append(w_time, mutualizeantagonize[[3]]) # vector with timesteps of change
-    contar[[r]] = Counting(M, V)
     
     A = M + V # matrix with all interactions (mutualistic and antagonistic)
     z_dif = t(A * z) - A * z # matrix with all trait differences
@@ -55,7 +50,7 @@ ConDepCoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon,
     sel_dif_mut = M * Q_m * z_dif # calculating selection differentials to mutualism
     r_mut = phi * apply(sel_dif_mut, 1, sum) # response to selection related to mutualism
     
-    V_m = V
+    V_m = V # create V_m to use in antagonism selection differential 
     V_m[abs(z_dif) > epsilon] = 0 # excluding interactions of traits that are larger than the barrier
     epsilon_plus = (z_dif < 0) * matrix(epsilon, n_sp, n_sp) # matrix with barrier (epsilon) values
     epsilon_minus = (z_dif > 0) * matrix(-epsilon, n_sp, n_sp) # matrix wih -epsilon values
@@ -63,7 +58,7 @@ ConDepCoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon,
     sel_dif_ant = V * Q_m * z_dif_a # calculating selection differentials
     r_ant = phi * apply(sel_dif_ant, 1, sum) # response to selection related to antagonisms
     
-    z_mat[r+1, ] = z + r_env + r_mut + r_ant # updating z values
+    z_mat[r+1, ] = z + r_mut + r_ant + r_env # updating z values
     
     dif = mean(abs(z - z_mat[r+1, ])) # computing the mean difference between old and new z values
     if (dif < eq_dif) # if the difference is lower than eq_dif...
@@ -71,7 +66,7 @@ ConDepCoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon,
     
   }
   
-  return(list(z_mat[1:(r+1), ], w_time, contar)) # return final matrix with species traits
+  return(list(z_mat[1:(r+1), ], w_time)) # return final matrix with species traits
   
 }
 

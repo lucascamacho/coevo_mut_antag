@@ -15,8 +15,8 @@ library(cowplot)
 library(MASS)
 
 # initial parameters
-antprob = 0.9 # current probability value
-n_sp = 10 # defining number of species
+antprob = 0.2 # current probability value
+n_sp = 5 # defining number of species
 M = matrix(1, ncol = n_sp, nrow = n_sp)   # building matrix M (mutualisms)
 diag(M) = 0 # no intraespecific interactions
 
@@ -26,11 +26,9 @@ M = antagonize[[1]]
 V = antagonize[[2]]
 
 # End pure antagonism AA
-end = EndInteraction(M, V, "antagonism")
+end = EndInteraction(M, V, "interference")
 M = end[[1]]
 V = end[[2]]
-M+V
-#write.matrix(M+V, file = "~/Dropbox/Master/Code/coevo_mut_antag/R/a_binary_1.txt")
 
 # coevolutionary model parameters
 phi = 0.2

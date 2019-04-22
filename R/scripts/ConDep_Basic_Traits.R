@@ -15,8 +15,8 @@ library(reshape2)
 library(cowplot)
 
 # initial parameters
-antprob = 0.5 # current probability value
-n_sp = 5 # defining number of species
+antprob = 0.2 # current probability value
+n_sp = 10 # defining number of species
 M = matrix(1, ncol = n_sp, nrow = n_sp)   # building matrix M (mutualisms)
 diag(M) = 0 # no intraespecific interactions
 
@@ -26,7 +26,7 @@ M = antagonize[[1]]
 V = antagonize[[2]]
 
 # End pure antagonism AA
-end = EndInteraction(M, V, "antagonism")
+end = EndInteraction(M, V, "interference")
 M = end[[1]]
 V = end[[2]]
 
@@ -39,7 +39,7 @@ p = 0.1
 epsilon = 5
 eq_dif = 0.0001
 t_max = 1000
-prob_change = 0.01
+prob_change = 0.1
 
 # running coevolution simulation
 simulation = ConDepCoevoMutAntNet(n_sp, M, V, phi, alpha, 
@@ -47,7 +47,6 @@ simulation = ConDepCoevoMutAntNet(n_sp, M, V, phi, alpha,
 
 traits = simulation[[1]]
 w_time = as.data.frame(simulation[[2]])
-contar = simulation[[3]]
 
 #prepare data frame with tracked timesteps
 colnames(w_time) = "xplace"
