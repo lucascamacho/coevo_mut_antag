@@ -1,6 +1,6 @@
-# Basic script to test the Antagonize function and simulate coevolution.
-# This script returns a simple graph with species traits changing in time
-# due to coevolution. 
+# Basic script to test the R base-functions to simulate the coevolutionary process
+# of networks with positive and negative interactions outcomes.
+# This script returns a simple graph with species traits changing in time.
 
 # loading packages and functions
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/scripts/")
@@ -12,62 +12,37 @@ source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
 library(ggplot2)
 library(reshape2)
 library(cowplot)
-library(MASS)
 
 # initial parameters
 antprob = 0.2 # current probability value
-n_sp = 5 # defining number of species
-M = matrix(1, ncol = n_sp, nrow = n_sp)   # building matrix M (mutualisms)
+n_sp = 10 # defining number of species
+M = matrix(1, ncol = n_sp, nrow = n_sp) # building matrix M of positive outcomes
 diag(M) = 0 # no intraespecific interactions
 
-# Antagonize M (transform links in antagonisms)
+# Antagonize M (transform positive links in negative)
 antagonize = Antagonize(M, antprob)
 M = antagonize[[1]]
 V = antagonize[[2]]
 
-# End pure antagonism AA
-end = EndInteraction(M, V, "interference")
-M = end[[1]]
-V = end[[2]]
+# End interferences AA
+#end = EndInteraction(M, V, "interference")
+#M = end[[1]]
+#V = end[[2]]
 
 # coevolutionary model parameters
 phi = 0.2
 alpha = 0.2
-theta = runif(n_sp, 0, 5)
-init = runif(n_sp, 0, 5)
+theta = runif(n_sp, 0, 10)
+init = runif(n_sp, 0, 10)
 p = 0.1
-epsilon = 4
+epsilon = 5
 eq_dif = 0.0001
 t_max = 1000
 
-#
-save_matrix = function(M, V, init){
-  A = M + V # matrix with all interactions (mutualistic and antagonistic)
-  z_dif = t(A * init) - A * init # matrix with all trait differences
-  
-  dex = which(abs(z_dif) > 3)
-  M[dex] = 0
-  V[dex] = 0
-  
-  lista = list(M, V)
-  return(lista)
-}
-
-salv = save_matrix(M, V, init)
-M = salv[[1]]
-V = salv[[2]]
-M+V
-#write.matrix(M+V, file = "~/Dropbox/Master/Code/coevo_mut_antag/R/a_binary_2.txt")
-
 # running coevolution simulation
-simulation = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
-traits = simulation[[1]]
-q = simulation[[2]]
+traits = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
 
-#write.matrix(q[[1]], file = "~/Dropbox/Master/Code/coevo_mut_antag/R/q_1.txt")
-#write.matrix(q[[nrow(traits) - 1]], file = "~/Dropbox/Master/Code/coevo_mut_antag/R/q_final.txt")
-
-# building data frame to use in ggplot2
+# building data frame to plot the results
 traits = as.data.frame(traits)
 n_sp = ncol(traits)
 traits_vec = c(as.matrix(traits))
@@ -77,7 +52,7 @@ traits_df = data.frame(species = rep(paste("sp", 1:n_sp, sep = ""), each = nrow(
 
 # plotting traits through time
 plotar = ggplot(traits_df, aes(x = time, y = trait, color = species)) +
-  geom_point(size = 1.8, alpha = 0.7) + 
+  geom_path(size = 1.8, alpha = 0.7) + 
   ggtitle(paste("proportion antagonists = ", antprob)) +
   xlab("Time") + 
   ylab("Mean species trait (z)") +

@@ -1,20 +1,22 @@
-# This is a scratch script to simulate coevolution with antagonism and mutualisms.
-# Please, check the original matlab code mutantag.m file.
+# This is a scratch script to simulate coevolution with antagonism and mutualism outcomes.
+#
+# Please, check the original matlab code mutantag.m file in this same directory.
+#
 # This was made in the Workshop of Ecological Networks that happened in April, 2018.
 
-# load packages
+# loading packages
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
 library(ggplot2)
 library(cowplot)
 
 # initial conditions
-n_sp = 5
+n_sp = 10
 M = matrix(1, ncol = n_sp, nrow = n_sp)
 diag(M) = 0
-t_max = 100
+t_max = 1000
 z = runif(n_sp, 0, 10)
 theta = runif(n_sp, 0, 10)
-intfor = 0.5
+intfor = 0.9
 alpha = 0.2
 resultados = matrix(NA, ncol = n_sp, nrow = 1)
 resultados[1,] = z
@@ -23,7 +25,7 @@ phi = 0.2
 V = M * 0
 barreira = 5
 
-# change interactions of M to V matrix
+# Antagonize M (transform positive links in negative)
 for(i in 1:n_sp){
   for(j in 1:n_sp){
     if(M[i,j] == 1){
@@ -36,11 +38,11 @@ for(i in 1:n_sp){
   }
 }
 
-#
+# 
 Q = M + V
 G = Q
 
-# calculate Q matrix
+# Calculate Q matrix
 for(r in 1:t_max){
   #
   for(i in 1:n_sp){
@@ -51,12 +53,12 @@ for(r in 1:t_max){
     }
   }
 
-  # normalize Q matrix
+  # Normalize Q matrix
   Q = Q / apply(Q, 1, sum)
   Q = intfor * Q
   S = matrix(0, nrow = 1, ncol = n_sp)
   
-  # Calculate selection differencials
+  # Calculate selection differencials (SD)
   for(i in 1:n_sp){
     S[i] = S[i] + phi * (1 - intfor) * (theta[i] - z[i]) # environment SD
     for(j in 1:n_sp){
@@ -79,7 +81,7 @@ for(r in 1:t_max){
   }
   
   #
-  z = z + S
+  z = z + S # update the trait values
   resultados = rbind(resultados, z)
   
 }

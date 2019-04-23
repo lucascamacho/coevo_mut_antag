@@ -1,9 +1,12 @@
 # For empirical networks:
-# Great loop to describe how the mean trait values in equilibrium change with the antprob.
-# We are calculating the mean trait value for different interaction types
+# Loop to describe how the mean trait values in equilibrium change with the p (antprob).
+#
+# We are calculating the mean trait value for different interaction outcomes types
+# like AA, AM and MM.
+#
 # in each simulation, we have 3 values of species trait at "equilibrium", each value
-# representing a interaction type.
-# For each value of antprob, we are doing 10 simulations
+# representing a interaction outcome type. For each value of antprob, 
+# we are doing 10 simulations.
 
 # set work directory and define antprob sequence
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
@@ -15,6 +18,7 @@ colnames(last_traits) = c("MEAN_AM", "VAR_AM", "MEAN_MM", "VAR_MM", "antprob")
 last_traits[,5] = antprob_vec
 
 # loop to coevolution simulation and get the last line of z_mat for each simulation
+# for each antprob value, we run 10 simulations.
 for(a in 1:length(antprob_vec)){
   antprob = antprob_vec[a] # define a value fo antprob
   print(antprob) # print this value to follow the simulation process
@@ -43,13 +47,11 @@ for(a in 1:length(antprob_vec)){
   
 }
 
-# prepare final data and plot in a single window
+# prepare final data and plot the results in a single window
 data = data.frame(last_traits)
-#pdf("GALLETI_Trait_KDiff_AM_MM.pdf")
 par(mfrow = c(2,2))
 plot(data$antprob, data$MEAN_AM, pch = 19, col = "blue", xlab = "antprob (p)", ylab = "Mean Trait for Cheaters")
 plot(data$antprob, data$MEAN_MM, pch = 19, col = "blue", xlab = "antprob (p)", ylab = "Mean Trait for Mutualism")
 plot(data$antprob, data$VAR_AM, pch = 19, col = "red", xlab = "antprob (p)", ylab = "Delta Trait for Cheaters")
 plot(data$antprob, data$VAR_MM, pch = 19, col = "red", xlab = "antprob (p)", ylab = "Delta Trait for Mutualism")
 title("Traits of Cheaters and Mutualism (Balanced by degree Kmm and Kam)", line = -2, outer = TRUE)
-#dev.off()

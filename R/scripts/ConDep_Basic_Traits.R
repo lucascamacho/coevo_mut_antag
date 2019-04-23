@@ -1,7 +1,9 @@
-# Basic script to run the coevolutionary model with context dependendy of interactions.
-# this script returns a simple graph with species traits changing in time
-# due to coevolution. The stars in the graph shows the timesteps in which the interactions
-# shift occurs.
+# Run the coevolutionary model with interaction outcomes that are context-dependent.
+# Based on a probability prob_change (Q), in each timestep of the simulation, an interaction
+# outcome shifts (AA -> AM and AM -> MM).
+#
+# This script returns a simple graph with species traits changing in time due to coevolution.
+# The asteriscs in the graph shows the timesteps in which the interactions shift occurs.
 
 # loading packages and functions
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
@@ -16,16 +18,17 @@ library(cowplot)
 
 # initial parameters
 antprob = 0.2 # current probability value
+prob_change = 0.1 # Q or current probability of an interaction outcome shift
 n_sp = 10 # defining number of species
-M = matrix(1, ncol = n_sp, nrow = n_sp)   # building matrix M (mutualisms)
+M = matrix(1, ncol = n_sp, nrow = n_sp) # building matrix M of positive outcomes
 diag(M) = 0 # no intraespecific interactions
 
-# Antagonize M (transform links in antagonisms)
+# Antagonize M (transform positive links in negative)
 antagonize = Antagonize(M, antprob)
 M = antagonize[[1]]
 V = antagonize[[2]]
 
-# End pure antagonism AA
+# End interferences AA
 end = EndInteraction(M, V, "interference")
 M = end[[1]]
 V = end[[2]]
@@ -39,12 +42,10 @@ p = 0.1
 epsilon = 5
 eq_dif = 0.0001
 t_max = 1000
-prob_change = 0.1
 
 # running coevolution simulation
 simulation = ConDepCoevoMutAntNet(n_sp, M, V, phi, alpha, 
                                   theta, init, p, epsilon, eq_dif, t_max, prob_change)
-
 traits = simulation[[1]]
 w_time = as.data.frame(simulation[[2]])
 
@@ -52,7 +53,7 @@ w_time = as.data.frame(simulation[[2]])
 colnames(w_time) = "xplace"
 w_time$yplace = 1
 
-# building data frame to use in ggplot2
+# building data frame to plot results
 traits = as.data.frame(traits)
 n_sp = ncol(traits)
 traits_vec = c(as.matrix(traits))

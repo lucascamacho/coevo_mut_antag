@@ -1,7 +1,14 @@
-# Consistency test for the frequency of antagonisms (AM).
+# Consistency test for the frequency of antagonism outcomes (AM).
+#
 # Counting the frequencies of AA, AM and MM in the M and V matrices.
+# We define p (or antprob) as the probability of an positive interaction outcome
+# become negative.
+#
 # We expect that the frequencies of AA, AM and MM follow the proportions:
 # AA = p ^ 2, AM = 2p(1 - p), MM = (1 - p) ^ 2.
+#
+# This script returns a plot with the expected and observed frequencies 
+# of AA, AM and MM.
 
 # load functions and packages
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
@@ -21,17 +28,17 @@ for(i in 1:length(antprob)){
 # loop to count the frequencies of AA, AM and MM
 
   n_sp = 100 # number of species
-  n_int = ((n_sp ** 2) - n_sp) / 2 # number of interactions in the matrix
-  M = matrix(1, ncol = n_sp, nrow = n_sp) # mutualism matrix
+  n_int = ((n_sp ** 2) - n_sp) / 2 # number of interactions (double outcomes) in the matrix
+  M = matrix(1, ncol = n_sp, nrow = n_sp) # matrix M of positive outcomes
   diag(M) = 0 # no intraespecific interactions
   
-  # Antagonize M (links become antagonistic)
+  # Antagonize M (transform positive links in negative)
   antagonize = Antagonize(M, antprob[i])
   M = antagonize[[1]]
   V = antagonize[[2]]
 
-  # counting interactions frequencies
-  c = Counting(M, V) #apply Counting function
+  # counting interactions outcomes frequencies
+  c = Counting(M, V)
 
   # allocate frequencies in data matrix
   data[i,1] = antprob[i] # antprob values
@@ -56,4 +63,4 @@ plotar = ggplot(data = test_data_long,
 
 # plot and save the plot
 plotar
-ggsave(plotar, file = "Counting_Frequencies_Interactions.png")
+#ggsave(plotar, file = "Counting_Frequencies_Interactions.png")
