@@ -25,9 +25,9 @@ M = antagonize[[1]]
 V = antagonize[[2]]
 
 # End interferences AA
-#end = EndInteraction(M, V, "interference")
-#M = end[[1]]
-#V = end[[2]]
+end = EndInteraction(M, V, "interference")
+M = end[[1]]
+V = end[[2]]
 
 # coevolutionary model parameters
 phi = 0.2
