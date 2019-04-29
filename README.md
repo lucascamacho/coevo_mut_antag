@@ -11,7 +11,7 @@ I run my simulations in two different computers:
 - Notebook MacBook Pro (13-inch, Mid 2012) 2.9 GHz Intel Core i7, 8GB DDR3, macOS High Sierra 10.13.6
 
 The softwares used was:
-- R 3.5.0
+- R 3.5.3
 - RStudio 1.1.453
 - Zotero 5.0.61
 - TexMaker 5.0.2

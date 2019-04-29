@@ -14,7 +14,7 @@ library(reshape2)
 library(cowplot)
 
 # initial parameters
-antprob = 0.2 # current probability value
+antprob = 0.9 # current probability value
 n_sp = 10 # defining number of species
 M = matrix(1, ncol = n_sp, nrow = n_sp) # building matrix M of positive outcomes
 diag(M) = 0 # no intraespecific interactions
