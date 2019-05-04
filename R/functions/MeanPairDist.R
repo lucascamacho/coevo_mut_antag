@@ -1,6 +1,7 @@
 #-----------------------------------------------------------------------------------------------------#
-VarTraitDegreeBalanced = function(z_mat){
+MeanPairDist = function(z_mat){
   # Calculate the absolute difference of traits between species by interaction outcome type 
+  # You can also find this metric called Mean Pairwise Distance (Ciamplaglio, 2001)
   # Args:
   #  z_mat: matrix of species traits. Rows are timesteps and columns are species.
   # 
@@ -24,13 +25,13 @@ VarTraitDegreeBalanced = function(z_mat){
       dif_cheat = sapply(z_mat[index[[2]]],"-", z_mat[index[[2]]])
       dif_cheat = abs(dif_cheat)
       dif_c = sum(dif_cheat[lower.tri(dif_cheat)])
-      dif_c = dif_c / c[[2]]
+      dif_c = dif_c / (c[[2]] * 2)
       
       # mutualisms calculation
       dif_mut = sapply(z_mat[index[[3]]],"-", z_mat[index[[3]]])
       dif_mut = abs(dif_mut)
       dif_m = sum(dif_mut[lower.tri(dif_mut)])   
-      dif_m = dif_m / c[[3]]
+      dif_m = dif_m / (c[[3]] * 2)
       
       #return the differences
       difs = c(dif_c, dif_m)
@@ -46,7 +47,7 @@ VarTraitDegreeBalanced = function(z_mat){
         dif_cheat = sapply(z_mat[index[[2]]],"-", z_mat[index[[2]]])
         dif_cheat = abs(dif_cheat)
         dif_c = sum(dif_cheat[lower.tri(dif_cheat)])
-        dif_c = dif_c / c[[2]]
+        dif_c = dif_c / (c[[2]] * 2)
         
         # return the differences
         difs = c(dif_c, dif_m)
@@ -60,7 +61,7 @@ VarTraitDegreeBalanced = function(z_mat){
         dif_mut = sapply(z_mat[index[[3]]],"-", z_mat[index[[3]]])
         dif_mut = abs(dif_mut)
         dif_m = sum(dif_mut[lower.tri(dif_mut)])
-        dif_m = dif_m / c[[3]]
+        dif_m = dif_m / (c[[3]] * 2)
         
         # return the differences
         difs = c(dif_c, dif_m)

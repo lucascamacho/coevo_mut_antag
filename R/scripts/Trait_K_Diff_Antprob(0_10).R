@@ -74,16 +74,18 @@ for(a in 1:length(antprob_vec)){
 
 # plot the time, the variance and the difs varying antprob (p)
 time_plot = ggplot(data = as.data.frame(data_time_var)) + 
-            geom_point(aes(x = data_time_var[,1], y = data_time_var[,2]), alpha = 0.7, size = 2) +
-            geom_errorbar(data = as.data.frame(data_time_var), mapping = aes(x = data_time_var[,1], 
-                                                              ymax = data_time_var[,4],
-                                                              ymin = data_time_var[,5])) +
+            geom_point(aes(x = data_time_var[,1], y = data_time_var[,2]), 
+                       alpha = 0.7, size = 2) +
+            geom_errorbar(data = as.data.frame(data_time_var), 
+                          mapping = aes(x = data_time_var[,1], ymax = data_time_var[,4], 
+                                        ymin = data_time_var[,5])) +
             theme_minimal(base_size = 16) +
-            xlab("Frequency of antagonisms (p)") + 
+            xlab("Frequency of antagonisms (p)") +
             ylab("Number of timesteps to equilibrium")
 
 var_plot = ggplot(data = as.data.frame(data_time_var)) + 
-           geom_point(aes(x = data_time_var[,1], y = log(data_time_var[,3])), alpha = 0.7, size = 2) + 
+           geom_point(aes(x = data_time_var[,1], y = log(data_time_var[,3])), 
+                      alpha = 0.7, size = 2) + 
            theme_minimal(base_size = 16) +
            xlab("Frequency of antagonisms (p)") + 
            ylab("Log of species trait variance in equilibrium")

@@ -20,8 +20,7 @@ source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/SpDegree.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Counting.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/FindInteractors.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
-source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/TraitDegreeBalanced.R")
-source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/VarTraitDegreeBalanced.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/MeanPairDist.R")
 
 library(ggplot2)
 
@@ -64,30 +63,30 @@ t_max = 1000
 z_mat = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
 
 # apply the calculations of our metrics in z_mat
-dif_traits = apply(z_mat, 1, TraitDegreeBalanced)
-var_traits = apply(z_mat, 1, VarTraitDegreeBalanced)
+dif_traits = apply(z_mat, 1, MeanPairDist)
+var_traits = apply(z_mat, 1, var)
 time_traits = seq(1, nrow(z_mat), 1)
 
 # create data frames to each variable
-#var_time = data.frame(time_traits, var_traits)
+var_time = data.frame(time_traits, var_traits)
 dif_time_AM = data.frame(time_traits, dif_traits[1,])
 dif_time_MM = data.frame(time_traits, dif_traits[2,])
 
 # plot the results
-#var_plot = ggplot() + 
-#           geom_point(aes(x = time_traits, y = var_traits[1,]), color = "red") + 
-#           geom_point(aes(x = time_traits, y = var_traits[2,]), color = "blue") +
+#var_plot = ggplot(var_time) + 
+#           geom_point(aes(x = time_traits, y = var_traits)) + 
 #           ggtitle(paste("proportion antagonists = ", antprob)) +
 #           xlab("Time") + 
 #           ylab("Variance of species traits (z)") +
 #           theme_bw()
-
+#
 #dif_plot = ggplot() +
-#           geom_point(aes(x = time_traits, y = dif_time_AM[,2]), color = "red") +
+#           geom_point(aes(x = dif_time_AM[,1], y = dif_time_AM[,2]), color = "red") +
+#           geom_point(aes(x = dif_time_MM[,1], y = dif_time_MM[,2]), color = "blue") +
 #           ggtitle(paste("proportion antagonists = ", antprob)) +
 #           xlab("Time") + 
-#           ylab("Mean trait value of species balanced by degree (Kam and Kmm)") +
+#           ylab("Mean Pairwise Distance separated by signal effect of interaction") +
 #          theme_bw()
-
+#
 #var_plot
 #dif_plot
