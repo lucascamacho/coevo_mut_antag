@@ -39,7 +39,7 @@ i implement it on R. These guides ends in a single plot showing the average spec
 
 - [Tutorial_MutAntNet](): IN PROGRESS. Tutorial to explain what i've being doing in the scripts where i explore how the presence of antagonism (like cheaters) influences the coevolutionary process in mutualistic networks. You will that i try to explain step-by step the basic ideas of my scripts and how do i visualize the results of my simulations.
 
-- [Tutorial_ContDepCoevo](): IN PROGRESS. This tutorial shows the base ideas of the scripts which explores the coevolutionary process in context-dependent interactions. You will that the basic ideias of this scripts and those from the MutAntnet tutorial are pretty similar. Please, check carefully the data visualization of this tutorial, which uses disparity metrics from macroevolutionary studies. 
+- [Tutorial_ContDepCoevo](): IN PROGRESS. This tutorial shows the base ideas of the scripts which explores the coevolutionary process in context-dependent interactions. You will see that the basic ideias of this scripts and those from the MutAntNet tutorial are pretty similar. Please, check carefully the data visualization of this tutorial, which uses disparity metrics from macroevolutionary studies. 
 
 
 ### Running my simulations
