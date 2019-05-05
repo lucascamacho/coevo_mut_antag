@@ -35,7 +35,11 @@ Please, let me know if these tutorials and guides are useful or has some erros o
 guides and tutorials available:
 
 - [Guide_coevo_mut_antag](https://github.com/lucascamacho/coevo_mut_antag/blob/master/Guide_coevo_mut_antag.pdf): Guide showing my project basic ideas, my model and how do 
-i implement it on R. These guides ends in a single plot showing the average species traits changing in time.  
+i implement it on R. These guides ends in a single plot showing the average species traits changing in time.
+
+- [Tutorial_MutAntNet](): IN PROGRESS. Tutorial to explain what i've being doing in the scripts where i explore how the presence of antagonism (like cheaters) influences the coevolutionary process in mutualistic networks. You will that i try to explain step-by step the basic ideas of my scripts and how do i visualize the results of my simulations.
+
+- [Tutorial_ContDepCoevo](): IN PROGRESS. This tutorial shows the base ideas of the scripts which explores the coevolutionary process in context-dependent interactions. You will that the basic ideias of this scripts and those from the MutAntnet tutorial are pretty similar. Please, check carefully the data visualization of this tutorial, which uses disparity metrics from macroevolutionary studies. 
 
 
 ### Running my simulations
