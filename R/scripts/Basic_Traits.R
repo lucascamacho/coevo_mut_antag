@@ -7,6 +7,8 @@ setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/scripts/")
 
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/PartRatio.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/MNND.R")
 
 library(ggplot2)
 library(reshape2)
@@ -26,15 +28,19 @@ V = antagonize[[2]]
 # coevolutionary model parameters
 phi = 0.2
 alpha = 0.2
-theta = runif(n_sp, 0, 10)
-init = runif(n_sp, 0, 10)
+theta = runif(n_sp, 0, 5)
+init = runif(n_sp, 0, 5)
 p = 0.1
-epsilon = 5
+epsilon = 3
 eq_dif = 0.0001
 t_max = 1000
 
 # running coevolution simulation
 traits = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
+
+# calculate the participation ratio
+partratio = PartRatio(as.matrix(t((traits[nrow(traits), ]))))
+mnnd = MNND(as.matrix(t((traits[nrow(traits), ]))))
 
 # building data frame to plot the results
 traits = as.data.frame(traits)

@@ -11,8 +11,6 @@ PartRatio = function(z_mat){
   #   part_ratio: participation ratio metric (ranging from 1 to n_sp) 
   
   # get the morphospace range, and create the bins for each specie
-  max_range = max(z_mat)
-  min_range = min(z_mat)
   create_bins = cut(z_mat, ncol(z_mat))
   
   # get the frequency of occupied bins
