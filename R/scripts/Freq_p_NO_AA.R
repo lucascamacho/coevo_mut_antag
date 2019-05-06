@@ -11,7 +11,6 @@
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
 
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
-source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/EndInteraction.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Counting.R")
 
 library(ggplot2)
@@ -24,7 +23,7 @@ data[,3] = antprob
 
 # loop to count the frequencies of AA, AM and MM
 for(i in 1:length(antprob)){
-  n_sp = 100 # number of species
+  n_sp = 1000 # number of species
   n_int = ((n_sp ** 2) - n_sp) / 2 # number of interactions in the matrix
   M = matrix(1, ncol = n_sp, nrow = n_sp) # matrix M of positive outcomes
   diag(M) = 0 # no intraespecific interactions
@@ -34,11 +33,6 @@ for(i in 1:length(antprob)){
   M = antagonize[[1]]
   V = antagonize[[2]]
   
-  # End interferences AA
-  end = EndInteraction(M, V, "interference")
-  M = end[[1]]
-  V = end[[2]]
-
   # counting interactions AA, AM and MM (AA must be zero)
   c = Counting(M, V)
   

@@ -15,7 +15,6 @@
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
 
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
-source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/EndInteraction.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/SpDegree.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Counting.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/FindInteractors.R")
@@ -34,11 +33,6 @@ diag(M) = 0 # no intraespecific interactions
 antagonize = Antagonize(M, antprob)
 M = antagonize[[1]]
 V = antagonize[[2]]
-
-# End the interferences
-end = EndInteraction(M, V, "interference")
-M = end[[1]]
-V = end[[2]]
 
 # measure the degree of AM and MM for each specie
 degree = SpDegree(M, V)

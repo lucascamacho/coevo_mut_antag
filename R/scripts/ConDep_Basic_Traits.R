@@ -9,7 +9,6 @@
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
 
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
-source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/EndInteraction.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/ConDepCoevoMutAntNet.R")
 
 library(ggplot2)
@@ -27,11 +26,6 @@ diag(M) = 0 # no intraespecific interactions
 antagonize = Antagonize(M, antprob)
 M = antagonize[[1]]
 V = antagonize[[2]]
-
-# End interferences AA
-end = EndInteraction(M, V, "interference")
-M = end[[1]]
-V = end[[2]]
 
 # coevolutionary model parameters
 phi = 0.2
