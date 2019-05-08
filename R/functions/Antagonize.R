@@ -1,4 +1,4 @@
-#---------------------------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------#
 Antagonize = function(M, antprob){
   # Following a certain probability, transform interactions outcomes from positive to negative. 
   #
@@ -8,8 +8,27 @@ Antagonize = function(M, antprob){
   #
   # Return:
   #   mats = list of positive and negative outcomes, respectively
-  # 
-  V = M * 0 # create V matrix with the same size of mat
+  
+  # create V matrix with the same size of mat
+  V = M * 0 
+  
+  # identify and sample a value for half of the positive outcomes (M == 1)
+  
+  
+  # change the outcome of the other half of positive outcomes to negative
+  # in M and V matrices
+  
+  
+  
+  # diagonal's matrices must be zero
+  diag(V) = 0
+  
+  # create and return a list with the positive and negative matrices
+  mats = list(M, V) 
+  return(mats)
+  
+  
+  
   
   for(i in 1:dim(M)[1]){
     for(j in 1:dim(M)[2]){
@@ -28,9 +47,5 @@ Antagonize = function(M, antprob){
 
   #M[antprob >= P] = 0 # if the probability is lower or equal than antprob,the link in M in zero
   #V[antprob >= P] = 1 # and the link in V is 1
-  diag(V) = 0 # diagonal's matrices must be zero
-
-  mats = list(M, V) # create and return a list with the positive and negative matrices
-  return(mats)
 }
 #---------------------------------------------------------------------------------------------------#

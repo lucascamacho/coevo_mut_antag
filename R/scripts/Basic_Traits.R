@@ -7,15 +7,13 @@ setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/scripts/")
 
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
-source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/PartRatio.R")
-source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/MNND.R")
 
 library(ggplot2)
 library(reshape2)
 library(cowplot)
 
 # initial parameters
-antprob = 0.9 # current probability value
+antprob = 0.2 # current probability value
 n_sp = 10 # defining number of species
 M = matrix(1, ncol = n_sp, nrow = n_sp) # building matrix M of positive outcomes
 diag(M) = 0 # no intraespecific interactions
@@ -37,10 +35,6 @@ t_max = 1000
 
 # running coevolution simulation
 traits = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
-
-# calculate the participation ratio
-partratio = PartRatio(as.matrix(t((traits[nrow(traits), ]))))
-mnnd = MNND(as.matrix(t((traits[nrow(traits), ]))))
 
 # building data frame to plot the results
 traits = as.data.frame(traits)
