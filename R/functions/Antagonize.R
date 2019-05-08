@@ -17,19 +17,6 @@ Antagonize = function(M, antprob){
   
   # change the outcome of the other half of positive outcomes to negative
   # in M and V matrices
-  
-  
-  
-  # diagonal's matrices must be zero
-  diag(V) = 0
-  
-  # create and return a list with the positive and negative matrices
-  mats = list(M, V) 
-  return(mats)
-  
-  
-  
-  
   for(i in 1:dim(M)[1]){
     for(j in 1:dim(M)[2]){
       if(M[i,j] == 1){
@@ -42,6 +29,19 @@ Antagonize = function(M, antprob){
       }
     }
   }
+  
+  
+  # diagonal's matrices must be zero
+  diag(V) = 0
+  
+  # create and return a list with the positive and negative matrices
+  mats = list(M, V) 
+  return(mats)
+  
+  
+  
+  
+
   #P = matrix(runif(dim(M)[1]*dim(M)[2], min = 0, max = 1),  # create matrix of probabilities
   #            ncol = dim(M)[1], nrow = dim(M)[2])
 
