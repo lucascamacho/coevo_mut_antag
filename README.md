@@ -25,7 +25,7 @@ This repository is organized in folders which contain different aspects of my ma
 - R: separate in functions and scripts. You will find all the .R files to run my simulations
 - Data: the networks of interactions that i use and the .RData files with the results of all my simulations
 - Output: figures, pdf's, graphs, etc. All the visual results of my project are here
-- Manuscript: the RMarkdown files that compose my master's dissertation.
+- Manuscript: the LaTeX files that compose my master's dissertation.
 
 ### Tutorial and guides
 
