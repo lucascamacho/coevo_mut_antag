@@ -19,8 +19,8 @@ NearDist = function(z_mat){
   max_dist = apply(abs(distances), 1, FUN = function(x) {max(x[x > 0])})
   
   # sum of the distances and control by species numbers
-  min_n = sum(min_dist) / ncol(z_mat)
-  max_n = sum(max_dist) / ncol(z_mat)
+  min_n = sum(min_dist) / length(z_mat)
+  max_n = sum(max_dist) / length(z_mat)
   
   # return results
   d = list(min_n, max_n)

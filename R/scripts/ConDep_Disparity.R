@@ -26,8 +26,8 @@ library(reshape2)
 library(cowplot)
 
 # initial parameters
-#antprob = 0.2 # current probability value
-#prob_change = 0.01 # current probability of interaction outcome shift
+#antprob = 0.8 # current probability value
+#prob_change = 0.2 # current probability of interaction outcome shift
 n_sp = 50 # defining number of species
 M = matrix(1, ncol = n_sp, nrow = n_sp) # building matrix M of positive outcomes
 diag(M) = 0 # no intraespecific interactions
@@ -53,12 +53,11 @@ simulation = ConDepCoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilo
 traits = as.matrix(simulation[[1]])
 w_time = as.matrix(simulation[[2]])
 
-# calculate our 4 trait disparity metrics
-variance = var(traits[nrow(traits), ])
-meanpairdist = MeanPairDist(traits[nrow(traits), ])
-partratio = PartRatio(t(traits[nrow(traits), ]))
-neardist_min = NearDist(t(traits[nrow(traits), ]))[[1]]
-neardist_max = NearDist(t(traits[nrow(traits), ]))[[2]]
+# an apply for each line of z_mat
+variance = apply(traits, 1, var)
+meanpairdist = apply(traits, 1, MeanPairDist)
+partratio = apply(traits, 1, PartRatio)
+neardist = apply(traits, 1, NearDist)
 
 # set the times where the interaction oucomes shift occurs
 #colnames(w_time) = "xplace"

@@ -11,11 +11,11 @@ PartRatio = function(z_mat){
   #   part_ratio: participation ratio metric (ranging from 1 to n_sp) 
   
   # get the morphospace range, and create the bins for each specie
-  create_bins = cut(z_mat, ncol(z_mat))
+  create_bins = cut(z_mat, length(z_mat))
   
   # get the frequency of occupied bins
   freq_bins = table(create_bins)
-  freq_bins = freq_bins / ncol(z_mat)
+  freq_bins = freq_bins / length(z_mat)
   
   # sum of the squares of all occupied bins values
   bins_sums = sum((freq_bins ** 2))

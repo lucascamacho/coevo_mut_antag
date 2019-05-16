@@ -40,11 +40,11 @@ for(i in 1:nrow(data)){
   source("~/Dropbox/Master/Code/coevo_mut_antag/R/scripts/ConDep_Disparity.R")
   
   # keep the results in the data matrix
-  data[i,1] = variance
-  data[i,2] = meanpairdist
-  data[i,3] = partratio
-  data[i,4] = neardist_min
-  data[i,5] = neardist_max
+  data[i,1] = varian[length(varian)]
+  data[i,2] = mediapar[length(mediapar)]
+  data[i,3] = partiratio[length(partiratio)]
+  data[i,4] = neardist[[nrow(traits)]][[1]]
+  data[i,5] = neardist[[nrow(traits)]][[2]]
   data[i,6] = antprob
   data[i,7] = prob_change
 }
