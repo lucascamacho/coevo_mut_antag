@@ -17,8 +17,7 @@
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/scripts")
 
 # load packages
-library(ggplot2)
-library(reshape2)
+if(!require(ggplot2)) {install.packages("ggplot2"); library(ggplot2)}
 
 # define the vector of p and q and combine 2-by-2 these values
 antprob_vec = c(0.2, 0.5, 0.8)

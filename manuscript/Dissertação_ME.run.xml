@@ -78,8 +78,5 @@
     <requires type="dynamic">
       <file>Dissertação_ME.bcf</file>
     </requires>
-    <requires type="editable">
-      <file>master_mutantag.bib</file>
-    </requires>
   </external>
 </requests>
