@@ -1,4 +1,5 @@
-# From mutualism to antagonism: coevolutionary dynamics of cheaters and context dependent interactions
+<dt>justify</dt>
+<dd># From mutualism to antagonism: coevolutionary dynamics of cheaters and context dependent interactions
 
 Coevolution is a fundamental process on the characterization of ecological communities, creating and breaking interaction between species. Nowadays, we know that different interaction outcomes, like mutualism or antagonism, can influence the species coevolution in distinct ways. However, the ecological interaction outcomes are variable in space and time. The interactions which the outcomes vary in space and time are called context-dependent and can influence the arrange of antagonism/mutualism interaction in time and consequently, change the coevolutionary dynamics os species. Thus, take into account the context-dependent interactions in coevolutionary models and explore how the interactions outcomes shifts changes the coevolutionary process in a next step on the interface between ecology and evolution. Here, we combine a single trait coevolutive model, empirical networks of interactions and numerical simulations to contribute to this next step.
 
@@ -64,4 +65,4 @@ List of R packages used:
 * To all the actual and pass students of MiudoLab and Lage's at USP.
 * Charles Darwin for dive in that crazy trip in a crazy ship and write about it.
 * Alan Turing for develop the base of computers that we have nowadays.
-* Electric Octopus, Jimmy Hendrix, Naxatras and several other psychodelic bands that help me code better.
+* Electric Octopus, Jimmy Hendrix, Naxatras and several other psychodelic bands that help me code better.</dd>
