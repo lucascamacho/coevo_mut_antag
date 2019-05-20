@@ -54,16 +54,60 @@ load(file = "~/Dropbox/Master/Code/coevo_mut_antag/data/ConDep_Disparity.RData")
 data = as.data.frame(data)
 
 # prepare and plot the results
-boxplot = ggplot(data = data) +
-  geom_point(aes(x = as.character(prob_change), y = neardist_min, 
+# first the var plot
+var_boxplot = ggplot(data = data) +
+  geom_point(aes(x = as.character(prob_change), y = variance, 
                  color = as.factor(prob_change)), size = 1, 
-             shape = 21, alpha = 0.3, position = position_jitterdodge()) +
-  geom_violin(aes(x = as.character(prob_change), y = neardist_min, 
-                  color  = as.factor(prob_change))) +
+             shape = 21, alpha = 0.4, position = position_jitterdodge()) +
+  geom_violin(aes(x = as.character(prob_change), y = variance, 
+                  fill = as.factor(prob_change)), alpha = 0.2) +
   facet_wrap(~antprob) +
   theme_bw(base_size = 16) +
-  scale_fill_discrete(name = "Q") +
   labs(x = "Valores de probabilidade de mudança de interação no tempo", 
-       y = "Valores de Discrepância (Variância) das espécies")
+       y = "Variância")
+  
+# the mean pairwise distance plot
+meanpairdist_boxplot = ggplot(data = data) +
+  geom_point(aes(x = as.character(prob_change), y = meanpairdist, 
+                 color = as.factor(prob_change)), size = 1, 
+             shape = 21, alpha = 0.4, position = position_jitterdodge()) +
+  geom_violin(aes(x = as.character(prob_change), y = meanpairdist, 
+                  fill = as.factor(prob_change)), alpha = 0.2) +
+  facet_wrap(~antprob) +
+  theme_bw(base_size = 16) +
+  labs(x = "Valores de probabilidade de mudança de interação no tempo", 
+       y = "Mean Pairwise Distance")
 
-boxplot
+# the participation ratio plot
+partratio_boxplot = ggplot(data = data) +
+  geom_point(aes(x = as.character(prob_change), y = partratio, 
+                 color = as.factor(prob_change)), size = 1, 
+             shape = 21, alpha = 0.4, position = position_jitterdodge()) +
+  geom_violin(aes(x = as.character(prob_change), y = partratio, 
+                  fill = as.factor(prob_change)), alpha = 0.2) +
+  facet_wrap(~antprob) +
+  theme_bw(base_size = 16) +
+  labs(x = "Valores de probabilidade de mudança de interação no tempo", 
+       y = "Participation Ratio")
+
+# Near and Long Pairwise Distance plot
+nearlong_boxplot = ggplot(data = data) +
+  geom_point(aes(x = as.character(prob_change), y = neardist_min, 
+                 color = as.factor(prob_change)), size = 1, 
+             shape = 21, alpha = 0.4, position = position_jitterdodge()) +
+  geom_point(aes(x = as.character(prob_change), y = neardist_max, 
+                  fill = as.factor(prob_change)), alpha = 0.2) +
+  facet_wrap(~antprob) +
+  theme_bw(base_size = 16) +
+  labs(x = "Valores de probabilidade de mudança de interação no tempo", 
+       y = "Near and Longest Pairwise Distance")
+
+# save plots
+ggsave(var_boxplot, fil = "var_boxplot.pdf", 
+       dpi = 600, width = 12, height = 8, units = "in")
+ggsave(meanpairdist_boxplot, filename = "meanpairdist_boxplot.pdf", 
+       dpi = 600, width = 12, height = 8, units = "in")
+ggsave(partratio_boxplot, fil = "partratio_boxplot.pdf", 
+       dpi = 600, width = 12, height = 8, units = "in")
+ggsave(nearlong_boxplot, filename = "nearlong_boxplot.pdf", 
+       dpi = 600, width = 12, height = 8, units = "in")
