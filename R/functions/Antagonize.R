@@ -12,24 +12,26 @@ Antagonize = function(M, antprob){
   # create V matrix with the same size of mat
   V = M * 0 
   
-  # identify and sample a value for half of the positive outcomes (M == 1)
+  # get the indexes of interaction outcomes
+  ints = which(lower.tri(M) == 1, arr.ind = TRUE)
   
+  # invert index to get the negative outcome position
+  ints_2 = ints[ ,c("col", "row")]
   
-  # change the outcome of the other half of positive outcomes to negative
-  # in M and V matrices
-  for(i in 1:dim(M)[1]){
-    for(j in 1:dim(M)[2]){
-      if(M[i,j] == 1){
-        p = runif(1, 0, 1)
-        
-        if(p <= antprob){
-          M[j,i] = 0
-          V[j,i] = 1
-        }  
-      }
-    }
+  # sample to change interaction outcomes
+  P = matrix(matrix(runif(nrow(ints), min = 0, max = 1), 
+                    ncol = 1, nrow = nrow(ints)))
+  
+  # the the position of the outcomes that will change
+  position = which(P <= antprob)
+  l = c(ints_2[position, ][,1])
+  c = c(ints_2[position, ][,2])
+  
+  # change interaction outcomes
+  for(i in 1:length(l)){
+    M[l[i],c[i]] = 0
+    V[l[i],c[i]] = 1
   }
-  
   
   # diagonal's matrices must be zero
   diag(V) = 0
@@ -37,15 +39,5 @@ Antagonize = function(M, antprob){
   # create and return a list with the positive and negative matrices
   mats = list(M, V) 
   return(mats)
-  
-  
-  
-  
-
-  #P = matrix(runif(dim(M)[1]*dim(M)[2], min = 0, max = 1),  # create matrix of probabilities
-  #            ncol = dim(M)[1], nrow = dim(M)[2])
-
-  #M[antprob >= P] = 0 # if the probability is lower or equal than antprob,the link in M in zero
-  #V[antprob >= P] = 1 # and the link in V is 1
 }
 #---------------------------------------------------------------------------------------------------#
