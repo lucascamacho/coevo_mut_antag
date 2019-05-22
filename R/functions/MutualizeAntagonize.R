@@ -24,7 +24,7 @@ MutualizeAntagonize = function(M, V, r, prob_change){
     inter = (M == 1) == (t(M) == 1)
     inter[M == 0] = FALSE
     mm_posit = which(inter == TRUE)
-    ch = sample(mm_posit, 1)
+    ch = sample(mm_posit, 1) # aqui
     M[ch] = 0
     V[ch] = 1
     
@@ -35,7 +35,7 @@ MutualizeAntagonize = function(M, V, r, prob_change){
     
     # choose a antagonist outcome if there are more than one...
     if((c_trues > 1) == TRUE){
-      mut = sample(am_posit[zero], 1)
+      mut = sample(am_posit[zero], 1) # aqui
       M[mut] = 1
       V[mut] = 0
       

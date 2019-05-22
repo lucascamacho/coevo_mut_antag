@@ -17,12 +17,12 @@ setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/scripts/")
 
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/ConDepCoevoMutAntNet.R")
-source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/MeanPairDist.R")
-source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/PartRatio.R")
-source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/NearDist.R")
+#source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/MeanPairDist.R")
+#source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/PartRatio.R")
+#source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/NearDist.R")
 
-if(!require(ggplot2)) {install.packages("ggplot2"); library(ggplot2)}
-if(!require(cowplot)) {install.packages("cowplot"); library(cowplot)}
+#if(!require(ggplot2)) {install.packages("ggplot2"); library(ggplot2)}
+#if(!require(cowplot)) {install.packages("cowplot"); library(cowplot)}
 
 # initial parameters
 #antprob = 0.8 # current probability value
@@ -54,9 +54,9 @@ w_time = as.matrix(simulation[[2]])
 
 # an apply for each line of z_mat
 variance = apply(traits, 1, var)
-meanpairdist = apply(traits, 1, MeanPairDist)
-partratio = apply(traits, 1, PartRatio)
-neardist = apply(traits, 1, NearDist)
+#meanpairdist = apply(traits, 1, MeanPairDist)
+#partratio = apply(traits, 1, PartRatio)
+#neardist = apply(traits, 1, NearDist)
 
 # set the times where the interaction oucomes shift occurs
 #colnames(w_time) = "xplace"
