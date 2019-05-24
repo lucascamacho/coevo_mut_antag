@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------------------------------#
-MutualizeAntagonize = function(M, V, r, prob_change){
+MutAntag = function(M, V, r, prob_change){
   # Follow the probability in prob_change, transform a random mutualism outcome in antagonism,
   # also, transform a antagonist outcome in mutualism. This function tracks in which
   # timestep occurs the interactions shifts.
@@ -20,44 +20,46 @@ MutualizeAntagonize = function(M, V, r, prob_change){
   p = runif(1, 0, 1) # sample a number between 0 and 1
   
   if(p <= prob_change){ # outcomes shifts will happend
-    # identify MM outcome and transform into AM or MA
+    ##############
+    # MM to AM shift
+    # identify MM outcomes
     inter = (M == 1) == (t(M) == 1)
     inter[M == 0] = FALSE
     mm_posit = which(inter == TRUE)
-    ch = sample(mm_posit, 1) # aqui
-    M[ch] = 0
-    V[ch] = 1
-    
-    # identify AM or MA outcome and transform into MM
+    # there are MM outcomes? If yes...
+    if(length(mm_posit) != 0){
+      # there's more than 1 MM outcome? If yes...
+      ch = sample(mm_posit, 1) # sample 1 outcome and change to AM.
+      M[ch] = 0
+      V[ch] = 1
+    }
+    ##############
+    # AM to MM shift
+    # identify AM outcomes
     am_posit = which(M != t(M))
     zero = M[am_posit] == 0
     c_trues = table(zero)["TRUE"]
-    
-    # choose a antagonist outcome if there are more than one...
-    if((c_trues > 1) == TRUE){
-      mut = sample(am_posit[zero], 1) # aqui
-      M[mut] = 1
-      V[mut] = 0
-      
-      #return the results
-      w_time = r
-      mats = list(M, V, w_time)
-      return(mats)
+    # there are AM outcomes? If yes...
+    if(c_trues != 0){
+      # there's more than 1 AM outcomes? If yes...
+      if(c_trues > 1){
+        # sample 1 outcomes and change to MM
+        ch = sample(am_posit[zero], 1)
+        M[ch] = 1
+        V[ch] = 0
+      }
+      else{ #else, use the available AM outcomes
+        ch = am_posit[zero]
+        M[ch] = 1
+        V[ch] = 0
+      }
     }
-    else{ # [...]or use the only avaliable antagonist outcome 
-      mut = am_posit[zero]
-      M[mut] = 1
-      V[mut] = 0
-      
-      #return the results
-      w_time = r
-      mats = list(M, V, w_time)
-      return(mats)
-    }
-    
-  }
-  else{ # outcome shift will not happend
-    # return the original matrices
+    #return the results
+    w_time = r
+    mats = list(M, V, w_time)
+    return(mats)
+}
+  else{
     w_time = NULL
     mats = list(M, V, w_time)
     return(mats)

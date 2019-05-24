@@ -1,3 +1,10 @@
+### For empirical networks of interactions only
+# Run the coevolutionary model with interaction outcomes that are context-dependent.
+# Based on a probability prob_change (Q), in each timestep of the simulation, an interaction
+# outcome shifts (AA -> AM and AM -> MM).
+#
+# This script returns a simple graph with species traits changing in time due to coevolution.
+# The asteriscs in the graph shows the timesteps in which the interactions shift occurs.
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
 
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/SquareMatrix.R")
@@ -10,7 +17,7 @@ library(cowplot)
 
 # initial parameters
 antprob = 0.8 # current probability value
-prob_change = 0.01 # Q or current probability of an interaction outcome shift
+prob_change = 0.1 # Q or current probability of an interaction outcome shift
 
 # read and square the empirical network
 net = as.matrix(read.table("~/Dropbox/Master/Code/coevo_mut_antag/data/B_SY-AP-IzzomtcPAcamp.txt"))
@@ -54,8 +61,8 @@ traits_df = data.frame(species = rep(paste("sp", 1:n_sp, sep = ""), each = nrow(
 plotar = ggplot() +
   geom_path(data=traits_df, aes(x = time, y = trait, group=species, 
                                 color = species),size = 1.8, alpha = 0.7) +
-  #  geom_text(data = w_time, aes(x=xplace, y=yplace),label = "*", size = 7) +
-  ggtitle(paste("Galetti SG2, ", "Q =", prob_change, ", initial proportion of antagonists = ", antprob)) +
+  geom_text(data = w_time, aes(x=xplace, y=yplace),label = "*", size = 7) +
+  ggtitle(paste("IzzomtcPAcamp, ", "Q =", prob_change, ", initial proportion of antagonists = ", antprob)) +
   geom_text(data = w_time, aes(x=xplace, y=yplace),label = "*", size = 7) +
   xlab("Time") + 
   ylab("Mean species trait (z)") +

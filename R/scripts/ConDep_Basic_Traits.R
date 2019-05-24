@@ -59,9 +59,8 @@ traits_df = data.frame(species = rep(paste("sp", 1:n_sp, sep = ""), each = nrow(
 plotar = ggplot() +
   geom_path(data=traits_df, aes(x = time, y = trait, group=species, 
                                 color = species),size = 1.8, alpha = 0.7) +
-#  geom_text(data = w_time, aes(x=xplace, y=yplace),label = "*", size = 7) +
-  ggtitle(paste("Q =", prob_change, ", initial proportion of antagonists = ", antprob)) +
   geom_text(data = w_time, aes(x=xplace, y=yplace),label = "*", size = 7) +
+  ggtitle(paste("Q =", prob_change, ", initial proportion of antagonists = ", antprob)) +
   xlab("Time") + 
   ylab("Mean species trait (z)") +
   theme(axis.text.x = element_text(size = 11),
