@@ -50,7 +50,7 @@ for(i in 1:nrow(data)){
 }
 
 # save or load the data file
-save(data, file = "~/Dropbox/Master/Code/coevo_mut_antag/data/Empirical_ConDep_Disparity.RData")
+#save(data, file = "~/Dropbox/Master/Code/coevo_mut_antag/data/Empirical_ConDep_Disparity.RData")
 
 load(file = "~/Dropbox/Master/Code/coevo_mut_antag/data/Empirical_ConDep_Disparity.RData")
 data = as.data.frame(data)
@@ -63,8 +63,9 @@ var_boxplot = ggplot(data = data) +
              shape = 21, alpha = 0.4, position = position_jitterdodge()) +
   geom_violin(aes(x = as.character(prob_change), y = variance, 
                   fill = as.factor(prob_change)), alpha = 0.2) +
-  facet_grid(prob_change~antprob) +
+  facet_wrap(~antprob) +
   theme_bw(base_size = 16) +
+  ggtitle("IzzomtcPAcamp") +
   labs(x = "Valores de probabilidade de mudança de interação no tempo", 
        y = "Variância")
 
@@ -77,6 +78,7 @@ meanpairdist_boxplot = ggplot(data = data) +
                   fill = as.factor(prob_change)), alpha = 0.2) +
   facet_wrap(~antprob) +
   theme_bw(base_size = 16) +
+  ggtitle("IzzomtcPAcamp") +
   labs(x = "Valores de probabilidade de mudança de interação no tempo", 
        y = "Mean Pairwise Distance")
 
@@ -89,6 +91,7 @@ partratio_boxplot = ggplot(data = data) +
                   fill = as.factor(prob_change)), alpha = 0.2) +
   facet_wrap(~antprob) +
   theme_bw(base_size = 16) +
+  ggtitle("IzzomtcPAcamp") +
   labs(x = "Valores de probabilidade de mudança de interação no tempo", 
        y = "Participation Ratio")
 
@@ -101,15 +104,16 @@ nearlong_boxplot = ggplot(data = data) +
                  fill = as.factor(prob_change)), alpha = 0.2) +
   facet_wrap(~antprob) +
   theme_bw(base_size = 16) +
+  ggtitle("IzzomtcPAcamp") +
   labs(x = "Valores de probabilidade de mudança de interação no tempo", 
        y = "Near and Longest Pairwise Distance")
 
 # save plots
-#ggsave(var_boxplot, fil = "var_boxplot.pdf", 
+#ggsave(var_boxplot, fil = "IzzomtcPAcamp_var_boxplot.pdf", 
 #       dpi = 600, width = 12, height = 8, units = "in")
-#ggsave(meanpairdist_boxplot, filename = "meanpairdist_boxplot.pdf", 
+#ggsave(meanpairdist_boxplot, filename = "IzzomtcPAcamp_meanpairdist_boxplot.pdf", 
 #       dpi = 600, width = 12, height = 8, units = "in")
-#ggsave(partratio_boxplot, fil = "partratio_boxplot.pdf", 
+#ggsave(partratio_boxplot, fil = "IzzomtcPAcamp_partratio_boxplot.pdf", 
 #       dpi = 600, width = 12, height = 8, units = "in")
-#ggsave(nearlong_boxplot, filename = "nearlong_boxplot.pdf", 
+#ggsave(nearlong_boxplot, filename = "IzzomtcPAcamp_nearlong_boxplot.pdf", 
 #       dpi = 600, width = 12, height = 8, units = "in")
