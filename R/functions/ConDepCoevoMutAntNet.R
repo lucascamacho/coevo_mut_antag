@@ -24,10 +24,12 @@ ConDepCoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon,
   # Returns:
   #   A matrix containing, in each row t, the trait values (z) of all species at time t.
   source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/MutAntag.R")
+  source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Counting.R")
   
   z_mat = matrix(NA, nrow = t_max, ncol = n_sp) # matrix to store z values
   z_mat[1, ] = init # initial trait values
   w_time = vector() #vectors to track in which timestep occurs the interaction changes
+  c = list()
   
   for (r in 1:(t_max - 1)) { # simulation runs for a maximum of t_max timesteps
     z = z_mat[r, ] # current z values
@@ -36,6 +38,8 @@ ConDepCoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon,
     M = mutantag[[1]] # define new M matrix
     V = mutantag[[2]] # define new V matrix
     w_time = append(w_time, mutantag[[3]]) # vector with timesteps of change
+    
+    c[[r]] = Counting(M, V)
     
     A = M + V # matrix with all interactions (mutualistic and antagonistic)
     z_dif = t(A * z) - A * z # matrix with all trait differences
@@ -66,7 +70,7 @@ ConDepCoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon,
     
   }
   
-  return(list(z_mat[1:(r+1), ], w_time)) # return final matrix with species traits
+  return(list(z_mat[1:(r+1), ], w_time, c)) # return final matrix with species traits
   
 }
 

@@ -15,7 +15,7 @@
 # and a plot for each disparity measure and different values of P and Q.
 
 # set work directory
-setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/scripts")
+setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/scripts/")
 
 # load packages
 if(!require(ggplot2)) {install.packages("ggplot2"); library(ggplot2)}
@@ -27,12 +27,12 @@ combs = expand.grid(antprob_vec, prob_change_vec)
 combs = combs[rep(seq_len(nrow(combs)), 1000), ]
 
 # create a results matrix
-data = matrix(NA, nrow = 9000, ncol = 7)
+data = matrix(NA, nrow = nrow(combs), ncol = 7)
 colnames(data) = c("variance", "meanpairdist", "partratio", "neardist_min", 
                    "neardist_max", "antprob", "prob_change")
 
 # loop to define the combination of P and Q and run the coevolution model
-for(i in 1:nrow(data)){
+for(i in 1:nrow(combs)){
   print(i)
   antprob = combs[i,1]
   prob_change = combs[i,2]
@@ -50,9 +50,8 @@ for(i in 1:nrow(data)){
 }
 
 # save or load the data file
-#save(data, file = "~/Dropbox/Master/Code/coevo_mut_antag/data/Empirical_ConDep_Disparity.RData")
-
-load(file = "~/Dropbox/Master/Code/coevo_mut_antag/data/Empirical_ConDep_Disparity.RData")
+save(data, file = "~/Dropbox/Master/Code/coevo_mut_antag/data/B_SY-AP-IzzomtcPAcamp.RData")
+#load(file = "~/Dropbox/Master/Code/coevo_mut_antag/data/B_SY-AP-IzzomtcPAcamp.RData")
 data = as.data.frame(data)
 
 # prepare and plot the results
@@ -64,8 +63,8 @@ var_boxplot = ggplot(data = data) +
   geom_violin(aes(x = as.character(prob_change), y = variance, 
                   fill = as.factor(prob_change)), alpha = 0.2) +
   facet_wrap(~antprob) +
-  theme_bw(base_size = 16) +
-  ggtitle("IzzomtcPAcamp") +
+  theme_bw(base_size = 5) +
+  ggtitle("B_SY-AP-IzzomtcPAcamp") +
   labs(x = "Valores de probabilidade de mudança de interação no tempo", 
        y = "Variância")
 
@@ -78,7 +77,7 @@ meanpairdist_boxplot = ggplot(data = data) +
                   fill = as.factor(prob_change)), alpha = 0.2) +
   facet_wrap(~antprob) +
   theme_bw(base_size = 16) +
-  ggtitle("IzzomtcPAcamp") +
+  ggtitle("B_SY-AP-IzzomtcPAcamp") +
   labs(x = "Valores de probabilidade de mudança de interação no tempo", 
        y = "Mean Pairwise Distance")
 
@@ -91,7 +90,7 @@ partratio_boxplot = ggplot(data = data) +
                   fill = as.factor(prob_change)), alpha = 0.2) +
   facet_wrap(~antprob) +
   theme_bw(base_size = 16) +
-  ggtitle("IzzomtcPAcamp") +
+  ggtitle("B_SY-AP-IzzomtcPAcamp") +
   labs(x = "Valores de probabilidade de mudança de interação no tempo", 
        y = "Participation Ratio")
 
@@ -104,16 +103,17 @@ nearlong_boxplot = ggplot(data = data) +
                  fill = as.factor(prob_change)), alpha = 0.2) +
   facet_wrap(~antprob) +
   theme_bw(base_size = 16) +
-  ggtitle("IzzomtcPAcamp") +
+  ggtitle("B_SY-AP-IzzomtcPAcamp") +
   labs(x = "Valores de probabilidade de mudança de interação no tempo", 
        y = "Near and Longest Pairwise Distance")
 
 # save plots
-#ggsave(var_boxplot, fil = "IzzomtcPAcamp_var_boxplot.pdf", 
-#       dpi = 600, width = 12, height = 8, units = "in")
-#ggsave(meanpairdist_boxplot, filename = "IzzomtcPAcamp_meanpairdist_boxplot.pdf", 
-#       dpi = 600, width = 12, height = 8, units = "in")
-#ggsave(partratio_boxplot, fil = "IzzomtcPAcamp_partratio_boxplot.pdf", 
-#       dpi = 600, width = 12, height = 8, units = "in")
-#ggsave(nearlong_boxplot, filename = "IzzomtcPAcamp_nearlong_boxplot.pdf", 
-#       dpi = 600, width = 12, height = 8, units = "in")
+ggsave(var_boxplot, fil = "B_SY-AP-IzzomtcPAcamp_var_boxplot.png")
+ggsave(var_boxplot, fil = "B_SY-AP-IzzomtcPAcamp_var_boxplot.pdf", 
+       dpi = 600, width = 12, height = 8, units = "in")
+ggsave(meanpairdist_boxplot, filename = "B_SY-AP-IzzomtcPAcamp_meanpairdist_boxplot.pdf", 
+       dpi = 600, width = 12, height = 8, units = "in")
+ggsave(partratio_boxplot, fil = "B_SY-AP-IzzomtcPAcamp_partratio_boxplot.pdf", 
+       dpi = 600, width = 12, height = 8, units = "in")
+ggsave(nearlong_boxplot, filename = "B_SY-AP-IzzomtcPAcamp_nearlong_boxplot.pdf", 
+       dpi = 600, width = 12, height = 8, units = "in")

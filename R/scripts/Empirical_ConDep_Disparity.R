@@ -23,15 +23,16 @@ source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/MeanPairDist.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/PartRatio.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/NearDist.R")
 
-if(!require(ggplot2)) {install.packages("ggplot2"); library(ggplot2)}
-if(!require(cowplot)) {install.packages("cowplot"); library(cowplot)}
+#if(!require(ggplot2)) {install.packages("ggplot2"); library(ggplot2)}
+#if(!require(cowplot)) {install.packages("cowplot"); library(cowplot)}
 
 # initial parameters
-#antprob = 0.8 # current probability value
-#prob_change = 0.2 # current probability of interaction outcome shift
+#antprob = 0.5 # current probability value
+#prob_change = 0.8 # current probability of interaction outcome shift
 
 # read and square the empirical network
-net = as.matrix(read.table("~/Dropbox/Master/Code/coevo_mut_antag/data/B_SY-AP-IzzomtcPAcamp.txt"))
+net = as.matrix(read.table(
+  "~/Dropbox/Master/Code/coevo_mut_antag/data/B_SY-AP-IzzomtcPAcamp.txt"))
 M = SquareMatrix(net)
 n_sp = ncol(M)
 

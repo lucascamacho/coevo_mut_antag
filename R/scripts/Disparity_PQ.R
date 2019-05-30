@@ -49,8 +49,8 @@ for(i in 1:nrow(data)){
 }
 
 # save or load the data file
-#save(data, file = "~/Dropbox/Master/Code/coevo_mut_antag/data/ConDep_Disparity.RData")
-load(file = "~/Dropbox/Master/Code/coevo_mut_antag/data/ConDep_Disparity.RData")
+save(data, file = "~/Dropbox/Master/Code/coevo_mut_antag/data/ConDep_Disparity.RData")
+#load(file = "~/Dropbox/Master/Code/coevo_mut_antag/data/ConDep_Disparity.RData")
 data = as.data.frame(data)
 
 # prepare and plot the results
@@ -61,7 +61,7 @@ var_boxplot = ggplot(data = data) +
              shape = 21, alpha = 0.4, position = position_jitterdodge()) +
   geom_violin(aes(x = as.character(prob_change), y = variance, 
                   fill = as.factor(prob_change)), alpha = 0.2) +
-  facet_grid(prob_change~antprob) +
+  facet_wrap(antprob) +
   theme_bw(base_size = 16) +
   labs(x = "Valores de probabilidade de mudança de interação no tempo", 
        y = "Variância")
@@ -103,11 +103,12 @@ nearlong_boxplot = ggplot(data = data) +
        y = "Near and Longest Pairwise Distance")
 
 # save plots
-#ggsave(var_boxplot, fil = "var_boxplot.pdf", 
-#       dpi = 600, width = 12, height = 8, units = "in")
-#ggsave(meanpairdist_boxplot, filename = "meanpairdist_boxplot.pdf", 
-#       dpi = 600, width = 12, height = 8, units = "in")
-#ggsave(partratio_boxplot, fil = "partratio_boxplot.pdf", 
-#       dpi = 600, width = 12, height = 8, units = "in")
-#ggsave(nearlong_boxplot, filename = "nearlong_boxplot.pdf", 
-#       dpi = 600, width = 12, height = 8, units = "in")
+ggsave(var_boxplot, fil = "var_boxplot.png")
+ggsave(var_boxplot, fil = "var_boxplot.pdf", 
+       dpi = 600, width = 12, height = 8, units = "in")
+ggsave(meanpairdist_boxplot, filename = "meanpairdist_boxplot.pdf", 
+       dpi = 600, width = 12, height = 8, units = "in")
+ggsave(partratio_boxplot, fil = "partratio_boxplot.pdf", 
+       dpi = 600, width = 12, height = 8, units = "in")
+ggsave(nearlong_boxplot, filename = "nearlong_boxplot.pdf", 
+       dpi = 600, width = 12, height = 8, units = "in")

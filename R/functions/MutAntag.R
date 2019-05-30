@@ -19,6 +19,12 @@ MutAntag = function(M, V, r, prob_change){
   #
   p = runif(1, 0, 1) # sample a number between 0 and 1
   
+  inter = (M == 1) == (t(M) == 1) # check for any MM interaction
+  inter[M == 0] = FALSE
+  mm_posit = which(inter == TRUE)
+  
+  am_posit = which(M != t(M)) # check for any AM interaction
+  
   if(p <= prob_change){ # outcomes shifts will happend
     ##############
     # MM to AM shift

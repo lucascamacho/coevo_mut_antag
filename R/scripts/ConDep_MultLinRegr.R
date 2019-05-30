@@ -21,7 +21,9 @@ for( i in 1:nrow(mlg)){
 load(file = "~/Dropbox/Master/Code/coevo_mut_antag/data/ConDep_MultRegr.RData")
 
 mlg = as.data.frame(mlg)
-modelo = lm(variance ~ antprob + prob_change, data = mlg)
+modelo = lm(variance ~ antprob + prob_change + antprob:prob_change, data = mlg)
+modelo3 = lm(variance ~ antprob, data = mlg)
+anova(modelo, modelo2)
 
 summary(modelo)
 coefficients(modelo)
