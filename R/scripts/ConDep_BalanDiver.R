@@ -6,7 +6,7 @@
 # If you will use only this code without a loop, be sure to get the #'s off.
 
 # loading packages and functions
-setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
+setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/scripts/")
 
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/ConDepCoevoMutAntNet.R")
@@ -19,7 +19,7 @@ library(cowplot)
 # initial parameters
 #antprob = 0.1 # current probability value
 #prob_change = 0.2 # current probability of interaction outcome shift
-n_sp = 50 # defining number of species
+n_sp = 5 # defining number of species
 M = matrix(1, ncol = n_sp, nrow = n_sp) # building matrix M of positive outcomes
 diag(M) = 0 # no intraespecific interactions
 

@@ -27,7 +27,7 @@ Antagonize = function(M, antprob){
       }
     }
   }
-  
+
   # no intraespecific interactions
   diag(V) = 0
   

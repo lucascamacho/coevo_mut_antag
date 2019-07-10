@@ -49,7 +49,7 @@ for(i in 1:nrow(data)){
 }
 
 # save or load the data file
-save(data, file = "~/Dropbox/Master/Code/coevo_mut_antag/data/ConDep_Disparity.RData")
+#save(data, file = "~/Dropbox/Master/Code/coevo_mut_antag/data/ConDep_Disparity.RData")
 #load(file = "~/Dropbox/Master/Code/coevo_mut_antag/data/ConDep_Disparity.RData")
 data = as.data.frame(data)
 

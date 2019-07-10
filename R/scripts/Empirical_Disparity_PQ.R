@@ -50,8 +50,8 @@ for(i in 1:nrow(combs)){
 }
 
 # save or load the data file
-save(data, file = "~/Dropbox/Master/Code/coevo_mut_antag/data/B_SY-AP-IzzomtcPAcamp.RData")
-#load(file = "~/Dropbox/Master/Code/coevo_mut_antag/data/B_SY-AP-IzzomtcPAcamp.RData")
+#save(data, file = "~/Dropbox/Master/Code/coevo_mut_antag/data/Monteverde.RData")
+load(file = "~/Dropbox/Master/Code/coevo_mut_antag/data/Monteverde.RData")
 data = as.data.frame(data)
 
 # prepare and plot the results
@@ -64,7 +64,7 @@ var_boxplot = ggplot(data = data) +
                   fill = as.factor(prob_change)), alpha = 0.2) +
   facet_wrap(~antprob) +
   theme_bw(base_size = 5) +
-  ggtitle("B_SY-AP-IzzomtcPAcamp") +
+  ggtitle("Monteverde") +
   labs(x = "Valores de probabilidade de mudança de interação no tempo", 
        y = "Variância")
 
@@ -77,7 +77,7 @@ meanpairdist_boxplot = ggplot(data = data) +
                   fill = as.factor(prob_change)), alpha = 0.2) +
   facet_wrap(~antprob) +
   theme_bw(base_size = 16) +
-  ggtitle("B_SY-AP-IzzomtcPAcamp") +
+  ggtitle("Monteverde") +
   labs(x = "Valores de probabilidade de mudança de interação no tempo", 
        y = "Mean Pairwise Distance")
 
@@ -90,7 +90,7 @@ partratio_boxplot = ggplot(data = data) +
                   fill = as.factor(prob_change)), alpha = 0.2) +
   facet_wrap(~antprob) +
   theme_bw(base_size = 16) +
-  ggtitle("B_SY-AP-IzzomtcPAcamp") +
+  ggtitle("Monteverde") +
   labs(x = "Valores de probabilidade de mudança de interação no tempo", 
        y = "Participation Ratio")
 
@@ -103,17 +103,17 @@ nearlong_boxplot = ggplot(data = data) +
                  fill = as.factor(prob_change)), alpha = 0.2) +
   facet_wrap(~antprob) +
   theme_bw(base_size = 16) +
-  ggtitle("B_SY-AP-IzzomtcPAcamp") +
+  ggtitle("Monteverde") +
   labs(x = "Valores de probabilidade de mudança de interação no tempo", 
        y = "Near and Longest Pairwise Distance")
 
 # save plots
-ggsave(var_boxplot, fil = "B_SY-AP-IzzomtcPAcamp_var_boxplot.png")
-ggsave(var_boxplot, fil = "B_SY-AP-IzzomtcPAcamp_var_boxplot.pdf", 
+ggsave(var_boxplot, fil = "Monteverde_var_boxplot.png")
+ggsave(var_boxplot, fil = "Monteverde_var_boxplot.pdf", 
        dpi = 600, width = 12, height = 8, units = "in")
-ggsave(meanpairdist_boxplot, filename = "B_SY-AP-IzzomtcPAcamp_meanpairdist_boxplot.pdf", 
+ggsave(meanpairdist_boxplot, filename = "Monteverde_meanpairdist_boxplot.pdf", 
        dpi = 600, width = 12, height = 8, units = "in")
-ggsave(partratio_boxplot, fil = "B_SY-AP-IzzomtcPAcamp_partratio_boxplot.pdf", 
+ggsave(partratio_boxplot, fil = "Monteverde_partratio_boxplot.pdf", 
        dpi = 600, width = 12, height = 8, units = "in")
-ggsave(nearlong_boxplot, filename = "B_SY-AP-IzzomtcPAcamp_nearlong_boxplot.pdf", 
+ggsave(nearlong_boxplot, filename = "Monteverde_nearlong_boxplot.pdf", 
        dpi = 600, width = 12, height = 8, units = "in")

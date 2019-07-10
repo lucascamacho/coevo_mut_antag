@@ -21,13 +21,13 @@ source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/MeanPairDist.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/PartRatio.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/NearDist.R")
 
-#if(!require(ggplot2)) {install.packages("ggplot2"); library(ggplot2)}
-#if(!require(cowplot)) {install.packages("cowplot"); library(cowplot)}
+if(!require(ggplot2)) {install.packages("ggplot2"); library(ggplot2)}
+if(!require(cowplot)) {install.packages("cowplot"); library(cowplot)}
 
 # initial parameters
-#antprob = 0.01 # current probability value
-#prob_change = 0.5 # current probability of interaction outcome shift
-n_sp = 20 # defining number of species
+antprob = 0.1 # current probability value
+prob_change = 0 # current probability of interaction outcome shift
+n_sp = 36 # defining number of species
 M = matrix(1, ncol = n_sp, nrow = n_sp) # building matrix M of positive outcomes
 diag(M) = 0 # no intraespecific interactions
 

@@ -17,29 +17,30 @@
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/scripts/")
 
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/SquareMatrix.R")
-source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CentralAntagonize.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/ConDepCoevoMutAntNet.R")
-source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/MeanPairDist.R")
-source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/PartRatio.R")
-source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/NearDist.R")
+#source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/MeanPairDist.R")
+#source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/PartRatio.R")
+#source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/NearDist.R")
 
-#if(!require(ggplot2)) {install.packages("ggplot2"); library(ggplot2)}
-#if(!require(cowplot)) {install.packages("cowplot"); library(cowplot)}
+if(!require(ggplot2)) {install.packages("ggplot2"); library(ggplot2)}
+if(!require(cowplot)) {install.packages("cowplot"); library(cowplot)}
 
 # initial parameters
 #antprob = 0.5 # current probability value
-#prob_change = 0.8 # current probability of interaction outcome shift
+prob_change = 0 # current probability of interaction outcome shift
 
 # read and square the empirical network
 net = as.matrix(read.table(
-  "~/Dropbox/Master/Code/coevo_mut_antag/data/B_SY-AP-IzzomtcPAcamp.txt"))
+  "~/Dropbox/Master/Code/coevo_mut_antag/data/B_SY-AP-IzzomtcCOLpen.txt"))
 M = SquareMatrix(net)
 n_sp = ncol(M)
 
 # Antagonize M (transform positive links in negative)
-antagonize = Antagonize(M, antprob)
+antagonize = CentralAntagonize(M)
 M = antagonize[[1]]
 V = antagonize[[2]]
+p_vl = antagonize[[3]]
 
 # coevolutionary model parameters
 phi = 0.2
@@ -59,9 +60,9 @@ w_time = as.matrix(simulation[[2]])
 
 # an apply for each line of z_mat
 variance = apply(traits, 1, var)
-meanpairdist = apply(traits, 1, MeanPairDist)
-partratio = apply(traits, 1, PartRatio)
-neardist = apply(traits, 1, NearDist)
+#meanpairdist = apply(traits, 1, MeanPairDist)
+#partratio = apply(traits, 1, PartRatio)
+#neardist = apply(traits, 1, NearDist)
 
 # set the times where the interaction oucomes shift occurs
 #colnames(w_time) = "xplace"
@@ -69,12 +70,21 @@ neardist = apply(traits, 1, NearDist)
 #w_time = cbind(w_time, yplace)
 #w_time = as.data.frame(w_time)
 
+# plot the Divergency in time
+time = seq(1, nrow(traits), 1)
+diver = data.frame(variance, time)
+
+diver_plot = ggplot(data = diver) +
+  geom_path(aes(x = time, y = variance)) +
+  theme_bw()
+
+
 # prepare data frame to plot
 #traits = as.data.frame(traits)
 #n_sp = ncol(traits)
 #traits_vec = c(as.matrix(traits))
 #traits_df = data.frame(species = rep(paste("sp", 1:n_sp, sep = ""), each = nrow(traits)),
-#                       time = rep(1:nrow(traits), times = n_sp),
+#                      time = rep(1:nrow(traits), times = n_sp),
 #                       trait = traits_vec)
 
 # plotting traits through time
@@ -83,7 +93,6 @@ neardist = apply(traits, 1, NearDist)
 #                                color = species),size = 1.8, alpha = 0.7) +
 #  geom_text(data = w_time, aes(x=xplace, y=yplace),label = "*", size = 7) +
 #  ggtitle(paste("Q =", prob_change, ", initial proportion of antagonists = ", antprob)) +
-#  geom_text(data = w_time, aes(x=xplace, y=yplace),label = "*", size = 7) +
 #  xlab("Time") + 
 #  ylab("Mean species trait (z)") +
 #  theme(axis.text.x = element_text(size = 11),
@@ -93,5 +102,6 @@ neardist = apply(traits, 1, NearDist)
 #        legend.text = element_text(size = 12))
 
 #ggsave(plotar, filename = "10_Basic_Traits.png", width = 19, height = 11, units = "cm")
-#plotar
+diver_plot
 #dev.off()
+p_vl
