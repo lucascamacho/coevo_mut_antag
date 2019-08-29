@@ -18,7 +18,7 @@ CentralAntagonize = function(M){
   # identify the central species
   d = colSums(M) / (ncol(M) - 1)
   d_zs = (d - mean(d))/sd(d)
-  c_sp = which(d_zs >= 1)
+  c_sp = which(d_zs > 1)
   
   # change interaction outcomes of central species only
   for(i in 1:dim(M)[1]){

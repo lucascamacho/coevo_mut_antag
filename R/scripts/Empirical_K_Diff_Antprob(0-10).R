@@ -2,9 +2,9 @@
 # Loop to describe how the mean trait values in equilibrium change with the p (antprob).
 #
 # We are calculating the mean trait value for different interaction outcomes types
-# like AA, AM and MM.
+# like AM and MM.
 #
-# in each simulation, we have 3 values of species trait at "equilibrium", each value
+# in each simulation, we have 2 values of species trait at "equilibrium", each value
 # representing a interaction outcome type. For each value of antprob, 
 # we are doing 10 simulations.
 

@@ -21,8 +21,8 @@ setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/scripts/")
 if(!require(ggplot2)) {install.packages("ggplot2"); library(ggplot2)}
 
 # define the vector of p and q and combine 2-by-2 these values
-antprob_vec = c(0.2, 0.5, 0.8)
-prob_change_vec = c(0, 0.1, 0.5)
+antprob_vec = c(0, 0.1, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1)
+prob_change_vec = c(0, 0.1, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1)
 combs = expand.grid(antprob_vec, prob_change_vec)
 combs = combs[rep(seq_len(nrow(combs)), 1000), ]
 

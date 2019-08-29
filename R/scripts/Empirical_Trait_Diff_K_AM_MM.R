@@ -14,38 +14,38 @@
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
 
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/SquareMatrix.R")
-source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/EmpAntagonize.R")
-source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/SpDegree.R")
-source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Counting.R")
-source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/FindInteractors.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
+#source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/SpDegree.R")
+#source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Counting.R")
+#source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/FindInteractors.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
-source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/TraitDegreeBalanced.R")
-source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/VarTraitDegreeBalanced.R")
+#source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/TraitDegreeBalanced.R")
+#source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/VarTraitDegreeBalanced.R")
 
-library(ggplot2)
-library(reshape2)
-library(cowplot)
+#library(ggplot2)
+#library(reshape2)
+#library(cowplot)
 
 # initial conditions
 #antprob = 0.4 # current probability value
-net = "~/Dropbox/Master/Code/coevo_mut_antag/data/B_NS-PS-Galetti&Pizo-1996-SG2Wgt.txt"
-M = as.matrix(read.table(net)) # read empirical matrix
-M = SquareMatrix(M) # Square the M matrix
-n_sp = dim(M)[1] # defining number of species
+#net = "~/Dropbox/Master/Code/coevo_mut_antag/data/B_NS-PS-Galetti&Pizo-1996-SG2Wgt.txt"
+#M = as.matrix(read.table(net)) # read empirical matrix
+#M = SquareMatrix(M) # Square the M matrix
+#n_sp = dim(M)[1] # defining number of species
 
 # Antagonize M (transform positive links in negative)
-empantagonize = EmpAntagonize(M, antprob)
+empantagonize = Antagonize(M, antprob)
 M = empantagonize[[1]]
 V = empantagonize[[2]]
 
 # measure the degree of positive and negative outcomes for each specie
-degree = SpDegree(M, V)
+#degree = SpDegree(M, V)
 
 # count the number of double-interactions
-c = Counting(M, V)
+#c = Counting(M, V)
 
 # separate the species in groups by type of interaction outcome
-index = FindInteractors(M, V)
+#index = FindInteractors(M, V)
 
 # coevolutionary model parameters
 phi = 0.2
@@ -61,19 +61,19 @@ t_max = 1000
 z_mat = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
 
 # create matriz for data
-data = matrix(NA, nrow = nrow(z_mat), ncol = 5)
-data[,5] = seq(1,nrow(z_mat), 1)
-colnames(data) = c("MEAN_AM", "VAR_AM", "MEAN_MM", "VAR_MM", "time")
+#data = matrix(NA, nrow = nrow(z_mat), ncol = 5)
+#data[,5] = seq(1,nrow(z_mat), 1)
+#colnames(data) = c("MEAN_AM", "VAR_AM", "MEAN_MM", "VAR_MM", "time")
 
 # apply function to get the mean and variance of traits balanced by degree Kam and Kmm
-traits = apply(z_mat, 1, TraitDegreeBalanced)
-var_traits = apply(z_mat, 1, VarTraitDegreeBalanced)
+#traits = apply(z_mat, 1, TraitDegreeBalanced)
+#var_traits = apply(z_mat, 1, VarTraitDegreeBalanced)
 
 # allocate the results in data matrix
-data[,1] = traits[1,]
-data[,2] = var_traits[1,]
-data[,3] = traits[2,]
-data[,4] = var_traits[2,]
+#data[,1] = traits[1,]
+#data[,2] = var_traits[1,]
+#data[,3] = traits[2,]
+#data[,4] = var_traits[2,]
 
 # plot the results
 #data = data.frame(data)
