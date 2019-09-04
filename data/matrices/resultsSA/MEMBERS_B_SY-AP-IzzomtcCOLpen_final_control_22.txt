@@ -1,0 +1,11 @@
+Node	Module
+R2	1
+C2	1
+C5	1
+R3	3
+C3	3
+R4	0
+C4	0
+R5	1
+R6	2
+C1	2

@@ -52,6 +52,7 @@ List of R packages used:
 - [ggplot2](https://ggplot2.tidyverse.org)
 - [cowplot](https://cran.r-project.org/web/packages/cowplot/vignettes/introduction.html)
 - [reshape2](https://cran.r-project.org/web/packages/reshape2/index.html)
+- [bipartite](https://cran.r-project.org/web/packages/bipartite/index.html)
 
 ## Authors
 

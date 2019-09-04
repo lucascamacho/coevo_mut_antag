@@ -65,6 +65,8 @@ for(k in 1:length(redes)){
   }
 }
 
+save(p_data, file = "antprob_var.RData")
+
 plot_var = ggplot(data = p_data) +
   geom_point(aes(x = antprob, y = varia, colour = rich), alpha = 0.8) +
   geom_smooth(aes(x = antprob, y = varia), colour = "red") +

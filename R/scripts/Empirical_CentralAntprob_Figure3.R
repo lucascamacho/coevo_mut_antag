@@ -102,6 +102,7 @@ for(k in 1:length(redes)){
   }
 }
 
+save(central_results, file = "central_results.RData")
 
 plot_varia = ggplot(data = central_results) +
   geom_jitter(aes(x = as.factor(c_ch), y = varia, colour = rich), 
