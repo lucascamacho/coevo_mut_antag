@@ -1,3 +1,5 @@
+# Insert cheaters interaction outcomes in mutualistic networks changes the coevolutionary process in unexpected ways
+
 ## Technical specifications
 
 I run my simulations in two different computers:
@@ -20,6 +22,7 @@ This repository is organized in folders which contain different aspects of my ma
 - Data: the networks of interactions that i use and the .RData files with the results of all my simulations
 - Output: figures, pdf's, graphs, etc. All the visual results of my project are here
 - Manuscript: the LaTeX files that compose my master's dissertation.
+- Tutorials: Rmd and PDF files to help the understanding of the model and the simulation process
 
 ### Tutorial and guides
 
@@ -29,7 +32,7 @@ that are interested in my work and my results. Also, and equally important, i ho
 Please, let me know if these tutorials and guides are usefull or has some erros or inconsistencies sending me an email (lucas.camacho@usp.br). Check below the lists of 
 guides and tutorials available:
 
-- [Guide_coevo_mut_antag](https://github.com/lucascamacho/coevo_mut_antag/blob/master/Guide_coevo_mut_antag.pdf): Guide showing my project basic ideas, my model and how do 
+- [Guide_coevo_mut_antag](): IN PROGESS. Guide showing my project basic ideas, my model and how do 
 i implement it on R. These guides ends in a single plot showing the average species traits changing in time.
 
 - [Tutorial_CoevoMutAntNet](): IN PROGRESS. Tutorial to explain what i've being doing in the scripts where i explore how the presence of cheaters influences the coevolutionary process 
