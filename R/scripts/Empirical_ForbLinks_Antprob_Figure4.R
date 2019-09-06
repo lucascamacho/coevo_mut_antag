@@ -125,6 +125,7 @@ ggsave(plot_nest_control, filename = "deltanest_control_adj.png", dpi = 600,
 plot_nest_coevo = ggplot(data = final_fl) +
   geom_point(aes(x = antprob, y = dnest_coevo, colour = rich), alpha = 0.8) +
   geom_smooth(aes(x = antprob, y = dnest_coevo), colour = "red") +
+  geom_smooth(aes(x = antprob, y = dnest_control), colour = "black") +
   xlab("Frequency of cheaters exploitation (p)") +
   ylab("Delta Nestedness") +
   theme(axis.text.x = element_text(size = 11),
@@ -165,12 +166,13 @@ final_control <- merge(control, final_fl, by="net", all.x=TRUE, all.y=TRUE)
 
 dmcontrol = final_control$Modularity - final_init$Modularity
 dmcoevo = final_coevo$Modularity - final_init$Modularity
+rich = final_init$rich
 
-dados = data.frame(final_init$net, final_init$rich, final_init$antprob, dmcontrol, dmcoevo)
+dados = data.frame(final_init$net, rich, final_init$antprob, dmcontrol, dmcoevo)
 
 # 
 plot_mod_control = ggplot(data = dados) +
-  geom_point(aes(x = final_init.antprob, y = dmcontrol, colour = final_init.rich), alpha = 0.8) +
+  geom_point(aes(x = final_init.antprob, y = dmcontrol, colour = rich), alpha = 0.8) +
   geom_smooth(aes(x = final_init.antprob, y = dmcontrol), colour = "red") +
   xlab("Frequency of cheaters exploitation (p)") +
   ylab("Delta Modularity") +
@@ -185,8 +187,9 @@ ggsave(plot_mod_control, filename = "deltamod_control_adj.png", dpi = 600,
 
 
 plot_mod_coevo = ggplot(data = dados) +
-  geom_point(aes(x = final_init.antprob, y = dmcoevo, colour = final_init.rich), alpha = 0.8) +
+  geom_point(aes(x = final_init.antprob, y = dmcoevo, colour = rich), alpha = 0.8) +
   geom_smooth(aes(x = final_init.antprob, y = dmcoevo), colour = "red") +
+  geom_smooth(aes(x = final_init.antprob, y = dmcontrol), colour = "black") +
   xlab("Frequency of cheaters exploitation (p)") +
   ylab("Delta Modularity") +
   theme(axis.text.x = element_text(size = 11),

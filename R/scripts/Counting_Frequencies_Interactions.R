@@ -42,9 +42,10 @@ for(i in 1:length(antprob)){
 
   # allocate frequencies in data matrix
   data[i,1] = antprob[i] # antprob values
-  data[i,2] = antprob[i] * antprob[i] # expected p ^ 2
-  data[i,3] = c[[1]] / n_int # observed AA frequencies
-  data[i,4] = (2 * antprob[i]) * (1 - antprob[i]) # expected 2p(1 - p)
+#  data[i,2] = antprob[i] * antprob[i] # expected p ^ 2
+#  data[i,3] = c[[1]] / n_int # observed AA frequencies
+  data[i,4] = ((2 * antprob[i]) * (1 - antprob[i])) / (((2 * antprob[i]) * (1 - antprob[i])) + ((1 - antprob[i]) ** 2))
+#  data[i,4] = (2 * antprob[i]) * (1 - antprob[i]) # expected 2p(1 - p)
   data[i,5] = c[[2]] / n_int ## observed AM frequencies
   data[i,6] = (1 - antprob[i]) * (1 - antprob[i]) # expected (1 - p) ^ 2
   data[i,7] = c[[3]] / n_int # observed MM frequencies
@@ -58,8 +59,9 @@ test_data_long = melt(data, id="antprob")  # convert to long format
 
 plotar = ggplot(data = test_data_long,
          aes(x = antprob, y = value, colour = variable)) +
-         geom_point(alpha = 0.6) +
-         theme_bw()
+  geom_point(alpha = 0.7, size = 3) +
+  ylab("Frequency of outcomes in adjacency matrix") +
+  xlab("Probability of outcomes shift (p)")
 
 # plot and save the plot
 plotar

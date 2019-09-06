@@ -14,6 +14,7 @@ source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Counting.R")
 
 library(ggplot2)
+library(cowplot)
 library(reshape2)
 
 # Define a antprob sequence and a final results matrix
@@ -23,7 +24,7 @@ data[,3] = antprob
 
 # loop to count the frequencies of AA, AM and MM
 for(i in 1:length(antprob)){
-  n_sp = 1000 # number of species
+  n_sp = 20 # number of species
   n_int = ((n_sp ** 2) - n_sp) / 2 # number of interactions in the matrix
   M = matrix(1, ncol = n_sp, nrow = n_sp) # matrix M of positive outcomes
   diag(M) = 0 # no intraespecific interactions
@@ -60,8 +61,10 @@ test_data_long = melt(data, id = "antprob")  # convert to long format
 
 plotar = ggplot(data = test_data_long,
                 aes(x = antprob, y = value, colour = variable)) +
-  geom_point(alpha = 0.7) +
-  theme_bw()
+  geom_point(alpha = 0.7, size = 3) +
+  ylab("Frequency of cheaters exploitation outcome") +
+  xlab("Probability of outcomes shift (p)")
+
 
 plotar
 #ggsave(plotar, file = "Freq_p_NO_AA.png")
