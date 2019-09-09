@@ -102,26 +102,11 @@ for(k in 1:length(redes)){
   }
 }
 
-# save the RData file
-save(final_fl, file = "data_nest_mod.RData")
-
+# save or load the RData file
+#save(final_fl, file = "data_nest_mod.RData")
 load("data_nest_mod.RData")
 
 # plot and save the nestedness results graph
-plot_nest_control = ggplot(data = final_fl) +
-  geom_point(aes(x = antprob, y = dnest_control, colour = rich), alpha = 0.8) +
-  geom_smooth(aes(x = antprob, y = dnest_control), colour = "red") +
-  xlab("Frequency of cheaters exploitation (p)") +
-  ylab("Delta Nestedness") +
-  theme(axis.text.x = element_text(size = 11),
-        axis.text.y = element_text(size = 11),
-        axis.title = element_text(size = 20), 
-        legend.key.size = unit(0.6, "cm"),
-        legend.text = element_text(size = 11))
-
-ggsave(plot_nest_control, filename = "deltanest_control_adj.png", dpi = 600,
-       width = 20, height = 14, units = "cm")
-
 plot_nest_coevo = ggplot(data = final_fl) +
   geom_point(aes(x = antprob, y = dnest_coevo, colour = rich), alpha = 0.8) +
   geom_smooth(aes(x = antprob, y = dnest_coevo), colour = "red") +
@@ -139,53 +124,46 @@ ggsave(plot_nest_coevo, filename = "deltanest_coevo_adj.png", dpi = 600,
 
 # read the MODULAR results
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/data/matrices/resultsSA/")
+mod_results <- read.table("OUT_MOD.txt", header=TRUE)
 
-oi <- read.table("OUT_MOD.txt", header=TRUE)
+# separate the initial, final control and final coevo matrices
+init = mod_results[grep(mod_results$File, pattern="init"), ]
+coevo = mod_results[grep(mod_results$File, pattern="coevo"), ]
+control = mod_results[grep(mod_results$File, pattern="control"), ]
 
-init <-oi[grep(oi$File, pattern="init"),]
-coevo <- oi[grep(oi$File, pattern="coevo"),]
-control <- oi[grep(oi$File, pattern="control"),]
-
-# init
+# separate the data and prepare the data names
+# initia matrices data
 init$net <- gsub(init$File, pattern = "_init", replacement = "")
 init$net <- gsub(init$net, pattern = ".txt", replacement = "")
 
 final_init <- merge(init, final_fl, by = "net", all.x=TRUE, all.y=TRUE)
 
-# coevo
+# coevo matrices data
 coevo$net <- gsub(coevo$File, pattern="_final_coevo", replacement = "")
 coevo$net <- gsub(coevo$net, pattern=".txt", replacement = "")
 
 final_coevo <- merge(coevo, final_fl, by="net", all.x=TRUE, all.y=TRUE)
 
-# control
+# control matrices data
 control$net <- gsub(control$File, pattern="_final_control", replacement = "")
 control$net <- gsub(control$net, pattern=".txt", replacement = "")
 
 final_control <- merge(control, final_fl, by="net", all.x=TRUE, all.y=TRUE)
 
+# calculate the delta modularity and get the community richness
 dmcontrol = final_control$Modularity - final_init$Modularity
 dmcoevo = final_coevo$Modularity - final_init$Modularity
 rich = final_init$rich
 
+# final data.frame to plot the results
 dados = data.frame(final_init$net, rich, final_init$antprob, dmcontrol, dmcoevo)
+final_mod = dados
 
-# 
-plot_mod_control = ggplot(data = dados) +
-  geom_point(aes(x = final_init.antprob, y = dmcontrol, colour = rich), alpha = 0.8) +
-  geom_smooth(aes(x = final_init.antprob, y = dmcontrol), colour = "red") +
-  xlab("Frequency of cheaters exploitation (p)") +
-  ylab("Delta Modularity") +
-  theme(axis.text.x = element_text(size = 11),
-        axis.text.y = element_text(size = 11),
-        axis.title = element_text(size = 20), 
-        legend.key.size = unit(0.6, "cm"),
-        legend.text = element_text(size = 11))
+# save or load the RData file
+#save(final_mod, file = "data_mod.RData")
+load("data_mod.RData")
 
-ggsave(plot_mod_control, filename = "deltamod_control_adj.png", dpi = 600,
-       width = 20, height = 14, units = "cm")
-
-
+# plot and save the delta modularity results
 plot_mod_coevo = ggplot(data = dados) +
   geom_point(aes(x = final_init.antprob, y = dmcoevo, colour = rich), alpha = 0.8) +
   geom_smooth(aes(x = final_init.antprob, y = dmcoevo), colour = "red") +
@@ -200,7 +178,3 @@ plot_mod_coevo = ggplot(data = dados) +
 
 ggsave(plot_mod_coevo, filename = "deltamod_coevo_adj.png", dpi = 600,
        width = 20, height = 14, units = "cm")
-
-final_mod = dados
-
-save(final_mod, file = "data_mod.RData")
