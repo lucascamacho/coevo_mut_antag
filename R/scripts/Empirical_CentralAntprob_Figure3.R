@@ -7,6 +7,7 @@
 
 # load packages and functions
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/data/")
+
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/SquareMatrix.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/MeanPairDist.R")
 
@@ -14,9 +15,9 @@ library(ggplot2)
 library(cowplot)
 
 # read all mutualism networks
-temp = list.files(pattern="*.txt")
+temp = list.files(pattern = "*.txt")
 redes = lapply(temp, read.table)
-names(redes)  = gsub(".txt", replacement= "", temp)
+names(redes)  = gsub(".txt", replacement = "", temp)
 
 # create data.frame for final results
 central_results = data.frame()
@@ -55,11 +56,11 @@ for(k in 1:length(redes)){
     net = names(redes[k])
     rich = as.numeric(ncol(M))
     antprob = centralantagonize[[3]]
-    varia = var(z_mat[nrow(z_mat), ])
+    standev = sd(z_mat[nrow(z_mat), ])
     mpd = MeanPairDist(z_mat[nrow(z_mat), ])
     c_ch = "Central"
     
-    results = data.frame(net, rich, antprob, varia, mpd, c_ch)
+    results = data.frame(net, rich, antprob, standev, mpd, c_ch)
     central_results = rbind(central_results, results)
     
     # Cheater Non-centrality simulation
@@ -92,22 +93,23 @@ for(k in 1:length(redes)){
     
     net = names(redes[k])
     rich = as.numeric(ncol(M))
-    varia = var(z_mat[nrow(z_mat), ])
+    standev = sd(z_mat[nrow(z_mat), ])
     mpd = MeanPairDist(z_mat[nrow(z_mat), ])
     c_ch = "Distributed"
     
-    results = data.frame(net, rich, antprob, varia, mpd, c_ch)
+    results = data.frame(net, rich, antprob, standev, mpd, c_ch)
     central_results = rbind(central_results, results)
   
   }
 }
 
-save(central_results, file = "central_results.RData")
+#save(central_results, file = "central_results.RData")
+load("central_results.RData")
 
-plot_varia = ggplot(data = central_results) +
-  geom_jitter(aes(x = as.factor(c_ch), y = varia, colour = rich), 
+plot_standev = ggplot(data = central_results) +
+  geom_jitter(aes(x = as.factor(c_ch), y = standev, colour = rich), 
               position=position_jitter(0.2), alpha = 0.8) +
-  ylab("Species traits variance") +
+  ylab("Standart deviation of species traits") +
   xlab("") +
   labs(fill = "Richness") +
   theme(axis.text.x = element_text(size = 11),
@@ -117,7 +119,7 @@ plot_varia = ggplot(data = central_results) +
         legend.text = element_text(size = 11))
 
 plot_mpd = ggplot(data = central_results) +
-  geom_jitter(aes(x = as.factor(c_ch), y = mpd, colour = rich), 
+  geom_jitter(aes(x = as.factor(c_ch), y = standev, colour = rich), 
               position=position_jitter(0.2), alpha = 0.8) +
   ylab("MPD - Mean Pairwise Distance") +
   xlab("") +
@@ -128,7 +130,7 @@ plot_mpd = ggplot(data = central_results) +
         legend.key.size = unit(0.6, "cm"),
         legend.text = element_text(size = 11))
 
-ggsave(plot_varia, filename = "cheater_var.png", dpi = 600,
+ggsave(plot_standev, filename = "cheater_standev.png", dpi = 600,
        width = 10, height = 14, units = "cm")
 
 ggsave(plot_mpd, filename = "cheater_mpd.png", dpi = 600,

@@ -1,4 +1,4 @@
-DL n=37
+DL n=42
 format = edgelist1
 labels embedded:
 data:
@@ -6,13 +6,16 @@ R1 C1
 R2 C4
 R2 C5
 R3 C1
+R3 C2
 R4 C4
+R4 C8
 R5 C7
 R6 C3
 R7 C2
 R7 C9
 R8 C2
 R8 C9
+R9 C4
 R10 C3
 R11 C9
 R12 C2
@@ -25,9 +28,12 @@ R17 C2
 R18 C6
 R19 C1
 R20 C3
+R21 C9
 R22 C6
 R23 C2
+R24 C9
 R25 C9
+R26 C2
 R27 C2
 R28 C9
 R29 C2

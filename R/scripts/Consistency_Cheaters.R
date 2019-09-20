@@ -4,13 +4,13 @@
 # We gonna count the frequencies of AM and MM in the M and V matrices.
 # then check if p = freqAM / freqMM + freqAM as expected.
 #
-# This script returns a plot showing the xpected and observed values of AM
+# This script returns a plot showing the expected and observed values of AM
 # for different values of p (called antprob).
 
 # load functions and packages
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
 
-source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CentralAntagonize.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Counting.R")
 
 library(ggplot2)
@@ -22,49 +22,52 @@ antprob = seq(0.01, 1, 0.01)
 data = matrix(NA, ncol = 3, nrow = length(antprob))
 data[,3] = antprob
 
-# loop to count the frequencies of AA, AM and MM
+# loop to count the frequencies of AM and MM
 for(i in 1:length(antprob)){
-  n_sp = 20 # number of species
-  n_int = ((n_sp ** 2) - n_sp) / 2 # number of interactions in the matrix
+  n_sp = 50 # number of species
+  n_int = n_sp * (n_sp - 1) / 2 # number of interactions in the matrix
   M = matrix(1, ncol = n_sp, nrow = n_sp) # matrix M of positive outcomes
   diag(M) = 0 # no intraespecific interactions
   
   # Antagonize M (transform positive links in negative)
-  antagonize = Antagonize(M, antprob[i])
+  antagonize = CentralAntagonize(M)#, antprob[i])
   M = antagonize[[1]]
   V = antagonize[[2]]
   
   # counting interactions AA, AM and MM (AA must be zero)
   c = Counting(M, V)
-  
+
   # if are some interference AA, stop the loop
   if(c[[1]] != 0){
     break
   }
   
   # p is the antprob value in a particular timestep
-  # frequency of antagonisms AM without the interference AA outcomes
+  # frequency of cheaters outcomes 
   
-  # expected frequency of antagonisms
-  data[i,1] = ((2 * antprob[i]) * (1 - antprob[i])) / 
-              (((2 * antprob[i]) * (1 - antprob[i])) + ((1 - antprob[i]) ** 2))
+  # expected frequency of cheaters outcomes
+  data[i,1] = antagonize[[3]]#antprob[i]
   
-  # observed frequency of antagonisms
-  data[i,2] = (c[[2]] / n_int) / 
-              ((c[[2]] / n_int) + (c[[3]] / n_int))
+  # observed frequency of cheaters outcomes
+  data[i,2] = c[[2]] / n_int
+  
 }
-
+ 
 # prepare, plot and save the plot
-data = data.frame(data)
-colnames(data) = c("esp_p*", "obs_p*", "antprob")
+data = data.frame(data) 
+colnames(data) = c("Expected", "Observed", "antprob") 
 test_data_long = melt(data, id = "antprob")  # convert to long format
 
 plotar = ggplot(data = test_data_long,
-                aes(x = antprob, y = value, colour = variable)) +
-  geom_point(alpha = 0.7, size = 3) +
-  ylab("Frequency of cheaters exploitation outcome") +
-  xlab("Probability of outcomes shift (p)")
+                aes(x = antprob, y = value, colour = variable, shape = variable)) +
+  geom_point(alpha = 0.5, size = 3) +
+  ylab("Frequency of cheaters exploitation in the network f(Ch)") +
+  xlab("Value of interaction shift probability (p)") +
+  theme(axis.text.x = element_text(size = 9),
+        axis.text.y = element_text(size = 9),
+        axis.title = element_text(size = 12), 
+        legend.key.size = unit(0.6, "cm"),
+        legend.text = element_text(size = 9))
 
-
-plotar
-#ggsave(plotar, file = "Freq_p_NO_AA.png")
+# save the current plot
+#ggsave(plotar, file = "Cons_test_antprob_freq.png")

@@ -17,16 +17,30 @@ CentralAntagonize = function(M){
   
   # identify the central species
   d = colSums(M) / (ncol(M) - 1)
-  d_zs = (d - mean(d))/sd(d)
+  d_zs = (d - mean(d)) / sd(d)
   c_sp = which(d_zs > 1)
   
+  # read only the matrix upper.tri
+  index_pos = which(lower.tri(M))
+  index_sp = which(lower.tri(M), arr.ind = TRUE)
+  
   # change interaction outcomes of central species only
-  for(i in 1:dim(M)[1]){
-    for(j in 1:dim(M)[2]){
-      if(M[i,j] == 1 & any(c_sp == i)){
-        M[j,i] = 0
-        V[j,i] = 1
-      }
+  for(i in 1:length(index_pos)){ # for each element in index
+    if(M[index_pos[i]] == 1 & any(c_sp == index_sp[i])){
+      M[index_sp[i,][2], index_sp[i,][1]] = 0 # inverse element is zero (M[j,i])
+      V[index_sp[i,][2], index_sp[i,][1]] = 1 # inverse element in V is "on" (V[j,i])
+    }
+  }
+  
+  # read only the matrix upper.tri
+  index_pos = which(upper.tri(M))
+  index_sp = which(upper.tri(M), arr.ind = TRUE)
+  
+  # change interaction outcomes of central species only
+  for(i in 1:length(index_pos)){ # for each element in index
+    if(M[index_pos[i]] == 1 & any(c_sp == index_sp[i])){
+      M[index_sp[i,][2], index_sp[i,][1]] = 0 # inverse element is zero (M[j,i])
+      V[index_sp[i,][2], index_sp[i,][1]] = 1 # inverse element in V is "on" (V[j,i])
     }
   }
   

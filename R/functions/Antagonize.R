@@ -12,18 +12,15 @@ Antagonize = function(M, antprob){
   # create V matrix with the same size of mat
   V = M * 0 
   
-  for(i in 1:dim(M)[1]){ 
-    for(j in 1:dim(M)[2]){
-      # for each element of M equal 1
-      if(M[i,j] == 1){
-        # sample a random value 
-        p = runif(1, 0, 1)
-        # if this value is lower than antprob
-        if(p <= antprob){
-        # transform positive effect in negative
-        M[j,i] = 0
-        V[j,i] = 1
-        }
+  # define the matrix upper triangle
+  index = which(upper.tri(M), arr.ind = TRUE)
+  
+  for(i in 1:nrow(index)){ # for each element in index
+    if(M[index[i,][1], index[i,][2]] == 1){ # if this element is equal to 1
+      p = runif(1, 0, 1) # sample a number between 0 and 1
+      if(p <= antprob){ # if this number is equal or lower than antprob...
+        M[index[i,][2], index[i,][1]] = 0 # inverse element is zero (M[j,i])
+        V[index[i,][2], index[i,][1]] = 1 # inverse element in V is "on" (V[j,i])
       }
     }
   }

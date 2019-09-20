@@ -1,4 +1,4 @@
-DL n=39
+DL n=38
 format = edgelist1
 labels embedded:
 data:
@@ -26,7 +26,6 @@ R10 C3
 R10 C6
 R11 C2
 R12 C10
-R13 C2
 R14 C2
 R14 C9
 R15 C2

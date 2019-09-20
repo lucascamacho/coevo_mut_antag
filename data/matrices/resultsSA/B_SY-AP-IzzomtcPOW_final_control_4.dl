@@ -1,8 +1,9 @@
-DL n=16
+DL n=17
 format = edgelist1
 labels embedded:
 data:
 R1 C1
+R2 C2
 R2 C5
 R3 C3
 R4 C4

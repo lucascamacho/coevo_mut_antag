@@ -31,11 +31,13 @@ for(k in 1:length(redes)){
     M[which(M > 1)] = 1
     M = SquareMatrix(M)
     n_sp = ncol(M)
+    n_int = sum(M) / 2 # number of interactions in the matrix
     
     antprob = runif(1, 0, 1)
     
     source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
     source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
+    source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Counting.R")
     
     empantagonize = Antagonize(M, antprob)
     M = empantagonize[[1]]
@@ -56,22 +58,24 @@ for(k in 1:length(redes)){
     
     net = names(redes[k])
     rich = as.numeric(ncol(M))
-    varia = var(z_mat[nrow(z_mat), ])
+    standev = sd(z_mat[nrow(z_mat), ])
     mpd = MeanPairDist(z_mat[nrow(z_mat), ])
     
-    results = data.frame(net, rich, antprob, varia, mpd)
+    results = data.frame(net, rich, antprob, standev, mpd)
     
     p_data = rbind(p_data, results)
   }
 }
 
-save(p_data, file = "antprob_var.RData")
+#save(p_data, file = "antprob_var.RData")
+#load(file = "antprob_var.RData")
 
-plot_var = ggplot(data = p_data) +
-  geom_point(aes(x = antprob, y = varia, colour = rich), alpha = 0.8) +
-  geom_smooth(aes(x = antprob, y = varia), colour = "red") +
+plot_standev = ggplot(data = p_data) +
+  geom_point(aes(x = antprob, y = standev, colour = rich), alpha = 0.8) +
+  geom_smooth(aes(x = antprob, y = standev), colour = "red") +
+  #  geom_hline(yintercept = 0) +
   xlab("Frequency of cheaters exploitation (p)") +
-  ylab("Species trait variance") +
+  ylab("Standart deviation of species trait") +
   theme(axis.text.x = element_text(size = 11),
         axis.text.y = element_text(size = 11),
         axis.title = element_text(size = 20), 
@@ -90,9 +94,10 @@ plot_mpd = ggplot(data = p_data) +
         legend.key.size = unit(0.6, "cm"),
         legend.text = element_text(size = 11))
 
-ggsave(plot_var, filename = "cheater_var.png", dpi = 600,
+#ggsave(plot_standev, filename = "antprob_cheater_sd.png", dpi = 600,
+#       width = 20, height = 14, units = "cm")
+
+ggsave(plot_mpd, filename = "antprob_cheater_mpd.png", dpi = 600,
        width = 20, height = 14, units = "cm")
-       
-ggsave(plot_mpd, filename = "cheater_mpd.png", dpi = 600,
-       width = 20, height = 14, units = "cm")
+
 

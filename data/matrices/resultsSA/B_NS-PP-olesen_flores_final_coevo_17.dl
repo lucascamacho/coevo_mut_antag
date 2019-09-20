@@ -3,6 +3,7 @@ format = edgelist1
 labels embedded:
 data:
 R1 C1
+R1 C3
 R1 C5
 R1 C6
 R1 C7

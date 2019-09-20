@@ -37,17 +37,22 @@ for(k in 1:length(redes)){
     M[which(M > 1)] = 1 # if there are any error, correct that
     M = SquareMatrix(M) # square the adjancency matrix
     n_sp = ncol(M) # define the species number
+    n_int = sum(M) / 2 # number of interactions in the matrix
     
     antprob = runif(1, 0, 1) # sample an antprob value
     
     # load functions
     source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
     source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/DiscoCoevoMutAntNet.R")
+    source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Counting.R")
     
     # antagonize matrices (now I have an M and V adjancency matrix)
     antagonize = Antagonize(M, antprob)
     M = antagonize[[1]]
     V = antagonize[[2]]
+    
+    c = Counting(M,V)
+    antprob = c[[2]] / n_int
     
     # DesQuad matrices
     li = 1:dim(redes[[k]])[1]
@@ -104,7 +109,7 @@ for(k in 1:length(redes)){
 
 # save or load the RData file
 #save(final_fl, file = "data_nest_mod.RData")
-load("data_nest_mod.RData")
+#load("data_nest_mod.RData")
 
 # plot and save the nestedness results graph
 plot_nest_coevo = ggplot(data = final_fl) +
@@ -160,8 +165,8 @@ dados = data.frame(final_init$net, rich, final_init$antprob, dmcontrol, dmcoevo)
 final_mod = dados
 
 # save or load the RData file
-#save(final_mod, file = "data_mod.RData")
-load("data_mod.RData")
+save(final_mod, file = "data_mod.RData")
+#load("data_mod.RData")
 
 # plot and save the delta modularity results
 plot_mod_coevo = ggplot(data = dados) +
@@ -175,6 +180,8 @@ plot_mod_coevo = ggplot(data = dados) +
         axis.title = element_text(size = 20), 
         legend.key.size = unit(0.6, "cm"),
         legend.text = element_text(size = 11))
+
+setwd("~/Dropbox/Master/Code/coevo_mut_antag/data/")
 
 ggsave(plot_mod_coevo, filename = "deltamod_coevo_adj.png", dpi = 600,
        width = 20, height = 14, units = "cm")
