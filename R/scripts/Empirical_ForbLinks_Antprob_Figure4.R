@@ -1,16 +1,20 @@
 # Last figure of the paper
 # Code to explore the influence of cheaters exploitation in the structure
 # of the adjancency matrix of interactions. We are considering a second
-# trait barrier that will cut interactions off if this barrier is tranpassed
+# trait barrier (b) that will cut interactions off if this barrier is tranpassed
 # This will allow us to see what's the effect of cheaters in coevolution and
 # how this change's the strcuture of ecological interacions in the community.
-
+#
 # The nestedness will be calculated using the bipartite package and the modularity
 # with the MODULAR program
-
+#
 # Marquitti, F. M. D., P. R. Guimaraes, M. M. Pires, L. F. Bittencourt. 2014. 
 # MODULAR: Software for the Autonomous Computation of Modularity in Large Network Sets. 
 # Ecography: 37: 221–224.
+#
+# For each of our 24 empirical networks we gonna run 
+# 30 simulations and calculate the nestedness and modularity
+# of out adjancency matrix of interaction
 
 # load packages and functions
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/data/")
@@ -29,17 +33,17 @@ names(redes)  = gsub(".txt", replacement= "", temp)
 # create data.frame to store all my results
 final_fl = data.frame()
 
-for(k in 1:length(redes)){
-  print(k) # show which network the simulation are using
+for(k in 1:length(redes)){ # loop to each matrix of interactions
+  print(k)
   
-  for(a in 1:30){ # loop to each network
+  for(a in 1:30){ # 30 loops to each matrix
     M = as.matrix(redes[[k]]) # M is the adjancency matrix of interactions
     M[which(M > 1)] = 1 # if there are any error, correct that
     M = SquareMatrix(M) # square the adjancency matrix
     n_sp = ncol(M) # define the species number
-    n_int = sum(M) / 2 # number of interactions in the matrix
-    
-    antprob = runif(1, 0, 1) # sample an antprob value
+
+    # sample an antprob value
+    antprob = runif(1, 0, 1)
     
     # load functions
     source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
@@ -51,13 +55,10 @@ for(k in 1:length(redes)){
     M = antagonize[[1]]
     V = antagonize[[2]]
     
-    c = Counting(M,V)
-    antprob = c[[2]] / n_int
-    
     # DesQuad matrices
     li = 1:dim(redes[[k]])[1]
-    co_1 = dim(redes[[k]])[1]+1
-    co_2 = dim(redes[[k]])[1]+dim(redes[[k]])[2]
+    co_1 = dim(redes[[k]])[1] + 1
+    co_2 = dim(redes[[k]])[1] + dim(redes[[k]])[2]
     
     # init_m and W are non squared adjacency matrices
     init_m = as.matrix(M + V)[li, co_1:co_2]
@@ -108,8 +109,8 @@ for(k in 1:length(redes)){
 }
 
 # save or load the RData file
-#save(final_fl, file = "data_nest_mod.RData")
-#load("data_nest_mod.RData")
+save(final_fl, file = "data_nest_mod.RData")
+load("data_nest_mod.RData")
 
 # plot and save the nestedness results graph
 plot_nest_coevo = ggplot(data = final_fl) +
@@ -129,31 +130,31 @@ ggsave(plot_nest_coevo, filename = "deltanest_coevo_adj.png", dpi = 600,
 
 # read the MODULAR results
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/data/matrices/resultsSA/")
-mod_results <- read.table("OUT_MOD.txt", header=TRUE)
+mod_results = read.table("OUT_MOD.txt", header=TRUE)
 
 # separate the initial, final control and final coevo matrices
-init = mod_results[grep(mod_results$File, pattern="init"), ]
-coevo = mod_results[grep(mod_results$File, pattern="coevo"), ]
-control = mod_results[grep(mod_results$File, pattern="control"), ]
+init = mod_results[grep(mod_results$File, pattern = "init"), ]
+coevo = mod_results[grep(mod_results$File, pattern = "coevo"), ]
+control = mod_results[grep(mod_results$File, pattern = "control"), ]
 
 # separate the data and prepare the data names
 # initia matrices data
-init$net <- gsub(init$File, pattern = "_init", replacement = "")
-init$net <- gsub(init$net, pattern = ".txt", replacement = "")
+init$net = gsub(init$File, pattern = "_init", replacement = "")
+init$net = gsub(init$net, pattern = ".txt", replacement = "")
 
-final_init <- merge(init, final_fl, by = "net", all.x=TRUE, all.y=TRUE)
+final_init = merge(init, final_fl, by = "net", all.x = TRUE, all.y = TRUE)
 
 # coevo matrices data
-coevo$net <- gsub(coevo$File, pattern="_final_coevo", replacement = "")
-coevo$net <- gsub(coevo$net, pattern=".txt", replacement = "")
+coevo$net = gsub(coevo$File, pattern = "_final_coevo", replacement = "")
+coevo$net = gsub(coevo$net, pattern = ".txt", replacement = "")
 
-final_coevo <- merge(coevo, final_fl, by="net", all.x=TRUE, all.y=TRUE)
+final_coevo = merge(coevo, final_fl, by="net", all.x=TRUE, all.y=TRUE)
 
 # control matrices data
-control$net <- gsub(control$File, pattern="_final_control", replacement = "")
-control$net <- gsub(control$net, pattern=".txt", replacement = "")
+control$net = gsub(control$File, pattern = "_final_control", replacement = "")
+control$net = gsub(control$net, pattern = ".txt", replacement = "")
 
-final_control <- merge(control, final_fl, by="net", all.x=TRUE, all.y=TRUE)
+final_control = merge(control, final_fl, by = "net", all.x = TRUE, all.y = TRUE)
 
 # calculate the delta modularity and get the community richness
 dmcontrol = final_control$Modularity - final_init$Modularity
@@ -166,7 +167,7 @@ final_mod = dados
 
 # save or load the RData file
 save(final_mod, file = "data_mod.RData")
-#load("data_mod.RData")
+load("data_mod.RData")
 
 # plot and save the delta modularity results
 plot_mod_coevo = ggplot(data = dados) +

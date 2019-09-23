@@ -49,7 +49,7 @@ CentralAntagonize = function(M){
   
   # estimate p as a frequency
   A = M + V
-  p_vl = sum(V) / sum(A)
+  p_vl = sum(V) / (sum(A) / 2)
   
   # create and return a list with the positive and negative matrices\
   mats = list(M, V, p_vl)

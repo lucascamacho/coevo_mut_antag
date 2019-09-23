@@ -9,7 +9,7 @@ Counting = function(M, V){
   #
   # Return:
   #   A list with the number of AA, AM and MM outcomes
-  n_cheat = length(M[M != t(M)]) / 2 #counting AM
+  n_cheat = sum(V) #counting AM
 
   m1 = which(M == 1)
   m2 = which(t(M) == 1)

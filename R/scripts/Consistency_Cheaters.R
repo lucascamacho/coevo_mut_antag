@@ -10,7 +10,7 @@
 # load functions and packages
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
 
-source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CentralAntagonize.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Counting.R")
 
 library(ggplot2)
@@ -25,12 +25,12 @@ data[,3] = antprob
 # loop to count the frequencies of AM and MM
 for(i in 1:length(antprob)){
   n_sp = 50 # number of species
-  n_int = n_sp * (n_sp - 1) / 2 # number of interactions in the matrix
+  n_int = (n_sp * (n_sp - 1)) / 2 # number of interactions in the matrix
   M = matrix(1, ncol = n_sp, nrow = n_sp) # matrix M of positive outcomes
   diag(M) = 0 # no intraespecific interactions
   
   # Antagonize M (transform positive links in negative)
-  antagonize = CentralAntagonize(M)#, antprob[i])
+  antagonize = Antagonize(M, antprob[i])
   M = antagonize[[1]]
   V = antagonize[[2]]
   
@@ -39,14 +39,14 @@ for(i in 1:length(antprob)){
 
   # if are some interference AA, stop the loop
   if(c[[1]] != 0){
-    break
+    break("AA generated")
   }
   
   # p is the antprob value in a particular timestep
   # frequency of cheaters outcomes 
   
   # expected frequency of cheaters outcomes
-  data[i,1] = antagonize[[3]]#antprob[i]
+  data[i,1] = antprob[i]
   
   # observed frequency of cheaters outcomes
   data[i,2] = c[[2]] / n_int
@@ -68,6 +68,6 @@ plotar = ggplot(data = test_data_long,
         axis.title = element_text(size = 12), 
         legend.key.size = unit(0.6, "cm"),
         legend.text = element_text(size = 9))
-
+plotar
 # save the current plot
 #ggsave(plotar, file = "Cons_test_antprob_freq.png")

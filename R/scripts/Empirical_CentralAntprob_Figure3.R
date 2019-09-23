@@ -3,7 +3,11 @@
 # trait MPD and variance of species in mutualistic networks.
 # For that we gonna calculate and normalize the species degree centrality
 # use the +1 SD species degree as central species and simulates the
-# coevolution process with those species as cheaters
+# coevolution process with those species as cheaters.
+#
+# For each of our 24 empirical networks we gonna run 
+# 100 simulations and calculate the SD and MPD of
+# species traits in the last timestep of simulations
 
 # load packages and functions
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/data/")
@@ -22,22 +26,34 @@ names(redes)  = gsub(".txt", replacement = "", temp)
 # create data.frame for final results
 central_results = data.frame()
 
-for(k in 1:length(redes)){
+for(k in 1:length(redes)){ # loop to each empirical matrix
   print(k)
   
-  for(a in 1:50){
+  for(a in 1:50){ # 50 loops to each matrix
     # Cheater centrality simulation
-    M = as.matrix(redes[[k]])
-    M[which(M > 1)] = 1
-    M = SquareMatrix(M)
-    n_sp = ncol(M)
+    M = as.matrix(redes[[k]]) # M is the adjancency matrix of interactions
+    M[which(M > 1)] = 1 # if there are any error, correct that
+    M = SquareMatrix(M) # square the adjancency matrix
+    n_sp = ncol(M) # define the species number
     
+    # load functions
     source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CentralAntagonize.R")
     source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
     
+    # insert cheaters outcomes based on degree centrality
     centralantagonize = CentralAntagonize(M)
     M = centralantagonize[[1]]
     V = centralantagonize[[2]]
+    
+    source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Counting.R")
+    
+    # counting interactions AA, AM and MM (AA must be zero)
+    c = Counting(M, V)
+    
+    # if are some interference AA, stop the loop
+    if(c[[1]] != 0){
+      break("AA generated")
+    }
     
     # coevolutionary model parameters
     phi = 0.2
@@ -60,20 +76,24 @@ for(k in 1:length(redes)){
     mpd = MeanPairDist(z_mat[nrow(z_mat), ])
     c_ch = "Central"
     
+    # insert these results in our data.frame
     results = data.frame(net, rich, antprob, standev, mpd, c_ch)
     central_results = rbind(central_results, results)
     
     # Cheater Non-centrality simulation
-    M = as.matrix(redes[[k]])
-    M[which(M > 1)] = 1
-    M = SquareMatrix(M)
-    n_sp = ncol(M)
+    M = as.matrix(redes[[k]]) # M is the adjancency matrix of interactions
+    M[which(M > 1)] = 1 # if there are any error, correct that
+    M = SquareMatrix(M) # square the adjancency matrix
+    n_sp = ncol(M) # define the species number
     
+    # use the same frequency of cheaters calculated above
     antprob = centralantagonize[[3]]
     
+    #load functions
     source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
     source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
     
+    # insert cheaters outcomes in the network
     empantagonize = Antagonize(M, antprob)
     M = empantagonize[[1]]
     V = empantagonize[[2]]
@@ -91,21 +111,25 @@ for(k in 1:length(redes)){
     # simulate coevolution
     z_mat = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
     
+    # get our results
     net = names(redes[k])
     rich = as.numeric(ncol(M))
     standev = sd(z_mat[nrow(z_mat), ])
     mpd = MeanPairDist(z_mat[nrow(z_mat), ])
     c_ch = "Distributed"
     
+    # insert these results in our data.frame
     results = data.frame(net, rich, antprob, standev, mpd, c_ch)
     central_results = rbind(central_results, results)
   
   }
 }
 
-#save(central_results, file = "central_results.RData")
+# save or load the results
+save(central_results, file = "central_results.RData")
 load("central_results.RData")
 
+# plot and save our results
 plot_standev = ggplot(data = central_results) +
   geom_jitter(aes(x = as.factor(c_ch), y = standev, colour = rich), 
               position=position_jitter(0.2), alpha = 0.8) +
@@ -130,9 +154,8 @@ plot_mpd = ggplot(data = central_results) +
         legend.key.size = unit(0.6, "cm"),
         legend.text = element_text(size = 11))
 
-ggsave(plot_standev, filename = "cheater_standev.png", dpi = 600,
+ggsave(plot_standev, filename = "central_cheater_standev.png", dpi = 600,
        width = 10, height = 14, units = "cm")
 
-ggsave(plot_mpd, filename = "cheater_mpd.png", dpi = 600,
+ggsave(plot_mpd, filename = "central_cheater_mpd.png", dpi = 600,
        width = 10, height = 14, units = "cm")
-
