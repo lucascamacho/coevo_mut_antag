@@ -24,6 +24,8 @@ source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/SquareMatrix.R")
 library(ggplot2)
 library(cowplot)
 library(bipartite)
+library(viridis)
+library(plyr)
 
 # read all mutualism networks
 temp = list.files(pattern="*.txt")
@@ -109,16 +111,18 @@ for(k in 1:length(redes)){ # loop to each matrix of interactions
 }
 
 # save or load the RData file
-save(final_fl, file = "data_nest_mod.RData")
+#save(final_fl, file = "data_nest_mod.RData")
 load("data_nest_mod.RData")
 
 # plot and save the nestedness results graph
 plot_nest_coevo = ggplot(data = final_fl) +
-  geom_point(aes(x = antprob, y = dnest_coevo, colour = rich), alpha = 0.8) +
+  geom_point(aes(x = antprob, y = dnest_coevo, colour = rich, group = rich), alpha = 0.4) +
   geom_smooth(aes(x = antprob, y = dnest_coevo), colour = "red") +
   geom_smooth(aes(x = antprob, y = dnest_control), colour = "black") +
+  scale_colour_gradientn(colours = viridis(10), trans = "reverse") +
   xlab("Frequency of cheaters exploitation (p)") +
   ylab("Delta Nestedness") +
+  labs(color = "Richness") +
   theme(axis.text.x = element_text(size = 11),
         axis.text.y = element_text(size = 11),
         axis.title = element_text(size = 20), 
@@ -170,12 +174,14 @@ save(final_mod, file = "data_mod.RData")
 load("data_mod.RData")
 
 # plot and save the delta modularity results
-plot_mod_coevo = ggplot(data = dados) +
-  geom_point(aes(x = final_init.antprob, y = dmcoevo, colour = rich), alpha = 0.8) +
+plot_mod_coevo = ggplot(data = final_mod) +
+  geom_point(aes(x = final_init.antprob, y = dmcoevo, colour = final_init.rich, group = final_init.rich), alpha = 0.4) +
   geom_smooth(aes(x = final_init.antprob, y = dmcoevo), colour = "red") +
   geom_smooth(aes(x = final_init.antprob, y = dmcontrol), colour = "black") +
+  scale_colour_gradientn(colours = viridis(10), trans = "reverse") +
   xlab("Frequency of cheaters exploitation (p)") +
   ylab("Delta Modularity") +
+  labs(color = "Richness") +
   theme(axis.text.x = element_text(size = 11),
         axis.text.y = element_text(size = 11),
         axis.title = element_text(size = 20), 

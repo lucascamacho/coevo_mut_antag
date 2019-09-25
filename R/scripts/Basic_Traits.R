@@ -13,7 +13,7 @@ library(reshape2)
 library(cowplot)
 
 # initial parameters
-antprob = 0.2 # current probability value
+antprob = 0.8 # current probability value
 n_sp = 10 # defining number of species
 M = matrix(1, ncol = n_sp, nrow = n_sp) # building matrix M of positive outcomes
 diag(M) = 0 # no intraespecific interactions
@@ -34,7 +34,7 @@ eq_dif = 0.0001
 t_max = 1000
 
 # running coevolution simulation
-traits = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
+z_mat = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
 
 # building data frame to plot the results
 traits = as.data.frame(traits)

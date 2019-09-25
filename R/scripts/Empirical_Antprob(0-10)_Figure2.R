@@ -15,6 +15,8 @@ source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/MeanPairDist.R")
 
 library(ggplot2)
 library(cowplot)
+library(plyr)
+library(viridis)
 
 # read all the empirical networks
 temp = list.files(pattern="*.txt")
@@ -70,36 +72,48 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
 }
 
 # save or load the data created
-save(p_data, file = "antprob_var.RData")
+#save(p_data, file = "antprob_var.RData")
 load(file = "antprob_var.RData")
 
+# summarize the data.frame to standard deviation
+summ = ddply(p_data, c("antprob", "rich"), summarize, standev = standev)
+
 # plot and save the results using ggplot2
-plot_standev = ggplot(data = p_data) +
-  geom_point(aes(x = antprob, y = standev, colour = rich), alpha = 0.8) +
+plot_standev = ggplot(data = summ) +
+  geom_line(aes(x = antprob, y = standev, colour = rich, group = rich), alpha = 0.4) +
   geom_smooth(aes(x = antprob, y = standev), colour = "red") +
-  #  geom_hline(yintercept = 0) +
+  scale_colour_gradientn(colours = viridis(10), trans = "reverse") +
+  scale_y_continuous(expand = c(0,0)) +
+  scale_x_continuous(limits = c(0,1), expand = c(0,0)) +
   xlab("Frequency of cheaters exploitation (p)") +
-  ylab("Standart deviation of species trait") +
+  ylab("Standart deviation of species traits") +
+  labs(color = "Richness") +
   theme(axis.text.x = element_text(size = 11),
         axis.text.y = element_text(size = 11),
-        axis.title = element_text(size = 20), 
+        axis.title = element_text(size = 18), 
         legend.key.size = unit(0.6, "cm"),
         legend.text = element_text(size = 11))
 
-plot_mpd = ggplot(data = p_data) +
-  geom_point(aes(x = antprob, y = mpd, colour = rich), alpha = 0.8) +
+# summarize the data.frame to MPD
+summ = ddply(p_data, c("antprob", "rich"), summarize, mpd = mpd)
+
+plot_mpd = ggplot(data = summ) +
+  geom_line(aes(x = antprob, y = mpd, colour = rich, group = rich), alpha = 0.4) +
   geom_smooth(aes(x = antprob, y = mpd), colour = "red") +
+  scale_colour_gradientn(colours = viridis(10), trans = "reverse") +
+  scale_y_continuous(expand = c(0,0)) +
+  scale_x_continuous(limits = c(0,1), expand = c(0,0)) +
   xlab("Frequency of cheaters exploitation (p)") +
   ylab("MPD - Mean Pairwise Distance") +
-  labs(fill = "Richness") +
+  labs(color = "Richness") +
   theme(axis.text.x = element_text(size = 11),
         axis.text.y = element_text(size = 11),
-        axis.title = element_text(size = 20), 
+        axis.title = element_text(size = 18), 
         legend.key.size = unit(0.6, "cm"),
         legend.text = element_text(size = 11))
 
-#ggsave(plot_standev, filename = "antprob_cheater_sd.png", dpi = 600,
-#       width = 20, height = 14, units = "cm")
+ggsave(plot_standev, filename = "antprob_cheater_sd.png", dpi = 600,
+       width = 20, height = 14, units = "cm")
 
-#ggsave(plot_mpd, filename = "antprob_cheater_mpd.png", dpi = 600,
-#       width = 20, height = 14, units = "cm")
+ggsave(plot_mpd, filename = "antprob_cheater_mpd.png", dpi = 600,
+       width = 20, height = 14, units = "cm")

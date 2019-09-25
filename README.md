@@ -57,6 +57,8 @@ List of R packages used:
 - [cowplot](https://cran.r-project.org/web/packages/cowplot/vignettes/introduction.html)
 - [reshape2](https://cran.r-project.org/web/packages/reshape2/index.html)
 - [bipartite](https://cran.r-project.org/web/packages/bipartite/index.html)
+- [plyr](https://www.rdocumentation.org/packages/plyr/versions/1.8.4)
+- [viridis](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html)
 
 ## Authors
 
