@@ -60,10 +60,6 @@ List of R packages used:
 - [plyr](https://www.rdocumentation.org/packages/plyr/versions/1.8.4)
 - [viridis](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html)
 
-## Authors
-
-* **Lucas A. Camacho** - *Grad student at the Departamento de Ecologia, IB - USP*
-* **Paulo Roberto Guimarães Junior** - *Associate Professor at the Departamento de Ecologia, IB - USP* - [Paulo's website](http://guimaraeslab.weebly.com)
 
 ## Acknowledgments
 
