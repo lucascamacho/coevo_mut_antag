@@ -61,9 +61,4 @@ List of R packages used:
 - [viridis](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html)
 
 
-## Acknowledgments
 
-* My supervisor Paulo Guimarães Jr.
-* To all the actual and pass students of MiudoLab and Lage's at USP.
-* Alan Turing for develop the base of computers that we have nowadays.
-* Electric Octopus, Jimmy Hendrix, Naxatras and several other psychodelic bands that help me code better.
