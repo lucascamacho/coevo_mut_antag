@@ -80,14 +80,12 @@ summ = ddply(p_data, c("antprob", "rich"), summarize, standev = standev)
 
 # plot and save the results using ggplot2
 plot_standev = ggplot(data = summ) +
-  geom_line(aes(x = antprob, y = standev, colour = rich, group = rich), alpha = 0.4) +
+  geom_point(aes(x = antprob, y = standev), alpha = 0.4) +
   geom_smooth(aes(x = antprob, y = standev), colour = "red") +
-  scale_colour_gradientn(colours = viridis(10), trans = "reverse") +
   scale_y_continuous(expand = c(0,0)) +
-  scale_x_continuous(limits = c(0,1), expand = c(0,0)) +
+  scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
   xlab("Frequency of cheaters exploitation (p)") +
-  ylab("Standart deviation of species traits") +
-  labs(color = "Richness") +
+  ylab("Standart deviation of species traits (σ)") +
   theme(axis.text.x = element_text(size = 11),
         axis.text.y = element_text(size = 11),
         axis.title = element_text(size = 18), 
@@ -98,14 +96,12 @@ plot_standev = ggplot(data = summ) +
 summ = ddply(p_data, c("antprob", "rich"), summarize, mpd = mpd)
 
 plot_mpd = ggplot(data = summ) +
-  geom_line(aes(x = antprob, y = mpd, colour = rich, group = rich), alpha = 0.4) +
+  geom_point(aes(x = antprob, y = mpd), alpha = 0.4) +
   geom_smooth(aes(x = antprob, y = mpd), colour = "red") +
-  scale_colour_gradientn(colours = viridis(10), trans = "reverse") +
   scale_y_continuous(expand = c(0,0)) +
-  scale_x_continuous(limits = c(0,1), expand = c(0,0)) +
+  scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
   xlab("Frequency of cheaters exploitation (p)") +
   ylab("MPD - Mean Pairwise Distance") +
-  labs(color = "Richness") +
   theme(axis.text.x = element_text(size = 11),
         axis.text.y = element_text(size = 11),
         axis.title = element_text(size = 18), 

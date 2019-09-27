@@ -95,9 +95,9 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
     source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
     
     # insert cheaters outcomes in the network
-    empantagonize = Antagonize(M, antprob)
-    M = empantagonize[[1]]
-    V = empantagonize[[2]]
+    antagonize = Antagonize(M, antprob)
+    M = antagonize[[1]]
+    V = antagonize[[2]]
     
     # coevolutionary model parameters
     phi = 0.2
@@ -132,12 +132,9 @@ load("central_results.RData")
 
 # plot and save our results
 plot_standev = ggplot(data = central_results) +
-  geom_jitter(aes(x = as.factor(c_ch), y = standev, colour = rich, group = rich), 
-              position=position_jitter(0.2), alpha = 0.6) +
-  scale_colour_gradientn(colours = viridis(10), trans = "reverse") +
-  ylab("Standart deviation of species traits") +
+  geom_boxplot(aes(x = as.factor(c_ch), y = standev), fill = "grey90") +
+  ylab("Standard deviation of species traits (σ)") +
   xlab("") +
-  labs(color = "Richness") +
   theme(axis.text.x = element_text(size = 11),
         axis.text.y = element_text(size = 11),
         axis.title = element_text(size = 20), 
@@ -145,12 +142,9 @@ plot_standev = ggplot(data = central_results) +
         legend.text = element_text(size = 11))
 
 plot_mpd = ggplot(data = central_results) +
-  geom_jitter(aes(x = as.factor(c_ch), y = mpd, colour = rich, group = rich), 
-              position=position_jitter(0.2), alpha = 0.6) +
-  scale_colour_gradientn(colours = viridis(10), trans = "reverse") +
+  geom_boxplot(aes(x = as.factor(c_ch), y = mpd), fill = "grey90") +
   ylab("MPD - Mean Pairwise Distance") +
   xlab("") +
-  labs(color = "Richness") +
   theme(axis.text.x = element_text(size = 11),
         axis.text.y = element_text(size = 11),
         axis.title = element_text(size = 20), 

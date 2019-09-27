@@ -67,8 +67,7 @@ List of R packages used:
 
 ## Acknowledgments
 
-* My supervisor Paulo Guimarães.
+* My supervisor Paulo Guimarães Jr.
 * To all the actual and pass students of MiudoLab and Lage's at USP.
-* Charles Darwin for dive in that crazy trip in a crazy ship and write about it.
 * Alan Turing for develop the base of computers that we have nowadays.
 * Electric Octopus, Jimmy Hendrix, Naxatras and several other psychodelic bands that help me code better.
