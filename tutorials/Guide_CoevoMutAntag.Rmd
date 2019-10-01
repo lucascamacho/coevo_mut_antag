@@ -3,8 +3,8 @@ title: "Guide to coevo_mut_antag code"
 author: "Lucas Arantes Camacho"
 date: "27/06/2018"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
   word_document: default
 fontsize: 12pt
 link-citations: yes

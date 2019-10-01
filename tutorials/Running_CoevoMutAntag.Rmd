@@ -3,8 +3,8 @@ title: "Running the CoevoMutAntag simulations"
 author: "Lucas Arantes Camacho"
 date: "01/10/2019"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
   word_document: default
 fontsize: 12pt
 mainfont: Times New Roman
