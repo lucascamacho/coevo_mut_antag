@@ -40,10 +40,10 @@ that are interested in my work and my results. Also, and equally important, i ho
 Please, let me know if these tutorials and guides are usefull or has some erros or inconsistencies sending me an email (lucas.camacho@usp.br). Check below the lists of 
 guides and tutorials available:
 
-- [Guide_CoevoMutAntag](): IN PROGRESS. Guide showing my project basic ideas, my model and how do 
+- [Guide_CoevoMutAntag](https://github.com/lucascamacho/coevo_mut_antag/blob/master/tutorials/Guide_CoevoMutAntag.pdf): Guide showing my project basic ideas, my model and how do 
 i implement it on R. These guides ends in a single plot showing the average species traits changing in time.
 
-- [Running_CoevoMutAntag](): IN PROGRESS. Tutorial to explain what i've being doing in the scripts where i explore how the presence of cheaters influences the coevolutionary process 
+- [Running_CoevoMutAntag](https://github.com/lucascamacho/coevo_mut_antag/blob/master/tutorials/Running_CoevoMutAntag.pdf): Tutorial to explain what i've being doing in the scripts where i explore how the presence of cheaters influences the coevolutionary process 
 in mutualistic networks. You will that i try to explain step-by step the basic ideas of my scripts and how do i visualize the results of my simulations.
 
 

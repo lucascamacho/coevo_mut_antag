@@ -96,7 +96,7 @@ eq_dif = 0.0001
 t_max = 1000
 ```
 
-After that we gonna use the last (and maybe most important) function that we load in the beggining of this tutorial: the CoevoMutAntNet which runs the coevolution process in the community. You can understand the functioning of this function in the file [Guide_CoevoMutAntag]() from my GitHub account.
+After that we gonna use the last (and maybe most important) function that we load in the beggining of this tutorial: the CoevoMutAntNet which runs the coevolution process in the community. You can understand the functioning of this function in the file [Guide_CoevoMutAntag](https://github.com/lucascamacho/coevo_mut_antag/blob/master/tutorials/Guide_CoevoMutAntag.pdf) from my GitHub account.
 
 ```{r}
 # running coevolution simulation
