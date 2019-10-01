@@ -3,8 +3,8 @@ title: "Guide to coevo_mut_antag code"
 author: "Lucas Arantes Camacho"
 date: "27/06/2018"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
   word_document: default
 fontsize: 12pt
 link-citations: yes
@@ -338,7 +338,7 @@ And that's end our simulation process. We just simulate one timestep, these proc
 
 ## Final statements
 
-That's all for now. Please, let me know if you find some error in my code or model by sending an e-mail to lucas.camacho@usp.br.You can find the R code in my [GITHUB](https://github.com/lucascamacho/coevo_mut_antag) repository, in the CoevoMutAntag.R file.
+That's all for now. Please, let me know if you find some error in my code or model by sending an e-mail to lucas.camacho@usp.br. You can find the R code in my [GITHUB](https://github.com/lucascamacho/coevo_mut_antag) repository, in the CoevoMutAntag.R file.
 
 Also, you can find in this repository all the others functions and scripts that i made.
 
