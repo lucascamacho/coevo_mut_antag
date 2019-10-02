@@ -20,22 +20,7 @@ text-align: justify}
 
 ## Introduction
 
-Hello everyone.
-
 I write this guide to help the understanding of the model that we gonna work and explain the code to run the simulations. For that, we gonna start speaking a little bit about our model, how it works and after I will explain step-by-step what the R function CoevoMutAntNet does. Hope it helps.
-
-## General idea REESCREVER
-
-Coevolution is defined as reciprocal evolutionary change of interacting species in a community and is a major process breaking and creating interactions between species in communities [@bascompte_plant-animal_2007]. In the last 20 years, the study of coevolution and ecological interactions use network theory tools to help answering questions about the mechanism of coevolution acting in species traits. Nowadays, we already understand how the coevolution creates complementarity of interacting species and convergence of species in the same trophic level in mutualistic networks of interactions [@guimaraes_jr_evolution_2011]. We also know that asymmetry in selective pressures and network structure has an effect in the coevolutionary dynamics of antagonistic networks [@andreazzi_network_2017].
-
-Despite the fact that these studies helps the creation of a theoretical map of how coevolution act in traits of species and how interactions change the coevolutionary process, there is compelling evidence that ecological interactions are context dependent in nature [@ushio_fluctuating_2018, @kolb_ecological_2007, @bronstein_conditional_1994]. The interactions are context-dependent if the outcomes or the magnitude change depending on the biotic of abiotic context [@chamberlain_how_2014].
-
-Using networks only with mutualism or antagonism is a convenction to disentangle the effects of these types of interactions outcomes in evolutionary process, but in real communities, species are experiencing mutualistic and antagonistic interactions at the same time. More than that, ecological interactions are not static in nature, but variable in space and time. In this way, we are trying to take a step further in coevolutionary studies, merging the evolutionary effects of antagonisms and mutalisms in the same network of ecological interactions and explore the shifts in interaction outcomes of mutualism and antagonism. Here we gonna answer 2 questions about antagonism in networks of mutualisms and the context dependency of interactions:
-
-1. What happends with the coevolutionary process of mutualisms in the presence of antagonisms?
-2. How context-dependent interactions influences the coevolutionary process?
-
-For that, we gonna use computational simulations of a mathematical model that merge the coevolutionary effects of mutualism, antagonism and other seletive pressures, like abiotic factors.
 
 ## The model
 
@@ -68,7 +53,7 @@ $$v_{ ij }^{ (t) } = V_{ ij }^{ (t) }\frac {e^{-\alpha(Z_{j}^{(t)} - Z_{i}^{(t)}
 
 where $M_{ij}^{(t)}$ and $V_{ij}^{(t)}$ are the elements from the adjacency matrix that give us the species interactions and $\alpha$ is the sensibility of selection to trait matching.
 
-## The code ATUALIZAR CODIGO E COMENTARIOS
+## The code
 
 Now, let's construct a code in R that simulates the coevolution process following these model. First, we start by set our parameters of interest and construct our matrices of positive (*M*) and negative (*V*) effects.
 
@@ -77,52 +62,51 @@ Now, let's construct a code in R that simulates the coevolution process followin
 set.seed(42)
 # number of species
 n_sp = 5
-# probability of an interaction become exploitation
-antprob = 0.25
+# probability of an effect become negative
+antprob = 0.5
 # herdability and additive genetic variance parameter
 phi = 0.2 
 # sensibility of evolution to trait matching parameter
 alpha = 0.2 
-# optimas of Z`s to environment
-theta = runif(n_sp, 0, 5) 
-# initial Z values
-init = runif(n_sp, 0, 5)
+# vector with optimas of Z`s to environment
+theta = runif(n_sp, 0, 10) 
+# vector of initial Z values
+init = runif(n_sp, 0, 10)
 # importance of environment to changes in Z
-p = 0.01 
+p = 0.1 
  # value of max difference between Z`s (barrier)
-epsilon = 3
+epsilon = 5
 # difference between Z to stop simulation
 eq_dif = 0.0001
 # max timesteps of simulation
 t_max = 1000 
 
-# Mutualistic adjacency matrix
+# Positive effects adjacency matrix
 M = matrix(1, ncol = n_sp, nrow = n_sp) 
 # no intraespecific interactions
 diag(M) = 0
-# Antagonistic adjacency matrix filled with 0 (no interactions)
+# Negative effects adjacency matrix filled with 0
 V = M * 0 
 ```
 
 Great, we have our parameters defined, a matrix of positive effects completely connected and an empty negative effects matrix. Now, we have to transform some links of our *M* network in negative links. For each interaction in our *M* matrix, we are going to sample a number between 0 and 1 and following the probability of a certain link become cheater exploitation which is our *antprob* parameter, transform or not the positive effect in negative.
 
 ```{r}
-  for(i in 1:dim(M)[1]){
-    for(j in 1:dim(M)[2]){
-      # for each element of M equal 1
-      if(M[i,j] == 1){
-        # sample a random value
-        p = runif(1, 0, 1)
-        
-        # if this value is lower than antprob
-        if(p <= antprob){
-          # transform positive effect in negative
-          M[j,i] = 0 
-          V[j,i] = 1
-        }  
+  # define the matrix upper triangle
+  index = which(upper.tri(M), arr.ind = TRUE)
+  
+  for(i in 1:nrow(index)){ # for each element in index
+    if(M[index[i,][1], index[i,][2]] == 1){ # if this element is equal to 1
+      p = runif(1, 0, 1) # sample a number between 0 and 1
+      if(p <= antprob){ # if this number is equal or lower than antprob...
+        M[index[i,][2], index[i,][1]] = 0 # M[j,i] element is 0
+        V[index[i,][2], index[i,][1]] = 1 # V[j,i] element is 1
       }
     }
   }
+
+  # no intraespecific interactions
+  diag(V) = 0
 ```
 
 Let's look to our matrices and see which interactions become negative
@@ -150,7 +134,7 @@ Ok, know we are entering in a loop, which means that these process will happend 
 ```{r}
     # current z values
     z = z_mat[1, ]
-    # matrix with all interactions (mutualistic and antagonistic)
+    # matrix with all positive and negative effects
     A = M + V 
 ```
 
@@ -208,7 +192,7 @@ Great, now the mutualism part. First we get only the mutualistic interactions an
 Ok, finally we compute the cheaters exploitation part of trait changes. Before that, we have some conditions in exploitation interactions. First, the trait difference between $i$ and $j$ has to be minor than our parameter $\epsilon$. The second condition tell us that if the trait of $i$ is minor than $j$, we have the sum of $\epsilon$ in the trait differences $(Z_{j}^{t} + \epsilon_{ij} - Z_{i}^{t})$. Otherwise, we have the subtract of $\epsilon$ in trait differences $Z_{j}^{t} - \epsilon_{ij} - Z_{i}^{t}$. In other words, in one situation we are increasing the trait values for the victins and another situation we are decreasing these trait values.
 
 ```{r}
-    # create V_m to use in antagonism selection differential 
+    # create V_m to use in exploitation selection differential 
     V_m = V
     # excluding interactions of traits that are larger than the barrier
     V_m[abs(z_dif) > epsilon] = 0
@@ -226,7 +210,7 @@ Ok, now we are ready to calculate the selection differentials due to cheater exp
 ```{r}
     # calculating selection differentials
     sel_dif_ant = V_m * Q_m * z_dif_a 
-    # response to selection related to antagonisms
+    # response to selection related to exploitation
     r_ant = phi * apply(sel_dif_ant, 1, sum)
 ```
 
@@ -262,7 +246,7 @@ And that's end our simulation process. We just simulate one timestep, these proc
   for (r in 1:(t_max - 1)) { 
     # current z values
     z = z_mat[r, ] 
-    # matrix with all interactions (mutualistic and antagonistic)
+    # matrix with all positive and negative effects
     A = M + V
     # matrix with all trait differences
     z_dif = t(A * z) - A * z 
@@ -295,7 +279,7 @@ And that's end our simulation process. We just simulate one timestep, these proc
     z_dif_a = z_dif + epsilon_plus + epsilon_minus
     # calculating selection differentials
     sel_dif_ant = V_m * Q_m * z_dif_a 
-    # response to selection related to antagonisms
+    # response to selection related to exploitation
     r_ant = phi * apply(sel_dif_ant, 1, sum) 
     
     # updating z values
@@ -310,8 +294,9 @@ And that's end our simulation process. We just simulate one timestep, these proc
   return(z_mat[1:(r+1), ])
 ```
 
-```{r echo=FALSE}
-  library(ggplot2)  
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+  library(ggplot2)
+  library(cowplot)
   traits = z_mat[1:(r+1), ]
 
   # building data frame to use in ggplot
@@ -324,13 +309,12 @@ And that's end our simulation process. We just simulate one timestep, these proc
   # plotting traits through time
   plotar = ggplot(traits_df, aes(x = time, y = trait, color = species)) +
     geom_line(size = 1.8, alpha = 0.6) + 
-    ggtitle(paste("proportion antagonists = ", antprob)) +
     xlab("Time") + 
     ylab("Mean species trait (z)") +
-    theme(axis.text.x = element_text(size = 11),
-          axis.text.y = element_text(size = 11),
-          axis.title = element_text(size = 14), 
-          legend.key.size = unit(0.6, "cm"),
+    theme(axis.text.x = element_text(size = 12),
+          axis.text.y = element_text(size = 12),
+          axis.title = element_text(size = 12), 
+          legend.key.size = unit(0.4, "cm"),
           legend.text = element_text(size = 12))
 
   print(plotar)
@@ -343,5 +327,3 @@ That's all for now. Please, let me know if you find some error in my code or mod
 Also, you can find in this repository all the others functions and scripts that I made.
 
 Good Bye
-
-# References
