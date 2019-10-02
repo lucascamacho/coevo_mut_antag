@@ -308,7 +308,7 @@ And that's end our simulation process. We just simulate one timestep, these proc
                          trait = traits_vec)
   # plotting traits through time
   plotar = ggplot(traits_df, aes(x = time, y = trait, color = species)) +
-    geom_line(size = 1.8, alpha = 0.6) + 
+    geom_path(size = 1.8, alpha = 0.6) + 
     xlab("Time") + 
     ylab("Mean species trait (z)") +
     theme(axis.text.x = element_text(size = 12),
