@@ -72,8 +72,8 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
 }
 
 # save or load the data created
-#save(p_data, file = "antprob_var.RData")
-load(file = "antprob_var.RData")
+save(p_data, file = "antprob_var.RData")
+#load(file = "antprob_var.RData")
 
 # summarize the data.frame to standard deviation
 summ = ddply(p_data, c("antprob", "rich"), summarize, standev = standev)

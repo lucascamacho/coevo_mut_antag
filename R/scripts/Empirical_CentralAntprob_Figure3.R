@@ -127,8 +127,8 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
 }
 
 # save or load the results
-#save(central_results, file = "central_results.RData")
-load("central_results.RData")
+save(central_results, file = "central_results.RData")
+#load("central_results.RData")
 
 # plot and save our results
 plot_standev = ggplot(data = central_results) +

@@ -1,0 +1,104 @@
+# Code to make one of the figures of Sup. Materialls
+# In this figure, I show the influence of interaction shifts
+# during the coevolutionary process. The interaction shift happend
+# in time don't change our main result of cheaters exploitation
+# causing higher trait disparity in mutualistic networks.
+#
+# For each of our 24 empirical networks we gonna run 
+# 100 simulations and calculate the SD and MPD of
+# species traits in the last timestep of simulations.
+#
+# In each simulation we have a new probability q that an 
+# positive effect pass to negative. Also, one negative effect 
+# will pass to positive.
+
+# load packages and functions
+setwd("~/Dropbox/Master/Code/coevo_mut_antag/data/")
+
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/SquareMatrix.R")
+
+library(ggplot2)
+library(cowplot)
+
+# read all mutualism networks
+temp = list.files(pattern = "*.txt")
+redes = lapply(temp, read.table)
+names(redes)  = gsub(".txt", replacement = "", temp)
+
+# define the vector of p and q and combine 2-by-2 these values
+antprob_vec = c(0.2, 0.5, 0.8)
+prob_change_vec = c(0.01, 0.1, 0.5)
+combs = expand.grid(antprob_vec, prob_change_vec)
+combs = combs[rep(seq_len(nrow(combs)), 100), ]
+
+# create sheet to alocate the simulations results
+condep_data = data.frame()
+
+for(a in 1:nrow(combs)){
+  print(a)
+  
+  n_sp = 50 # defining number of species
+  M = matrix(1, ncol = n_sp, nrow = n_sp) # building matrix M of positive outcomes
+  diag(M) = 0 # no intraespecific interactions
+  n_sp = ncol(M)
+   
+  antprob = combs[a,1]
+  prob_change = combs[a,2]
+   
+  # load functions
+  source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
+  source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/ConDepCoevoMutAntNet.R")
+  source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/MeanPairDist.R")
+  
+  # Antagonize M (transform positive links in negative)
+  antagonize = Antagonize(M, antprob)
+  M = antagonize[[1]]
+  V = antagonize[[2]]
+  
+  # coevolutionary model parameters
+  phi = 0.2
+  alpha = 0.2
+  theta = runif(n_sp, 0, 10)
+  init = runif(n_sp, 0, 10)
+  p = 0.1
+  epsilon = 5
+  eq_dif = 0.0001
+  t_max = 1000
+  
+  # running coevolution simulation
+  simulation = ConDepCoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, 
+                                    eq_dif, t_max, prob_change)
+  traits = as.matrix(simulation[[1]])
+  w_time = as.matrix(simulation[[2]])    
+  
+  standev = sd(traits[nrow(traits), ])
+  mpd = MeanPairDist(traits[nrow(traits), ])
+
+  results = data.frame(antprob, prob_change, standev, mpd)
+  condep_data = rbind(condep_data, results) 
+
+}
+
+plot_standev = ggplot(data = condep_data) +
+  geom_violin(aes(x = as.character(prob_change), y = standev), fill = "grey80") +
+  geom_point(aes(x = as.character(prob_change), y = standev), size = 0.4, 
+             shape = 21, alpha = 0.4) +
+  facet_grid(prob_change~antprob) +
+  theme_bw(base_size = 17) +
+  labs(x = "", 
+       y = "Standart deviation of species traits (σ)")
+
+plot_mpd = ggplot(data = condep_data) +
+  geom_violin(aes(x = as.character(prob_change), y = mpd), fill = "grey80") +
+  geom_point(aes(x = as.character(prob_change), y = mpd), size = 0.4, 
+             shape = 21, alpha = 0.4) +
+  facet_grid(prob_change~antprob) +
+  theme_bw(base_size = 17) +
+  labs(y = "MPD - Mean Pairwise Distance", 
+       x = "")
+
+ggsave(plot_standev, filename = "Sup_probchange_standev.png", dpi = 600,
+       width = 18, height = 13, units = "cm")
+
+ggsave(plot_mpd, filename = "Sup_probchange_mpd.png", dpi = 600,
+       width = 18, height = 13, units = "cm")

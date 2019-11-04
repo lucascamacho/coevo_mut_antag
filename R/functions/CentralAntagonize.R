@@ -15,9 +15,27 @@ CentralAntagonize = function(M){
   # create V matrix with the same size of mat
   V = M * 0
   
-  # identify the central species
-  d = colSums(M) / (ncol(M) - 1)
+  # identify the central species using degree centrality
+  d = colSums(M)
+  
+  # identify the number of species in both sides of bip. matrix
+  nomes = colnames(M)
+  animals = nomes[grepl("^A.*", nomes)]
+  plants = nomes[grepl("^P.*", nomes)]
+  
+  # calculate degree centrality in bipartite matrix
+  for(l in 1:length(d)){
+    if(any(names(d)[l] == plants) == TRUE){
+      d[l] = d[l] / length(animals)
+    }
+    else{
+      d[l] = d[l] / length(plants)
+    }
+  }
+  
+  #degree centrality z-score
   d_zs = (d - mean(d)) / sd(d)
+  # choosing species that has > 1 z-score
   c_sp = which(d_zs > 1)
   
   # read only the matrix upper.tri

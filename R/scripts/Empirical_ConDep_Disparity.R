@@ -28,7 +28,7 @@ if(!require(cowplot)) {install.packages("cowplot"); library(cowplot)}
 
 # initial parameters
 #antprob = 0.5 # current probability value
-prob_change = 0 # current probability of interaction outcome shift
+#prob_change = 0 # current probability of interaction outcome shift
 
 # read and square the empirical network
 net = as.matrix(read.table(
@@ -37,7 +37,7 @@ M = SquareMatrix(net)
 n_sp = ncol(M)
 
 # Antagonize M (transform positive links in negative)
-antagonize = CentralAntagonize(M)
+antagonize = Antagonize(M, antprob)
 M = antagonize[[1]]
 V = antagonize[[2]]
 p_vl = antagonize[[3]]

@@ -17,7 +17,7 @@ library(cowplot)
 
 # initial parameters
 antprob = 0.8 # current probability value
-prob_change = 0.1 # Q or current probability of an interaction outcome shift
+prob_change = 0.01 # Q or current probability of an interaction outcome shift
 
 # read and square the empirical network
 net = as.matrix(read.table("~/Dropbox/Master/Code/coevo_mut_antag/data/B_SY-AP-IzzomtcPAcamp.txt"))

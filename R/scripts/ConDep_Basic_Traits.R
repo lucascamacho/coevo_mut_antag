@@ -16,8 +16,8 @@ library(reshape2)
 library(cowplot)
 
 # initial parameters
-antprob = 0.2 # current probability value
-prob_change = 0.1 # Q or current probability of an interaction outcome shift
+antprob = 0.8 # current probability value
+prob_change = 0.01 # Q or current probability of an interaction outcome shift
 n_sp = 10 # defining number of species
 M = matrix(1, ncol = n_sp, nrow = n_sp) # building matrix M of positive outcomes
 diag(M) = 0 # no intraespecific interactions
@@ -60,7 +60,7 @@ plotar = ggplot() +
   geom_path(data=traits_df, aes(x = time, y = trait, group=species, 
                                 color = species),size = 1.8, alpha = 0.7) +
   geom_text(data = w_time, aes(x=xplace, y=yplace),label = "*", size = 7) +
-  ggtitle(paste("Q =", prob_change, ", initial proportion of antagonists = ", antprob)) +
+  ggtitle(paste("g =", prob_change, ", p = ", antprob)) +
   xlab("Time") + 
   ylab("Mean species trait (z)") +
   theme(axis.text.x = element_text(size = 11),

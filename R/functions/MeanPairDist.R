@@ -13,10 +13,10 @@ MeanPairDist = function(z_mat){
   difs = sapply(z_mat,"-", z_mat)
   
   # sum of the absolute values of trait differences
-  dif_total = sum(abs(difs))
+  dif_total = sqrt(sum(difs ** 2))
   
   # calculate average and return result
-  mpd = dif_total / (length(difs) - nrow(difs))
+  mpd = dif_total / (length(z_mat) * (length(z_mat) - 1))
   return(mpd)
 }
 #---------------------------------------------------------------------------------------#
