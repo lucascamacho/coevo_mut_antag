@@ -3,6 +3,8 @@
 # This script returns a simple graph with species traits changing in time.
 
 # loading packages and functions
+#rm(list = ls())
+set.seed(1)
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/scripts/")
 
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
@@ -13,8 +15,8 @@ library(reshape2)
 library(cowplot)
 
 # initial parameters
-antprob = 0.8 # current probability value
-n_sp = 10 # defining number of species
+antprob = 0.6 # current probability value
+n_sp = 12 # defining number of species
 M = matrix(1, ncol = n_sp, nrow = n_sp) # building matrix M of positive outcomes
 diag(M) = 0 # no intraespecific interactions
 
@@ -26,10 +28,10 @@ V = antagonize[[2]]
 # coevolutionary model parameters
 phi = 0.2
 alpha = 0.2
-theta = runif(n_sp, 0, 5)
-init = runif(n_sp, 0, 5)
+theta = runif(n_sp, 0, 10)
+init = runif(n_sp, 0, 10)
 p = 0.1
-epsilon = 3
+epsilon = 5
 eq_dif = 0.0001
 t_max = 1000
 
@@ -37,7 +39,7 @@ t_max = 1000
 z_mat = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
 
 # building data frame to plot the results
-traits = as.data.frame(traits)
+traits = as.data.frame(z_mat)
 n_sp = ncol(traits)
 traits_vec = c(as.matrix(traits))
 traits_df = data.frame(species = rep(paste("sp", 1:n_sp, sep = ""), each = nrow(traits)),
@@ -59,3 +61,14 @@ plotar = ggplot(traits_df, aes(x = time, y = trait, color = species)) +
 #pdf("Basic_Traits.pdf")
 plotar
 #dev.off()
+
+df = scale(t(z_mat))
+
+library(NbClust)
+clust_an = NbClust(data = df, diss = NULL, distance = "euclidean",
+                   min.nc = 2, max.nc = (n_sp - 1), method = "ward.D2", 
+                   index = "gap")
+#clust_an
+#clust_an$Best.nc[1]
+init
+

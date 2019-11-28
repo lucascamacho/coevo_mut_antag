@@ -3,14 +3,15 @@ format = edgelist1
 labels embedded:
 data:
 R1 C1
-R1 C3
 R2 C1
 R2 C2
-R2 C3
+R3 C2
 R3 C5
+R4 C2
+R4 C4
 R4 C5
+R4 C6
 R5 C2
-R5 C3
 R6 C3
 R7 C4
 R7 C8
@@ -18,7 +19,6 @@ R8 C2
 R8 C6
 R9 C2
 R10 C2
-R10 C3
 R10 C6
 R11 C2
 R12 C10

@@ -1,0 +1,28 @@
+DL n=29
+format = edgelist1
+labels embedded:
+data:
+R1 C1
+R1 C3
+R1 C5
+R1 C6
+R2 C5
+R3 C7
+R4 C7
+R5 C8
+R7 C11
+R8 C4
+R9 C11
+R10 C4
+R11 C2
+R12 C2
+R13 C4
+R14 C2
+R15 C5
+R16 C1
+R17 C5
+R17 C10
+R18 C3
+R18 C5
+R19 C7
+R19 C9

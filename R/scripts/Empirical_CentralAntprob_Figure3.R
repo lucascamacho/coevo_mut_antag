@@ -17,7 +17,10 @@ source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/MeanPairDist.R")
 
 library(ggplot2)
 library(cowplot)
-library(viridis)
+library(dplyr)
+library(NbClust)
+library(rlist)
+library(parallel)
 
 # read all mutualism networks
 temp = list.files(pattern = "*.txt")
@@ -26,11 +29,12 @@ names(redes)  = gsub(".txt", replacement = "", temp)
 
 # create data.frame for final results
 central_results = data.frame()
+list_mats = list()
 
 for(k in 1:length(redes)){ # loop to each empirical matrix
   print(k)
   
-  for(a in 1:50){ # 50 loops to each matrix
+  for(a in 1:50){ # 100 loops to each matrix
     # Cheater centrality simulation
     M = as.matrix(redes[[k]]) # M is the adjancency matrix of interactions
     M[which(M > 1)] = 1 # if there are any error, correct that
@@ -81,6 +85,9 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
     results = data.frame(net, rich, antprob, standev, mpd, c_ch)
     central_results = rbind(central_results, results)
     
+    df = scale(t(z_mat))
+    list_mats = list.append(list_mats, df)
+    
     # Cheater Non-centrality simulation
     M = as.matrix(redes[[k]]) # M is the adjancency matrix of interactions
     M[which(M > 1)] = 1 # if there are any error, correct that
@@ -122,37 +129,117 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
     # insert these results in our data.frame
     results = data.frame(net, rich, antprob, standev, mpd, c_ch)
     central_results = rbind(central_results, results)
-  
+    
+    df = scale(t(z_mat))
+    list_mats = list.append(list_mats, df)
   }
 }
 
-# save or load the results
 save(central_results, file = "central_results.RData")
+save(list_mats, file = "central_list_mats.RData")
+
 #load("central_results.RData")
+#load("central_list_mats.RData")
+
+# create an empty document to allocate the apply results
+write("clustering", "clustering.vec")
+
+# simple function to apply the NbCluster in my results and save in clusterig.vec
+camacho = function(list_mats){
+  maximo = nrow(list_mats) - 1
+  
+  clust_an = NbClust(data = list_mats, diss = NULL, distance = "euclidean",
+                     min.nc = 2, max.nc = maximo, method = "ward.D2", 
+                     index = "gap")
+  
+  n_cl = clust_an$Best.nc[1]
+  
+  write(n_cl, file = "clustering.vec", append = TRUE)
+  
+  return(n_cl)
+}
+
+# NbCluster using 14 computer cores
+cl = makeCluster(detectCores())
+clusterEvalQ(cl, {
+  library(NbClust)
+  camacho = function(list_mats){
+    maximo = nrow(list_mats) - 1
+    
+    clust_an = NbClust(data = list_mats, diss = NULL, distance = "euclidean",
+                       min.nc = 2, max.nc = maximo, method = "ward.D2", 
+                       index = "gap")
+    
+    n_cl = clust_an$Best.nc[1]
+    
+    write(n_cl, file = "clustering.vec", append = TRUE)
+    
+    return(n_cl)
+  }
+})
+opt_clusters = parallel::parSapply(cl, list_mats, camacho)
+stopCluster(cl)
+
+central_results = cbind(central_results, opt_clusters)
+
+# save or load the results
+type = c(rep("Pollination", 800), rep("Seed dispersal", 800), rep("Ant-Plant", 800))
+central_results = cbind(central_results, type)
+
+#save(central_results, file = "central_results.RData")
+load("central_results.RData")
+
+new_data = central_results%>%
+  group_by(type, c_ch)%>%
+  summarise(mean_std = mean(standev), mean_mpd = mean(mpd), mean_clust = mean(opt_clusters))%>%
+  as.data.frame()
 
 # plot and save our results
-plot_standev = ggplot(data = central_results) +
-  geom_boxplot(aes(x = as.factor(c_ch), y = standev), fill = "grey90") +
+plot_standev = ggplot(data = new_data, aes(x = as.factor(c_ch), 
+                                           y = mean_std, colour = type, group = type)) +
+  geom_point(aes(size = 0.1), show.legend = FALSE) +
+  geom_line(show.legend = FALSE) +
+  scale_color_brewer(palette="Dark2") +
   ylab("Standard deviation of species traits (σ)") +
   xlab("") +
-  theme(axis.text.x = element_text(size = 11),
-        axis.text.y = element_text(size = 11),
-        axis.title = element_text(size = 20), 
-        legend.key.size = unit(0.6, "cm"),
-        legend.text = element_text(size = 11))
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
 
-plot_mpd = ggplot(data = central_results) +
-  geom_boxplot(aes(x = as.factor(c_ch), y = mpd), fill = "grey90") +
+plot_mpd = ggplot(data = new_data, aes(x = as.factor(c_ch), 
+                                          y = mean_mpd, colour = type, group = type)) +
+  geom_point(aes(size = 0.1), show.legend = FALSE) +
+  geom_line(show.legend = FALSE) +
+  scale_color_brewer(palette="Dark2") +
   ylab("MPD - Mean Pairwise Distance") +
   xlab("") +
-  theme(axis.text.x = element_text(size = 11),
-        axis.text.y = element_text(size = 11),
-        axis.title = element_text(size = 20), 
-        legend.key.size = unit(0.6, "cm"),
-        legend.text = element_text(size = 11))
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
+plot_clust = ggplot(data = new_data, aes(x = as.factor(c_ch), 
+                                         y = mean_clust, colour = type, group = type)) +
+  geom_point(aes(size = 0.1), show.legend = FALSE) +
+  geom_line(show.legend = FALSE) +
+  scale_color_brewer(palette="Dark2") +
+  ylab("Average optimized number of species traits clusters") +
+  xlab("") +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
 
 ggsave(plot_standev, filename = "central_cheater_standev.png", dpi = 600,
-       width = 10, height = 14, units = "cm")
+       width = 14, height = 16, units = "cm", bg = "transparent")
 
 ggsave(plot_mpd, filename = "central_cheater_mpd.png", dpi = 600,
-       width = 10, height = 14, units = "cm")
+       width = 14, height = 16, units = "cm", bg = "transparent")
+
+ggsave(plot_clust, filename = "central_cheater_clust.png", dpi = 600,
+       width = 14, height = 16, units = "cm", bg = "transparent")

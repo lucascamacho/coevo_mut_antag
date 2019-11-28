@@ -15,26 +15,26 @@ source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/MeanPairDist.R")
 
 library(ggplot2)
 library(cowplot)
-library(plyr)
-library(viridis)
+library(dplyr)
 
 # read all the empirical networks
 temp = list.files(pattern="*.txt")
 redes = lapply(temp, read.table)
 names(redes)  = gsub(".txt", replacement= "", temp)
 
+antprob_vec = seq(0.01, 1, 0.01)
 p_data = data.frame() # create data.frame to allocate results
 
 for(k in 1:length(redes)){ # loop to each empirical matrix
   print(k)
   
-  for(a in 1:100){ # 100 simulations per empirical matrix
+  for(a in 1:length(antprob_vec)){ # 100 simulations per empirical matrix
     M = as.matrix(redes[[k]]) # M is the adjancency matrix of interactions
     M[which(M > 1)] = 1 # if there are any error, correct that
     M = SquareMatrix(M) # square the adjancency matrix
     n_sp = ncol(M) # define the species number
 
-    antprob = runif(1, 0, 1) # draw a antprob value from 0 to 1
+    antprob = antprob_vec[a] # draw a antprob value from 0 to 1
     
     # load functions
     source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
@@ -72,44 +72,51 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
 }
 
 # save or load the data created
-save(p_data, file = "antprob_var.RData")
-#load(file = "antprob_var.RData")
+type = c(rep("Pollination", 800), rep("Seed dispersal", 800), rep("Ant-Plant", 800))
+p_data = cbind(p_data, type)
 
-# summarize the data.frame to standard deviation
-summ = ddply(p_data, c("antprob", "rich"), summarize, standev = standev)
+#save(p_data, file = "antprob_var.RData")
+load(file = "antprob_var.RData")
 
-# plot and save the results using ggplot2
-plot_standev = ggplot(data = summ) +
-  geom_point(aes(x = antprob, y = standev), alpha = 0.4) +
-  geom_smooth(aes(x = antprob, y = standev), colour = "red") +
-  scale_y_continuous(expand = c(0,0)) +
+new_data = p_data%>%
+  group_by(antprob, type)%>%
+  summarise(mean_std = mean(standev), mean_mpd = mean(mpd))%>%
+  as.data.frame()
+
+plot_standev = ggplot(data = new_data) +
+  geom_point(aes(x = antprob, y = mean_std, colour = type), show.legend = FALSE) +
+  geom_line(aes(x = antprob, y = mean_std, colour = type), stat = "smooth", method = "lm",
+            alpha = 0.8, show.legend = FALSE) +
+  scale_color_brewer(palette = "Dark2") +
   scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0.1)) +
   xlab("Frequency of cheaters exploitation (p)") +
   ylab("Standart deviation of species traits (σ)") +
-  theme(axis.text.x = element_text(size = 11),
-        axis.text.y = element_text(size = 11),
-        axis.title = element_text(size = 18), 
-        legend.key.size = unit(0.6, "cm"),
-        legend.text = element_text(size = 11))
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
 
-# summarize the data.frame to MPD
-summ = ddply(p_data, c("antprob", "rich"), summarize, mpd = mpd)
-
-plot_mpd = ggplot(data = summ) +
-  geom_point(aes(x = antprob, y = mpd), alpha = 0.4) +
-  geom_smooth(aes(x = antprob, y = mpd), colour = "red") +
+plot_mpd = ggplot(data = new_data) +
+  geom_point(aes(x = antprob, y = mean_mpd, colour = type), show.legend = FALSE) +
+  geom_line(aes(x = antprob, y = mean_mpd, colour = type), stat = "smooth", method = "lm",
+            alpha = 0.8, show.legend = FALSE) +
+  scale_color_brewer(palette = "Dark2") +
   scale_y_continuous(expand = c(0,0)) +
   scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
   xlab("Frequency of cheaters exploitation (p)") +
   ylab("MPD - Mean Pairwise Distance") +
-  theme(axis.text.x = element_text(size = 11),
-        axis.text.y = element_text(size = 11),
-        axis.title = element_text(size = 18), 
-        legend.key.size = unit(0.6, "cm"),
-        legend.text = element_text(size = 11))
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
 
-ggsave(plot_standev, filename = "antprob_cheater_sd.png", dpi = 600,
-       width = 20, height = 14, units = "cm")
 
 ggsave(plot_mpd, filename = "antprob_cheater_mpd.png", dpi = 600,
-       width = 20, height = 14, units = "cm")
+       width = 14, height = 16, units = "cm",  bg = "transparent")
+
+ggsave(plot_standev, filename = "antprob_cheater_sd.png", dpi = 600,
+       width = 14, height = 16, units = "cm",  bg = "transparent")
+
