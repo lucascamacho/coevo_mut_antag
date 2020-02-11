@@ -13,8 +13,8 @@
 # Ecography: 37: 221–224.
 #
 # For each of our 24 empirical networks we gonna run 
-# 30 simulations and calculate the nestedness and modularity
-# of out adjancency matrix of interaction
+# 3.000 simulations and calculate the nestedness and modularity
+# of out adjancency matrix of interactions.
 
 # load packages and functions
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/data/")
@@ -118,16 +118,20 @@ for(k in 1:length(redes)){ # loop to each matrix of interactions
 
 # save or load the RData file
 #save(final_fl, file = "data_nest.RData")
-load("data_nest.RData")
+#load("data_nest.RData")
 
+# aggregate the data using the net and get the measures average
 final_fl = aggregate(final_fl[ ,4:5], list(final_fl$net), mean)
 
+# create and insert a antprob sequence
 antprob = rep(seq(0.01, 1, 0.01), 24)
 final_fl = cbind(final_fl, antprob)
 
+# create and insert an mutualism type sequence
 type = c(rep("Pollination", 800), rep("Seed dispersal", 800), rep("Ant-Plant", 800))
 final_fl = cbind(final_fl, type)
 
+# forming the data frame to plot, calculating averages
 new_data = final_fl%>%
   group_by(antprob, type)%>%
   summarise(mean_nestcontrol = mean(dnest_control), mean_nestcoevo = mean(dnest_coevo))%>%
@@ -196,14 +200,10 @@ dados = data.frame(final_init$net, rich, final_init$antprob, dmcontrol, dmcoevo)
 final_mod = dados
 
 # save or load the RData file
-save(final_mod, file = "data_mod.RData")
+#save(final_mod, file = "data_mod.RData")
 #load("data_mod.RData")
 
-
-
-# mod deverá ser feito diferente
-
-
+# check modularity
 
 novo = final_mod
 novo[,1]=gsub('[0-9]+', "", novo[,1])
@@ -215,15 +215,21 @@ novo = as.data.frame(novo)
 final_mod = aggregate(novo[ ,4:5], list(novo$final_init.net), mean)
 
 
-
+# create and insert an antprob sequence
 antprob = rep(seq(0.01, 1, 0.01), 24)
 final_fl = cbind(final_fl, antprob)
 
+# create and insert an mutualism type sequence
 type = c(rep("Pollination", 800), rep("Seed dispersal", 800), rep("Ant-Plant", 800))
 final_fl = cbind(final_fl, type)
 
-new_data = data.frame(final_fl)
+# prepare data frame to plot using the averages
+new_data = final_mod%>%
+  group_by(antprob, type)%>%
+  summarise(mean_modcontrol = mean(dmod_control), mean_modcoevo = mean(dmod_coevo))%>%
+  as.data.frame()
 
+#plot and save the modularity data
 plot_mod_coevo = ggplot(data = new_data) +
   geom_point(aes(x = final_init.antprob, y = mod_coevo, colour = type, group = type), show.legend = FALSE) +
   geom_line(aes(x = final_init.antprob, y = mod_coevo, colour = type), stat="smooth",method = "lm",

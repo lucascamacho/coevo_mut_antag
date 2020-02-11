@@ -149,6 +149,5 @@ plot_clusters = ggplot(data = new_data) +
         legend.title = element_text(size = 20)) +
   guides(color = guide_legend(title = "Mutualism type"))
 
-plot_clusters
 ggsave(plot_clusters, filename = "antprob_clusters.png", dpi = 600,
        width = 16, height = 13, units = "cm", bg = "transparent")

@@ -1,13 +1,13 @@
 # For empirical networks
 # Code to test the influence of degree centrality of cheaters in
-# trait MPD and variance of species in mutualistic networks.
+# trait MPD and standard deviation of species in mutualistic networks.
 # For that we gonna calculate and normalize the species degree centrality
 # use the +1 SD species degree as central species and simulates the
 # coevolution process with those species as cheaters.
 #
 # For each of our 24 empirical networks we gonna run 
-# 100 simulations and calculate the SD and MPD of
-# species traits in the last timestep of simulations
+# 3.000 simulations and calculate the SD, MPD and cluster
+# number of species traits in the last timestep of simulations
 
 # load packages and functions
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/data/")
@@ -34,7 +34,7 @@ list_mats = list()
 for(k in 1:length(redes)){ # loop to each empirical matrix
   print(k)
   
-  for(a in 1:1500){ #  loops to each matrix
+  for(a in 1:1500){ #  loops to each matrix, 2 simulations per loop
     # Cheater centrality simulation
     M = as.matrix(redes[[k]]) # M is the adjancency matrix of interactions
     M[which(M > 1)] = 1 # if there are any error, correct that
@@ -135,8 +135,8 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
   }
 }
 
-save(central_results, file = "central_results.RData")
-save(list_mats, file = "~/Google Drive File Stream/Meu Drive/Trabalho/central_list_mats.RData")
+#save(central_results, file = "central_results.RData")
+#save(list_mats, file = "~/Google Drive File Stream/Meu Drive/Trabalho/central_list_mats.RData")
 
 # create an empty document to allocate the apply results
 write("clustering", "clustering.vec")
@@ -177,12 +177,11 @@ clusterEvalQ(cl, {
 opt_clusters = parallel::parSapply(cl, list_mats, camacho)
 stopCluster(cl)
 
+# bind the results with the original data table
 central_results = cbind(central_results, opt_clusters)
 
-# Rodar até aqui
-
 #save(central_results, file = "central_results.RData")
-load("central_results.RData")
+#load("central_results.RData")
 
 # save or load the results
 central_results = aggregate(central_results[ ,4:5], 
@@ -190,9 +189,11 @@ central_results = aggregate(central_results[ ,4:5],
 colnames(central_results)[1] = "c_ch"
 colnames(central_results)[2] = "net"
 
+# create and insert and mutualism type sequence
 type = c(rep("Pollination", 16), rep("Seed dispersal", 16), rep("Ant-Plant", 16))
 central_results = cbind(central_results, type)
 
+# using dplyr to get the averages and prepare the data frame
 new_data = central_results%>%
   group_by(type, c_ch)%>%
   summarise(mean_std = mean(standev), mean_mpd = mean(mpd), mean_clust = mean(opt_clusters))%>%
