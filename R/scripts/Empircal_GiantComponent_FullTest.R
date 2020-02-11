@@ -122,7 +122,12 @@ for(k in 1:length(redes)){
     antagonize = Antagonize(M, antprob)
     M = antagonize[[1]]
     V = antagonize[[2]]
-  
+    
+    # change V matriz to GC
+    index = which(V == 1, arr.ind = TRUE)
+    V[index[,2], index[,1]] = 1
+    diag(V) = 0
+    
     A = graph_from_adjacency_matrix(V)
     comp_teo = max(components(A)$csize) / n_sp
     
@@ -147,20 +152,18 @@ plot_component =
   geom_point(aes(x = antprob, y = mean_emp, colour = type), show.legend = FALSE) +
   geom_line(aes(x = antprob, y = mean_emp, colour = type), stat = "smooth", method = "auto",
             alpha = 0.8, show.legend = FALSE) +
-   geom_hline(data = n_dados, aes(yintercept = n_dados[1,4])) +
-  geom_hline(data = n_dados, aes(yintercept = n_dados[3,4])) +
   scale_color_brewer(palette = "Dark2") +
   scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
   scale_y_continuous(expand = c(0,0.1)) +
   xlab("Frequency of cheaters exploitation (p)") +
-  ylab("Relative size of the biggest cheater component component") +
-  theme(axis.text.x = element_text(size = 13),
-        axis.text.y = element_text(size = 13),
-        axis.title = element_text(size = 16), 
+  ylab("Relative size of the biggest cheater component") +
+  theme(axis.text.x = element_text(size = 11),
+        axis.text.y = element_text(size = 11),
+        axis.title = element_text(size = 14), 
         legend.key.size = unit(0.9, "cm"),
-        legend.text = element_text(size = 13))
+        legend.text = element_text(size = 11))
 
 plot_component
 
 ggsave(plot_component, filename = "component_cheaters.png", dpi = 600,
-       width = 21, height = 14, units = "cm")
+       width = 16, height = 12, units = "cm", bg = "transparent")

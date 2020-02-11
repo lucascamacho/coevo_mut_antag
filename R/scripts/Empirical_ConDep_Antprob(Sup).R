@@ -17,8 +17,21 @@ setwd("~/Dropbox/Master/Code/coevo_mut_antag/data/")
 
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/SquareMatrix.R")
 
+camacho = function(list_mats){
+  maximo = nrow(list_mats) - 1
+  
+  clust_an = NbClust(data = list_mats, diss = NULL, distance = "euclidean",
+                     min.nc = 2, max.nc = maximo, method = "ward.D2", 
+                     index = "gap")
+  
+  n_cl = clust_an$Best.nc[1]
+  
+  return(n_cl)
+}
+
 library(ggplot2)
 library(cowplot)
+library(NbClust)
 
 # read all mutualism networks
 temp = list.files(pattern = "*.txt")
@@ -71,12 +84,15 @@ for(a in 1:nrow(combs)){
   traits = as.matrix(simulation[[1]])
   w_time = as.matrix(simulation[[2]])    
   
+  df = scale(t(traits))
+  
+  opt_clust = camacho(df)
+  
   standev = sd(traits[nrow(traits), ])
   mpd = MeanPairDist(traits[nrow(traits), ])
 
-  results = data.frame(antprob, prob_change, standev, mpd)
+  results = data.frame(antprob, prob_change, standev, mpd, opt_clust)
   condep_data = rbind(condep_data, results) 
-
 }
 
 plot_standev = ggplot(data = condep_data) +
@@ -97,8 +113,20 @@ plot_mpd = ggplot(data = condep_data) +
   labs(y = "MPD - Mean Pairwise Distance", 
        x = "")
 
+plot_clust = ggplot(data = condep_data) +
+  geom_violin(aes(x = as.character(prob_change), y = opt_clust), fill = "grey80") +
+  geom_point(aes(x = as.character(prob_change), y = opt_clust), size = 0.4, 
+             shape = 21, alpha = 0.4) +
+  facet_grid(prob_change~antprob) +
+  theme_bw(base_size = 17) +
+  labs(y = "Average optimized number of species traits cluster", 
+       x = "")
+
 ggsave(plot_standev, filename = "Sup_probchange_standev.png", dpi = 600,
        width = 18, height = 13, units = "cm")
 
 ggsave(plot_mpd, filename = "Sup_probchange_mpd.png", dpi = 600,
+       width = 18, height = 13, units = "cm")
+
+ggsave(plot_clust, filename = "Sup_probchange_clusters.png", dpi = 600,
        width = 18, height = 13, units = "cm")

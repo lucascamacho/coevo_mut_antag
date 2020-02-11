@@ -1,9 +1,0 @@
-Node	Module
-R2	3
-C2	1
-C5	3
-R3	0
-C3	0
-R5	1
-R6	2
-C1	2

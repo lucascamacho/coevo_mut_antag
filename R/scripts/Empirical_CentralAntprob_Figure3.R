@@ -34,7 +34,7 @@ list_mats = list()
 for(k in 1:length(redes)){ # loop to each empirical matrix
   print(k)
   
-  for(a in 1:50){ # 100 loops to each matrix
+  for(a in 1:1500){ #  loops to each matrix
     # Cheater centrality simulation
     M = as.matrix(redes[[k]]) # M is the adjancency matrix of interactions
     M[which(M > 1)] = 1 # if there are any error, correct that
@@ -136,10 +136,7 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
 }
 
 save(central_results, file = "central_results.RData")
-save(list_mats, file = "central_list_mats.RData")
-
-#load("central_results.RData")
-#load("central_list_mats.RData")
+save(list_mats, file = "~/Google Drive File Stream/Meu Drive/Trabalho/central_list_mats.RData")
 
 # create an empty document to allocate the apply results
 write("clustering", "clustering.vec")
@@ -182,12 +179,19 @@ stopCluster(cl)
 
 central_results = cbind(central_results, opt_clusters)
 
-# save or load the results
-type = c(rep("Pollination", 800), rep("Seed dispersal", 800), rep("Ant-Plant", 800))
-central_results = cbind(central_results, type)
+# Rodar até aqui
 
 #save(central_results, file = "central_results.RData")
 load("central_results.RData")
+
+# save or load the results
+central_results = aggregate(central_results[ ,4:5], 
+                            list(central_results$c_ch, central_results$net), mean)
+colnames(central_results)[1] = "c_ch"
+colnames(central_results)[2] = "net"
+
+type = c(rep("Pollination", 16), rep("Seed dispersal", 16), rep("Ant-Plant", 16))
+central_results = cbind(central_results, type)
 
 new_data = central_results%>%
   group_by(type, c_ch)%>%

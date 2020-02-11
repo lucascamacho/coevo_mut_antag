@@ -39,6 +39,8 @@ for(k in 1:length(redes)){ # loop to each matrix of interactions
   print(k)
   
   for(a in 1:length(antprob_vec)){ # 100 loops to each matrix
+    
+    for(q in 1:30){ # 30 simulations per p value
     M = as.matrix(redes[[k]]) # M is the adjancency matrix of interactions
     M[which(M > 1)] = 1 # if there are any error, correct that
     M = SquareMatrix(M) # square the adjancency matrix
@@ -102,23 +104,57 @@ for(k in 1:length(redes)){ # loop to each matrix of interactions
     
     # save the initial adjancency matrix, the control and coevolution adjacency matrix
     write.table(init_m, file = paste("~/Dropbox/Master/Code/coevo_mut_antag/data/matrices/", 
-                                     names(redes[k]), "_init_", a, ".txt", sep = ""), row.names = FALSE, 
+                                     names(redes[k]), "_init_", a,"_", q, ".txt", sep = ""), row.names = FALSE, 
                                      col.names = FALSE) # save initial adjacency matrix
     write.table(last_m, file = paste("~/Dropbox/Master/Code/coevo_mut_antag/data/matrices/", 
-                                     names(redes[k]), "_final_coevo_", a, ".txt", sep = ""), row.names = FALSE, 
+                                     names(redes[k]), "_final_coevo_", a,"_", q, ".txt", sep = ""), row.names = FALSE, 
                                      col.names = FALSE) # save the coevolution adjacency matrix
     write.table(W, file = paste("~/Dropbox/Master/Code/coevo_mut_antag/data/matrices/", 
-                                names(redes[k]), "_final_control_", a, ".txt", sep = ""), row.names = FALSE, 
+                                names(redes[k]), "_final_control_", a,"_", q, ".txt", sep = ""), row.names = FALSE, 
                                 col.names = FALSE) # save the control adjacency matrix
+    }
   }
 }
+
+# save or load the RData file
+#save(final_fl, file = "data_nest.RData")
+load("data_nest.RData")
+
+final_fl = aggregate(final_fl[ ,4:5], list(final_fl$net), mean)
+
+antprob = rep(seq(0.01, 1, 0.01), 24)
+final_fl = cbind(final_fl, antprob)
 
 type = c(rep("Pollination", 800), rep("Seed dispersal", 800), rep("Ant-Plant", 800))
 final_fl = cbind(final_fl, type)
 
-# save or load the RData file
-#save(final_fl, file = "data_nest_mod.RData")
-load("data_nest_mod.RData")
+new_data = final_fl%>%
+  group_by(antprob, type)%>%
+  summarise(mean_nestcontrol = mean(dnest_control), mean_nestcoevo = mean(dnest_coevo))%>%
+  as.data.frame()
+
+# plot and save the nestedness results graph
+plot_nest_coevo = ggplot(data = new_data) +
+  geom_point(aes(x = antprob, y = mean_nestcoevo, colour = type, group = type), show.legend = FALSE, alpha = 0.8) +
+  geom_line(aes(x = antprob, y = mean_nestcoevo, colour = type), stat="smooth",method = "lm",
+            alpha = 0.8, show.legend = FALSE) +
+  geom_line(aes(x = antprob, y = mean_nestcontrol, colour = type, group = type), stat= "smooth", method = "lm",
+            alpha = 0.8, show.legend = FALSE, linetype = "dashed") +
+  scale_color_brewer(palette="Dark2") +
+  scale_y_continuous(expand = c(0,1)) +
+  scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
+  xlab("Frequency of cheaters exploitation (p)") +
+  ylab("Delta Nestedness") +
+  theme(axis.text.x = element_text(size = 11),
+        axis.text.y = element_text(size = 11),
+        axis.title = element_text(size = 20), 
+        legend.key.size = unit(0.6, "cm"),
+        legend.text = element_text(size = 11))
+
+ggsave(plot_nest_coevo, filename = "deltanest_coevo_adj.png", dpi = 600,
+       width = 16, height = 12, units = "cm",  bg = "transparent")
+
+# Run MODULAR
 
 # read the MODULAR results
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/data/matrices/resultsSA/")
@@ -153,66 +189,59 @@ dmcontrol = final_control$Modularity - final_init$Modularity
 dmcoevo = final_coevo$Modularity - final_init$Modularity
 rich = final_init$rich
 
+# Rearranje data to plot the results
+
 # final data.frame to plot the results
 dados = data.frame(final_init$net, rich, final_init$antprob, dmcontrol, dmcoevo)
 final_mod = dados
 
-type = c(rep("Pollination", 800), rep("Seed dispersal", 800), rep("Ant-Plant", 800))
-final_mod = cbind(final_mod, type)
-
 # save or load the RData file
-#save(final_mod, file = "data_mod.RData")
-load("data_mod.RData")
+save(final_mod, file = "data_mod.RData")
+#load("data_mod.RData")
 
-new_data = final_fl%>%
-  group_by(antprob, type)%>%
-  summarise(mean_nestcontrol = mean(dnest_control), mean_nestcoevo = mean(dnest_coevo))%>%
-  as.data.frame()
 
-# plot and save the nestedness results graph
-plot_nest_coevo = ggplot(data = new_data) +
-  geom_point(aes(x = antprob, y = mean_nestcoevo, colour = type, group = type)) +
-  geom_line(aes(x = antprob, y = mean_nestcoevo, colour = type), stat="smooth",method = "lm",
-            alpha = 0.8) +
-  geom_smooth(aes(x = antprob, y = mean_nestcontrol), colour = "black") +
-  scale_color_brewer(palette="Dark2") +
-  scale_y_continuous(expand = c(0,0)) +
-  scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
-  xlab("Frequency of cheaters exploitation (p)") +
-  ylab("Delta Nestedness") +
-  theme(axis.text.x = element_text(size = 11),
-        axis.text.y = element_text(size = 11),
-        axis.title = element_text(size = 20), 
-        legend.key.size = unit(0.6, "cm"),
-        legend.text = element_text(size = 11))
-plot_nest_coevo
 
-ggsave(plot_nest_coevo, filename = "deltanest_coevo_adj.png", dpi = 600,
-       width = 20, height = 14, units = "cm")
+# mod deverá ser feito diferente
 
-new_data = final_mod%>%
-  group_by(final_init.antprob, type)%>%
-  summarise(mod_control = mean(dmcontrol), mod_coevo = mean(dmcoevo))%>%
-  as.data.frame()
+
+
+novo = final_mod
+novo[,1]=gsub('[0-9]+', "", novo[,1])
+
+novo %>% group_by(final_init.net) %>% arrange(final_init.antprob, .by_group = TRUE)
+
+
+novo = as.data.frame(novo)
+final_mod = aggregate(novo[ ,4:5], list(novo$final_init.net), mean)
+
+
+
+antprob = rep(seq(0.01, 1, 0.01), 24)
+final_fl = cbind(final_fl, antprob)
+
+type = c(rep("Pollination", 800), rep("Seed dispersal", 800), rep("Ant-Plant", 800))
+final_fl = cbind(final_fl, type)
+
+new_data = data.frame(final_fl)
 
 plot_mod_coevo = ggplot(data = new_data) +
-  geom_point(aes(x = final_init.antprob, y = mod_coevo, colour = type, group = type)) +
+  geom_point(aes(x = final_init.antprob, y = mod_coevo, colour = type, group = type), show.legend = FALSE) +
   geom_line(aes(x = final_init.antprob, y = mod_coevo, colour = type), stat="smooth",method = "lm",
-            alpha = 0.8) +
-  geom_smooth(aes(x = final_init.antprob, y = mod_control), colour = "black") +
+            alpha = 0.8, show.legend = FALSE) +
+  geom_line(aes(x = final_init.antprob, y = mod_control, colour = type, group = type), stat= "smooth", method = "lm",
+            alpha = 0.8, show.legend = FALSE, linetype = "dashed") +
   scale_color_brewer(palette="Dark2") +
-  scale_y_continuous(expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0.01)) +
   scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
-  xlab("Frequency of cheaters exploitation (p)") +
+  xlab("") +
   ylab("Delta Modularity") +
   theme(axis.text.x = element_text(size = 11),
         axis.text.y = element_text(size = 11),
         axis.title = element_text(size = 20), 
         legend.key.size = unit(0.6, "cm"),
         legend.text = element_text(size = 11))
-plot_mod_coevo
 
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/data/")
 
-ggsave(plot_mod_coevo, filename = "deltamod_coevo_adj.png", dpi = 600,
-       width = 20, height = 14, units = "cm")
+#ggsave(plot_mod_coevo, filename = "deltamod_coevo_adj.png", dpi = 600,
+#       width = 16, height = 12, units = "cm",  bg = "transparent")

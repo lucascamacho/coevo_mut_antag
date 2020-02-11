@@ -21,6 +21,7 @@ antprob_vec = seq(0.01, 1, 0.01)
 
 p_data = data.frame() # create data.frame to allocate results
 list_mats = list()
+list_degree = list()
 
 for(k in 1:length(redes)){ # loop to each empirical matrix
   print(k)
@@ -38,6 +39,7 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
         # load functions
         source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
         source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
+        source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/SpDegree.R")
 
         # insert cheaters exploitation outcomes
         antagonize = Antagonize(M, antprob)
@@ -61,6 +63,9 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
         
         list_mats = list.append(list_mats, df)
         
+        degree = SpDegree(M, V)
+        list_degree = list.append(list_degree, degree)
+        
         net = names(redes[k])
         rich = n_sp
         results = data.frame(net, rich, antprob)
@@ -70,8 +75,8 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
 }
 
 # save or load the data created
-save(p_data, file = "p_data.RData")
-save(list_mats, file = "central_list_mats.RData")
+#save(p_data, file = "p_data.RData")
+save(list_mats, file = "list_mats.RData")
 
 # create an empty document to allocate the apply results
 write("clustering", "clustering.vec")
@@ -114,11 +119,12 @@ stopCluster(cl)
 
 p_data = cbind(p_data, opt_clusters)
 
+
 # save or load the data created
-save(p_data, file = "clustering_empirical.RData")
+#save(p_data, file = "clustering_empirical.RData")
 load(file = "clustering_empirical.RData")
 
-type = c(rep("Pollination", 24000), rep("Seed dispersal", 24000), rep("Ant-Plant", 24000))
+#type = c(rep("Pollination", 24000), rep("Seed dispersal", 24000), rep("Ant-Plant", 24000))
 p_data = cbind(p_data, type)
 
 new_data = p_data%>%

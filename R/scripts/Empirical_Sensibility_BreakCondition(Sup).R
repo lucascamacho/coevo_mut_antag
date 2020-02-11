@@ -10,8 +10,22 @@ setwd("~/Dropbox/Master/Code/coevo_mut_antag/data/")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/SquareMatrix.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/MeanPairDist.R")
 
+camacho = function(list_mats){
+  maximo = nrow(list_mats) - 1
+  
+  clust_an = NbClust(data = list_mats, diss = NULL, distance = "euclidean",
+                     min.nc = 2, max.nc = maximo, method = "ward.D2", 
+                     index = "gap")
+  
+  n_cl = clust_an$Best.nc[1]
+  
+  return(n_cl)
+}
+
+
 library(ggplot2)
 library(cowplot)
+library(NbClust)
 
 # read all the empirical networks
 temp = list.files(pattern="*.txt")
@@ -53,12 +67,16 @@ for(a in 1:300){ # 100 simulations per empirical matrix
   # simulate coevolution
   z_mat = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
   
+  df = scale(t(z_mat))
+  
+  opt_clust = camacho(df)
+  
   # get my results
   standev = sd(z_mat[nrow(z_mat), ])
   mpd = MeanPairDist(z_mat[nrow(z_mat), ])
   
   # insert these results in the data.frame
-  results = data.frame(eq_dif, standev, mpd)
+  results = data.frame(eq_dif, standev, mpd, opt_clust)
   p_data = rbind(p_data, results)
   
   # 10^6
@@ -91,13 +109,18 @@ for(a in 1:300){ # 100 simulations per empirical matrix
   # simulate coevolution
   z_mat = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
   
+  df = scale(t(z_mat))
+  
+  opt_clust = camacho(df)
+  
   # get my results
   standev = sd(z_mat[nrow(z_mat), ])
   mpd = MeanPairDist(z_mat[nrow(z_mat), ])
   
   # insert these results in the data.frame
-  results = data.frame(eq_dif, standev, mpd)
+  results = data.frame(eq_dif, standev, mpd, opt_clust)
   p_data = rbind(p_data, results)
+  
   # 10^8
   M = as.matrix(redes[[6]]) # M is the adjancency matrix of interactions
   M[which(M > 1)] = 1 # if there are any error, correct that
@@ -128,14 +151,19 @@ for(a in 1:300){ # 100 simulations per empirical matrix
   # simulate coevolution
   z_mat = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
   
+  df = scale(t(z_mat))
+  
+  opt_clust = camacho(df)
+  
   # get my results
   standev = sd(z_mat[nrow(z_mat), ])
   mpd = MeanPairDist(z_mat[nrow(z_mat), ])
   
   # insert these results in the data.frame
-  results = data.frame(eq_dif, standev, mpd)
+  results = data.frame(eq_dif, standev, mpd, opt_clust)
   p_data = rbind(p_data, results)
 }
+
 
 plot_standev = ggplot(data = p_data) +
   geom_boxplot(aes(x = as.factor(eq_dif), y = standev), fill = "grey90") +
@@ -159,8 +187,22 @@ plot_mpd = ggplot(data = p_data) +
         legend.key.size = unit(0.6, "cm"),
         legend.text = element_text(size = 11))
 
+plot_clust = ggplot(data = p_data) +
+  geom_boxplot(aes(x = as.factor(eq_dif), y = opt_clust), fill = "grey90") +
+  xlab("Minimum trait difference between species to stop simulation") +
+  ylab("Average optimizaed number of species traits clusters") +
+  scale_y_continuous(expand = c(0,0)) +
+  theme(axis.text.x = element_text(size = 11),
+        axis.text.y = element_text(size = 11),
+        axis.title = element_text(size = 18), 
+        legend.key.size = unit(0.6, "cm"),
+        legend.text = element_text(size = 11))
+
 ggsave(plot_standev, filename = "Sensibility_Standev_Break.png", dpi = 600,
        width = 20, height = 14, units = "cm")
 
 ggsave(plot_mpd, filename = "Sensibility_MPD_Break.png", dpi = 600,
+       width = 20, height = 14, units = "cm")
+
+ggsave(plot_clust, filename = "Sensibility_Clustering_Break.png", dpi = 600,
        width = 20, height = 14, units = "cm")

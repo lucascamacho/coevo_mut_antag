@@ -1,4 +1,4 @@
-# Insert cheaters interaction outcomes in mutualistic networks changes the coevolutionary process in unexpected ways
+# Cheaters coevolution in mutualistic networks
 
 Links of the code that generate my figures:
 
@@ -57,6 +57,5 @@ List of R packages used:
 - [reshape2](https://cran.r-project.org/web/packages/reshape2/index.html)
 - [bipartite](https://cran.r-project.org/web/packages/bipartite/index.html)
 - [plyr](https://www.rdocumentation.org/packages/plyr/versions/1.8.4)
-- [viridis](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html)
-
+- [dplyr](https://dplyr.tidyverse.org/)
 

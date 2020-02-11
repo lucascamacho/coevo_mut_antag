@@ -3,7 +3,7 @@
 # Mean Pairwise Distance changes with the antprob (p)
 # in different empirical networks.
 #
-# For each of our 24 empirical networks we gonna run 
+# For each of our 80 empirical networks we gonna run 
 # 100 simulations and calculate the SD and MPD of
 # species traits in the last timestep of simulations
 
@@ -29,54 +29,62 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
   print(k)
   
   for(a in 1:length(antprob_vec)){ # 100 simulations per empirical matrix
-    M = as.matrix(redes[[k]]) # M is the adjancency matrix of interactions
-    M[which(M > 1)] = 1 # if there are any error, correct that
-    M = SquareMatrix(M) # square the adjancency matrix
-    n_sp = ncol(M) # define the species number
+    
+    for(q in 1:30){ # 30 simulations per p value
+      M = as.matrix(redes[[k]]) # M is the adjancency matrix of interactions
+      M[which(M > 1)] = 1 # if there are any error, correct that
+      M = SquareMatrix(M) # square the adjancency matrix
+      n_sp = ncol(M) # define the species number
+      
+      antprob = antprob_vec[a] # draw a antprob value from 0 to 1
+      
+      # load functions
+      source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
+      source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
+      source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Counting.R")
+      
+      # insert cheaters exploitation outcomes
+      empantagonize = Antagonize(M, antprob)
+      M = empantagonize[[1]]
+      V = empantagonize[[2]]
+      
+      # coevolutionary model parameters
+      phi = 0.2
+      alpha = 0.2
+      theta = runif(n_sp, 0, 10)
+      init = runif(n_sp, 0, 10)
+      p = 0.1
+      epsilon = 5
+      eq_dif = 0.0001
+      t_max = 1000
+      
+      # simulate coevolution
+      z_mat = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
 
-    antprob = antprob_vec[a] # draw a antprob value from 0 to 1
-    
-    # load functions
-    source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
-    source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
-    source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Counting.R")
-    
-    # insert cheaters exploitation outcomes
-    empantagonize = Antagonize(M, antprob)
-    M = empantagonize[[1]]
-    V = empantagonize[[2]]
-    
-    # coevolutionary model parameters
-    phi = 0.2
-    alpha = 0.2
-    theta = runif(n_sp, 0, 10)
-    init = runif(n_sp, 0, 10)
-    p = 0.1
-    epsilon = 5
-    eq_dif = 0.0001
-    t_max = 1000
-    
-    # simulate coevolution
-    z_mat = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
-    
-    # get my results
-    net = names(redes[k])
-    rich = as.numeric(ncol(M))
-    standev = sd(z_mat[nrow(z_mat), ])
-    mpd = MeanPairDist(z_mat[nrow(z_mat), ])
-    
-    # insert these results in the data.frame
-    results = data.frame(net, rich, antprob, standev, mpd)
-    p_data = rbind(p_data, results)
+      # get my results
+      net = names(redes[k])
+      rich = as.numeric(ncol(M))
+      standev = sd(z_mat[nrow(z_mat), ])
+      mpd = MeanPairDist(z_mat[nrow(z_mat), ])
+      
+      # insert these results in the data.frame
+      results = data.frame(net, rich, antprob, standev, mpd)
+      p_data = rbind(p_data, results)
+    }
   }
 }
 
-# save or load the data created
+# save z_mat files
+#save(p_data, file = "antprob_var.RData")
+load("antprob_var.RData")
+# Rodar até aqui
+
+p_data = aggregate(p_data[ ,4:5], list(p_data$antprob, p_data$net), mean)
+colnames(p_data)[1] = "antprob"
+colnames(p_data)[2] = "net"
+
 type = c(rep("Pollination", 800), rep("Seed dispersal", 800), rep("Ant-Plant", 800))
 p_data = cbind(p_data, type)
-
-#save(p_data, file = "antprob_var.RData")
-load(file = "antprob_var.RData")
 
 new_data = p_data%>%
   group_by(antprob, type)%>%
@@ -113,10 +121,8 @@ plot_mpd = ggplot(data = new_data) +
         legend.key.size = unit(0.9, "cm"),
         legend.text = element_text(size = 13))
 
-
 ggsave(plot_mpd, filename = "antprob_cheater_mpd.png", dpi = 600,
        width = 14, height = 16, units = "cm",  bg = "transparent")
 
 ggsave(plot_standev, filename = "antprob_cheater_sd.png", dpi = 600,
        width = 14, height = 16, units = "cm",  bg = "transparent")
-
