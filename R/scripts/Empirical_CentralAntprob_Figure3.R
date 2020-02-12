@@ -135,8 +135,8 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
   }
 }
 
-#save(central_results, file = "central_results.RData")
-#save(list_mats, file = "~/Google Drive File Stream/Meu Drive/Trabalho/central_list_mats.RData")
+save(central_results, file = "central_results.RData")
+save(list_mats, file = "~/Google Drive File Stream/Meu Drive/Trabalho/central_list_mats.RData")
 
 # create an empty document to allocate the apply results
 write("clustering", "clustering.vec")
@@ -157,7 +157,7 @@ camacho = function(list_mats){
 }
 
 # NbCluster using 14 computer cores
-cl = makeCluster(detectCores())
+cl = makeCluster(detectCores() - 2)
 clusterEvalQ(cl, {
   library(NbClust)
   camacho = function(list_mats){
@@ -180,11 +180,11 @@ stopCluster(cl)
 # bind the results with the original data table
 central_results = cbind(central_results, opt_clusters)
 
-#save(central_results, file = "central_results.RData")
+save(central_results, file = "central_results.RData")
 #load("central_results.RData")
 
 # save or load the results
-central_results = aggregate(central_results[ ,4:5], 
+central_results = aggregate(central_results[ ,c(4:5, 7)], 
                             list(central_results$c_ch, central_results$net), mean)
 colnames(central_results)[1] = "c_ch"
 colnames(central_results)[2] = "net"

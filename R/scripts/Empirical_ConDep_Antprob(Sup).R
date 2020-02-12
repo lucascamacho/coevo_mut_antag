@@ -95,6 +95,9 @@ for(a in 1:nrow(combs)){
   condep_data = rbind(condep_data, results) 
 }
 
+save(condep_data, file = "sup_condep_data.RData")
+#load("sup_condep_data.RData")
+
 plot_standev = ggplot(data = condep_data) +
   geom_violin(aes(x = as.character(prob_change), y = standev), fill = "grey80") +
   geom_point(aes(x = as.character(prob_change), y = standev), size = 0.4, 

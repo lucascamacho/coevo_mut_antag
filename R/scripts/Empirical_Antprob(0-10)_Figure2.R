@@ -89,9 +89,9 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
 }
 
 # save or load the data created
-#save(p_data, file = "p_data.RData")
-#save(list_mats, file = "list_mats.RData")
-#load("p_data.RData")
+save(p_data, file = "antprob_var.RData")
+save(list_mats, file = "~/Google Drive File Stream/Meu Drive/Trabalho/list_mats.RData")
+#load("antprob_var.RData")
 
 # create an empty document to allocate the apply results
 write("clustering", "clustering.vec")
@@ -135,8 +135,11 @@ stopCluster(cl)
 # bind the clustering results with our data table
 p_data = cbind(p_data, opt_clusters)
 
+save(p_data, file = "antprob_var.RData")
+#load("antprob_var.RData")
+
 # use aggregate to group data by net and antprob
-p_data = aggregate(p_data[ ,4:5], list(p_data$antprob, p_data$net), mean)
+p_data = aggregate(p_data[ ,4:6], list(p_data$antprob, p_data$net), mean)
 colnames(p_data)[1] = "antprob"
 colnames(p_data)[2] = "net"
 
@@ -191,11 +194,9 @@ plot_clusters = ggplot(data = new_data) +
   ylab("Average optimized number of species traits clusters") +
   theme(axis.text.x = element_text(size = 13),
         axis.text.y = element_text(size = 13),
-        axis.title = element_text(size = 14), 
-        legend.key.size = unit(1.1, "cm"),
-        legend.text = element_text(size = 16),
-        legend.title = element_text(size = 20)) +
-  guides(color = guide_legend(title = "Mutualism type"))
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
 
 ggsave(plot_mpd, filename = "antprob_cheater_mpd.png", dpi = 600,
        width = 14, height = 16, units = "cm",  bg = "transparent")

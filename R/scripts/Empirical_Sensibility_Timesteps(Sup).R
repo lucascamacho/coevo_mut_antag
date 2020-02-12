@@ -60,6 +60,9 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
   }
 }
 
+save(time_data, file = "sup_timesteps_data.RData")
+#load("sup_timesteps_data.RData")
+
 plot = ggplot(time_data, aes(time_simu, group = net)) + 
   geom_density(show.legend = FALSE) +
   xlab("Length of simulations (in timesteps)") +

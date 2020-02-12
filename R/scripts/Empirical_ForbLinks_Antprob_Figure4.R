@@ -117,7 +117,7 @@ for(k in 1:length(redes)){ # loop to each matrix of interactions
 }
 
 # save or load the RData file
-#save(final_fl, file = "data_nest.RData")
+save(final_fl, file = "data_nest.RData")
 #load("data_nest.RData")
 
 # aggregate the data using the net and get the measures average
@@ -194,13 +194,12 @@ dmcoevo = final_coevo$Modularity - final_init$Modularity
 rich = final_init$rich
 
 # Rearranje data to plot the results
-
 # final data.frame to plot the results
 dados = data.frame(final_init$net, rich, final_init$antprob, dmcontrol, dmcoevo)
 final_mod = dados
 
 # save or load the RData file
-#save(final_mod, file = "data_mod.RData")
+save(final_mod, file = "data_mod.RData")
 #load("data_mod.RData")
 
 # check modularity
@@ -249,5 +248,5 @@ plot_mod_coevo = ggplot(data = new_data) +
 
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/data/")
 
-#ggsave(plot_mod_coevo, filename = "deltamod_coevo_adj.png", dpi = 600,
-#       width = 16, height = 12, units = "cm",  bg = "transparent")
+ggsave(plot_mod_coevo, filename = "deltamod_coevo_adj.png", dpi = 600,
+       width = 16, height = 12, units = "cm",  bg = "transparent")

@@ -31,7 +31,7 @@ library(NbClust)
 temp = list.files(pattern="*.txt")
 redes = lapply(temp, read.table)
 names(redes)  = gsub(".txt", replacement= "", temp)
-# redes[[6]] é a maior
+# redes[[6]] is the biggest
 
 p_data = data.frame() # create data.frame to allocate results
 
@@ -164,6 +164,8 @@ for(a in 1:300){ # 100 simulations per empirical matrix
   p_data = rbind(p_data, results)
 }
 
+save(p_data, "sup_breakcondition_data.RData")
+#load("sup_breakcondition_data.RData")
 
 plot_standev = ggplot(data = p_data) +
   geom_boxplot(aes(x = as.factor(eq_dif), y = standev), fill = "grey90") +
