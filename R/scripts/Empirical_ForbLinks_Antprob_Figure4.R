@@ -96,20 +96,20 @@ for(k in 1:length(redes)){ # loop to each matrix of interactions
     W[ints] = 0 # of interactions that coevolution breaks
    
     # get nestedness measures
-    dnest_control = nested(W, method = "NODF2") - nested(init_m, method = "NODF2")
-    dnest_coevo = nested(last_m, method = "NODF2") - nested(init_m, method = "NODF2")
+    #dnest_control = nested(W, method = "NODF2") - nested(init_m, method = "NODF2")
+    #dnest_coevo = nested(last_m, method = "NODF2") - nested(init_m, method = "NODF2")
     
-    results = data.frame(net, rich, antprob, dnest_control, dnest_coevo) # get all the results
-    final_fl = rbind(final_fl, results) # put results in data.frame
+    #results = data.frame(net, rich, antprob, dnest_control, dnest_coevo) # get all the results
+    #final_fl = rbind(final_fl, results) # put results in data.frame
     
     # save the initial adjancency matrix, the control and coevolution adjacency matrix
-    write.table(init_m, file = paste("~/Dropbox/Master/Code/coevo_mut_antag/data/matrices/", 
+    write.table(init_m, file = paste("~/Google Drive File Stream/Meu Drive/Trabalho/matrices/", 
                                      names(redes[k]), "_init_", a,"_", q, ".txt", sep = ""), row.names = FALSE, 
                                      col.names = FALSE) # save initial adjacency matrix
-    write.table(last_m, file = paste("~/Dropbox/Master/Code/coevo_mut_antag/data/matrices/", 
+    write.table(last_m, file = paste("~/Google Drive File Stream/Meu Drive/Trabalho/matrices/", 
                                      names(redes[k]), "_final_coevo_", a,"_", q, ".txt", sep = ""), row.names = FALSE, 
                                      col.names = FALSE) # save the coevolution adjacency matrix
-    write.table(W, file = paste("~/Dropbox/Master/Code/coevo_mut_antag/data/matrices/", 
+    write.table(W, file = paste("~/Google Drive File Stream/Meu Drive/Trabalho/matrices/", 
                                 names(redes[k]), "_final_control_", a,"_", q, ".txt", sep = ""), row.names = FALSE, 
                                 col.names = FALSE) # save the control adjacency matrix
     }
@@ -161,8 +161,8 @@ ggsave(plot_nest_coevo, filename = "deltanest_coevo_adj.png", dpi = 600,
 # Run MODULAR
 
 # read the MODULAR results
-setwd("~/Dropbox/Master/Code/coevo_mut_antag/data/matrices/resultsSA/")
-mod_results = read.table("OUT_MOD.txt", header=TRUE)
+mod_results = read.table("~/Google Drive File Stream/Meu Drive/Trabalho/matrices/resultsSA/OUT_MOD.txt", 
+                         header=TRUE)
 
 # separate the initial, final control and final coevo matrices
 init = mod_results[grep(mod_results$File, pattern = "init"), ]
@@ -245,8 +245,6 @@ plot_mod_coevo = ggplot(data = new_data) +
         axis.title = element_text(size = 20), 
         legend.key.size = unit(0.6, "cm"),
         legend.text = element_text(size = 11))
-
-setwd("~/Dropbox/Master/Code/coevo_mut_antag/data/")
 
 ggsave(plot_mod_coevo, filename = "deltamod_coevo_adj.png", dpi = 600,
        width = 16, height = 12, units = "cm",  bg = "transparent")

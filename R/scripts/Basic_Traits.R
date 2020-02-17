@@ -4,7 +4,7 @@
 
 # loading packages and functions
 #rm(list = ls())
-set.seed(1)
+#set.seed(1)
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/scripts/")
 
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")

@@ -61,7 +61,7 @@ CentralAntagonize = function(M){
       V[index_sp[i,][2], index_sp[i,][1]] = 1 # inverse element in V is "on" (V[j,i])
     }
   }
-
+  
   # no intraespecific interactions
   diag(V) = 0
   
