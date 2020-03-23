@@ -1,23 +1,21 @@
 # Basic script to test the R base-functions to simulate the coevolutionary process
-# of networks with positive and negative interactions outcomes.
+# of networks with positive and negative effects in a single network.
 # This script returns a simple graph with species traits changing in time.
 
 # loading packages and functions
-#rm(list = ls())
-#set.seed(1)
-setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/scripts/")
+setwd("~/Dropbox/Master/Code/coevo_mut_antag/data/")
 
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
 
 library(ggplot2)
-library(reshape2)
 library(cowplot)
+library(reshape2)
 
 # initial parameters
-antprob = 0.6 # current probability value
-n_sp = 12 # defining number of species
-M = matrix(1, ncol = n_sp, nrow = n_sp) # building matrix M of positive outcomes
+antprob = 0.2 # current probability value
+n_sp = 10 # defining number of species
+M = matrix(1, ncol = n_sp, nrow = n_sp) # building matrix M of positive effects
 diag(M) = 0 # no intraespecific interactions
 
 # Antagonize M (transform positive links in negative)
@@ -48,8 +46,8 @@ traits_df = data.frame(species = rep(paste("sp", 1:n_sp, sep = ""), each = nrow(
 
 # plotting traits through time
 plotar = ggplot(traits_df, aes(x = time, y = trait, color = species)) +
-  geom_path(size = 1.8, alpha = 0.7) + 
-  ggtitle(paste("proportion antagonists = ", antprob)) +
+  geom_path(size = 1.8, alpha = 0.7, show.legend = FALSE) + 
+  ggtitle(paste("proportion of exploitation = ", antprob)) +
   xlab("Time") + 
   ylab("Mean species trait (z)") +
   theme(axis.text.x = element_text(size = 11),
@@ -58,17 +56,6 @@ plotar = ggplot(traits_df, aes(x = time, y = trait, color = species)) +
         legend.key.size = unit(0.6, "cm"),
         legend.text = element_text(size = 12))
 
-#pdf("Basic_Traits.pdf")
-plotar
-#dev.off()
-
-df = scale(t(z_mat))
-
-library(NbClust)
-clust_an = NbClust(data = df, diss = NULL, distance = "euclidean",
-                   min.nc = 2, max.nc = (n_sp - 1), method = "ward.D2", 
-                   index = "gap")
-#clust_an
-#clust_an$Best.nc[1]
-init
-
+# save plot
+ggsave(plotar, filename = "Basic_Traits.pdf", dpi = 600, width = 16, height = 12, 
+       units = "cm", bg = "transparent")

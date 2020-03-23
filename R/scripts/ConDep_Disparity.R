@@ -1,5 +1,5 @@
 # Script to run the coevolution in a theoretical network of interactions
-# with context-dependent interactions, plotting the species traits in time
+# with interactions shifting in time, plotting the species traits in time.
 # Also, this script calculates our 4 metrics of trait disparity for each timestep:
 #  1. Variance
 #  2. Mean Pairwise Distance
@@ -10,10 +10,10 @@
 # in the same order as described above.
 #
 # The script probably will have some # symbols in parameters like antprob.
-# If you will use only this code without a loop, be sure to get the #'s off.
+# Be sure to get the #'s off if you will use only this code, without a loop.
 
 # loading packages and functions
-setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/scripts/")
+setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/data/")
 
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/ConDepCoevoMutAntNet.R")
@@ -21,14 +21,14 @@ source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/MeanPairDist.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/PartRatio.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/NearDist.R")
 
-if(!require(ggplot2)) {install.packages("ggplot2"); library(ggplot2)}
-if(!require(cowplot)) {install.packages("cowplot"); library(cowplot)}
+library(ggplot2)
+library(cowplot)
 
 # initial parameters
 antprob = 0.1 # current probability value
-prob_change = 0 # current probability of interaction outcome shift
+prob_change = 0 # current probability of interaction shift
 n_sp = 36 # defining number of species
-M = matrix(1, ncol = n_sp, nrow = n_sp) # building matrix M of positive outcomes
+M = matrix(1, ncol = n_sp, nrow = n_sp) # building matrix M of positive effects
 diag(M) = 0 # no intraespecific interactions
 
 # Antagonize M (transform positive links in negative)
@@ -59,34 +59,32 @@ partratio = apply(traits, 1, PartRatio)
 neardist = apply(traits, 1, NearDist)
 
 # set the times where the interaction oucomes shift occurs
-#colnames(w_time) = "xplace"
-#yplace = rep(1, nrow(w_time))
-#w_time = cbind(w_time, yplace)
-#w_time = as.data.frame(w_time)
+colnames(w_time) = "xplace"
+yplace = rep(1, nrow(w_time))
+w_time = cbind(w_time, yplace)
+w_time = as.data.frame(w_time)
 
 # prepare data frame to plot
-#traits = as.data.frame(traits)
-#n_sp = ncol(traits)
-#traits_vec = c(as.matrix(traits))
-#traits_df = data.frame(species = rep(paste("sp", 1:n_sp, sep = ""), each = nrow(traits)),
-#                       time = rep(1:nrow(traits), times = n_sp),
-#                       trait = traits_vec)
+traits = as.data.frame(traits)
+n_sp = ncol(traits)
+traits_vec = c(as.matrix(traits))
+traits_df = data.frame(species = rep(paste("sp", 1:n_sp, sep = ""), each = nrow(traits)),
+                       time = rep(1:nrow(traits), times = n_sp),
+                       trait = traits_vec)
 
 # plotting traits through time
-#plotar = ggplot() +
-#  geom_path(data=traits_df, aes(x = time, y = trait, group=species, 
-#                                color = species),size = 1.8, alpha = 0.7) +
-#  geom_text(data = w_time, aes(x=xplace, y=yplace),label = "*", size = 7) +
-#  ggtitle(paste("Q =", prob_change, ", initial proportion of antagonists = ", antprob)) +
-#  geom_text(data = w_time, aes(x=xplace, y=yplace),label = "*", size = 7) +
-#  xlab("Time") + 
-#  ylab("Mean species trait (z)") +
-#  theme(axis.text.x = element_text(size = 11),
-#        axis.text.y = element_text(size = 11),
-#        axis.title = element_text(size = 14), 
-#        legend.key.size = unit(0.6, "cm"),
-#        legend.text = element_text(size = 12))
+plotar = ggplot() +
+  geom_path(data=traits_df, aes(x = time, y = trait, group=species, 
+                                color = species),size = 1.8, alpha = 0.7) +
+  geom_text(data = w_time, aes(x=xplace, y=yplace),label = "*", size = 7) +
+  ggtitle(paste("Q =", prob_change, ", initial proportion of antagonists = ", antprob)) +
+  geom_text(data = w_time, aes(x=xplace, y=yplace),label = "*", size = 7) +
+  xlab("Time") + 
+  ylab("Mean species trait (z)") +
+  theme(axis.text.x = element_text(size = 11),
+        axis.text.y = element_text(size = 11),
+        axis.title = element_text(size = 14), 
+        legend.key.size = unit(0.6, "cm"),
+        legend.text = element_text(size = 12))
 
-#ggsave(plotar, filename = "10_Basic_Traits.png", width = 19, height = 11, units = "cm")
-#plotar
-#dev.off()
+ggsave(plotar, filename = "Basic_Traits.pdf", width = 19, height = 11, units = "cm")

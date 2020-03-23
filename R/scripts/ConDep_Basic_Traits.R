@@ -1,25 +1,25 @@
-# Run the coevolutionary model with interaction outcomes that are context-dependent.
-# Based on a probability prob_change (Q), in each timestep of the simulation, an interaction
-# outcome shifts (AA -> AM and AM -> MM).
+# Run the coevolutionary model with interactions shifting in time.
+# Based on a probability prob_change (g), in each timestep of the simulation, an interaction
+# shifts (MM -> AM and AM -> MM).
 #
 # This script returns a simple graph with species traits changing in time due to coevolution.
 # The asteriscs in the graph shows the timesteps in which the interactions shift occurs.
 
 # loading packages and functions
-setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
+setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/data/")
 
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/ConDepCoevoMutAntNet.R")
 
 library(ggplot2)
-library(reshape2)
 library(cowplot)
+library(reshape2)
 
 # initial parameters
 antprob = 0.8 # current probability value
-prob_change = 0.01 # Q or current probability of an interaction outcome shift
+prob_change = 0.01 # g or current probability of an interaction shift
 n_sp = 10 # defining number of species
-M = matrix(1, ncol = n_sp, nrow = n_sp) # building matrix M of positive outcomes
+M = matrix(1, ncol = n_sp, nrow = n_sp) # building matrix M of positive effects
 diag(M) = 0 # no intraespecific interactions
 
 # Antagonize M (transform positive links in negative)
@@ -40,8 +40,8 @@ t_max = 1000
 # running coevolution simulation
 simulation = ConDepCoevoMutAntNet(n_sp, M, V, phi, alpha, 
                                   theta, init, p, epsilon, eq_dif, t_max, prob_change)
-traits = simulation[[1]]
-w_time = as.data.frame(simulation[[2]])
+traits = simulation[[1]] # species traits
+w_time = as.data.frame(simulation[[2]]) # which time interactions shifted
 
 #prepare data frame with tracked timesteps
 colnames(w_time) = "xplace"
@@ -69,6 +69,4 @@ plotar = ggplot() +
         legend.key.size = unit(0.6, "cm"),
         legend.text = element_text(size = 12))
 
-#ggsave(plotar, filename = "10_Basic_Traits.png", width = 19, height = 11, units = "cm")
-plotar
-#dev.off()
+ggsave(plotar, filename = "ConDep_Basic_Traits.pdf", width = 19, height = 11, units = "cm")

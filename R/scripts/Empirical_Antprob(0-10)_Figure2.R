@@ -17,6 +17,7 @@ source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/MeanPairDist.R")
 
 library(ggplot2)
 library(cowplot)
+library(gridExtra)
 library(dplyr)
 library(NbClust)
 library(rlist)
@@ -49,7 +50,8 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
       # load functions
       source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
       source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
-      source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Counting.R")
+      #source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Counting.R")
+      #source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/SpDegree.R")
       
       # insert cheaters exploitation outcomes
       empantagonize = Antagonize(M, antprob)
@@ -69,11 +71,11 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
       # simulate coevolution
       z_mat = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
       
-      df = scale(t(z_mat))
-      list_mats = list.append(list_mats, df)
+      #df = scale(t(z_mat))
+      #list_mats = list.append(list_mats, df)
       
-      degree = SpDegree(M, V)
-      list_degree = list.append(list_degree, degree)
+      #degree = SpDegree(M, V)
+      #list_degree = list.append(list_degree, degree)
       
       # get my results
       net = names(redes[k])
@@ -90,8 +92,8 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
 
 # save or load the data created
 save(p_data, file = "antprob_var.RData")
-save(list_mats, file = "~/Google Drive File Stream/Meu Drive/Trabalho/list_mats.RData")
-#load("antprob_var.RData")
+#save(list_mats, file = "~/Google Drive File Stream/Meu Drive/Trabalho/list_mats.RData")
+load("antprob_var.RData")
 
 # create an empty document to allocate the apply results
 write("clustering", "clustering.vec")
@@ -135,74 +137,112 @@ stopCluster(cl)
 # bind the clustering results with our data table
 p_data = cbind(p_data, opt_clusters)
 
-save(p_data, file = "antprob_var.RData")
-#load("antprob_var.RData")
-
-# use aggregate to group data by net and antprob
-p_data = aggregate(p_data[ ,4:6], list(p_data$antprob, p_data$net), mean)
-colnames(p_data)[1] = "antprob"
-colnames(p_data)[2] = "net"
+#save(p_data, file = "antprob_var.RData")
+load("antprob_var.RData")
 
 # create and insert an mutualism type sequence
-type = c(rep("Pollination", 800), rep("Seed dispersal", 800), rep("Ant-Plant", 800))
+type = c(rep("Pollination", 24000), rep("Seed dispersal", 24000), rep("Ant-Plant", 24000))
 p_data = cbind(p_data, type)
 
-# using dplyr to get the averages and prepare the data frame
-new_data = p_data%>%
-  group_by(type, antprob)%>%
-  summarise(mean_std = mean(standev), mean_mpd = mean(mpd), mean_clust = mean(opt_clusters))%>%
-  as.data.frame()
+pol = p_data[which(p_data$type == "Pollination"), ]
+seed = p_data[which(p_data$type == "Seed dispersal"), ]
+ant = p_data[which(p_data$type == "Ant-Plant"), ]
 
-plot_standev = ggplot(data = new_data) +
-  geom_point(aes(x = antprob, y = mean_std, colour = type), show.legend = FALSE) +
-  geom_line(aes(x = antprob, y = mean_std, colour = type), stat = "smooth", method = "lm",
-            alpha = 0.8, show.legend = FALSE) +
-  scale_color_brewer(palette = "Dark2") +
+pol_plot = ggplot(data = pol) +
+  geom_point(aes(x = antprob, y = mpd), show.legend = FALSE, alpha = 0.05, size = 0.5, color = "#D95F02") +
+  geom_line(aes(x = antprob, y = mpd), stat = "smooth", method = "lm", show.legend = FALSE) +
+  ylim(0, 2) +
+  xlab(" ") + ylab(" ") +
   scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
-  scale_y_continuous(expand = c(0,0.1)) +
-  xlab("Frequency of cheaters exploitation (p)") +
-  ylab("Standart deviation of species traits (σ)") +
   theme(axis.text.x = element_text(size = 13),
         axis.text.y = element_text(size = 13),
         axis.title = element_text(size = 16), 
         legend.key.size = unit(0.9, "cm"),
         legend.text = element_text(size = 13))
 
-plot_mpd = ggplot(data = new_data) +
-  geom_point(aes(x = antprob, y = mean_mpd, colour = type), show.legend = FALSE) +
-  geom_line(aes(x = antprob, y = mean_mpd, colour = type), stat = "smooth", method = "lm",
-            alpha = 0.8, show.legend = FALSE) +
-  scale_color_brewer(palette = "Dark2") +
-  scale_y_continuous(expand = c(0,0)) +
+seed_plot = ggplot(data = seed) +
+  geom_point(aes(x = antprob, y = mpd), show.legend = FALSE, alpha = 0.05, size = 0.5, color = "#7570B3", size = 2) +
+  geom_line(aes(x = antprob, y = mpd), stat = "smooth", method = "lm", show.legend = FALSE) +
+  ylim(0, 2) +
+  xlab(" ") + ylab(" ") +
   scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
-  xlab("Frequency of cheaters exploitation (p)") +
-  ylab("MPD - Mean Pairwise Distance") +
   theme(axis.text.x = element_text(size = 13),
         axis.text.y = element_text(size = 13),
         axis.title = element_text(size = 16), 
         legend.key.size = unit(0.9, "cm"),
         legend.text = element_text(size = 13))
 
-plot_clusters = ggplot(data = new_data) +
-  geom_point(aes(x = antprob, y = mean_clust, colour = type), show.legend = FALSE) +
-  geom_line(aes(x = antprob, y = mean_clust, colour = type), stat="smooth",method = "auto",
-            alpha = 0.8, show.legend = FALSE) +
-  scale_color_brewer(palette = "Dark2") +
-  scale_y_continuous(expand = c(0,0.1)) +
+ant_plot = ggplot(data = ant) +
+  geom_point(aes(x = antprob, y = mpd, size = 0.5), show.legend = FALSE, alpha = 0.05, size = 0.5, color = "#1B9E77") +
+  geom_line(aes(x = antprob, y = mpd), stat = "smooth", method = "lm", show.legend = FALSE) +
+  ylim(0, 4) +
+  xlab(" ") + ylab(" ") +
   scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
-  xlab("Frequency of cheaters exploitation (p)") +
-  ylab("Average optimized number of species traits clusters") +
   theme(axis.text.x = element_text(size = 13),
         axis.text.y = element_text(size = 13),
         axis.title = element_text(size = 16), 
         legend.key.size = unit(0.9, "cm"),
         legend.text = element_text(size = 13))
 
-ggsave(plot_mpd, filename = "antprob_cheater_mpd.png", dpi = 600,
-       width = 14, height = 16, units = "cm",  bg = "transparent")
+plot_final = grid.arrange(ant_plot, pol_plot, seed_plot, nrow = 3)
 
-ggsave(plot_standev, filename = "antprob_cheater_sd.png", dpi = 600,
-       width = 14, height = 16, units = "cm",  bg = "transparent")
+ggsave(plot_final, filename = "antprob_cheater_mpd.pdf", dpi = 600,
+       width = 12, height = 24, units = "cm",  bg = "transparent")
 
-ggsave(plot_clusters, filename = "antprob_clusters.png", dpi = 600,
-       width = 16, height = 13, units = "cm", bg = "transparent")
+load("clustering_empirical.RData")
+
+type = c(rep("Pollination", 24000), rep("Seed dispersal", 24000), rep("Ant-Plant", 24000))
+p_data = cbind(p_data, type)
+
+pol = p_data[which(p_data$type == "Pollination"), ]
+seed = p_data[which(p_data$type == "Seed dispersal"), ]
+ant = p_data[which(p_data$type == "Ant-Plant"), ]
+
+pol_plot = ggplot(data = pol) +
+  geom_point(aes(x = antprob, y = opt_clusters), show.legend = FALSE, alpha = 0.05, size = 0.5, color = "#D95F02") +
+  geom_line(aes(x = antprob, y = opt_clusters), stat = "smooth", method = "loess", show.legend = FALSE) +
+  xlab(" ") + ylab(" ") +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
+seed_plot = ggplot(data = seed) +
+  geom_point(aes(x = antprob, y = opt_clusters), show.legend = FALSE, alpha = 0.05, size = 0.5, color = "#7570B3") +
+  geom_line(aes(x = antprob, y = opt_clusters), stat = "smooth", method = "loess", show.legend = FALSE) +
+  xlab(" ") + ylab(" ") +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
+ant_plot = ggplot(data = ant) +
+  geom_point(aes(x = antprob, y = opt_clusters), show.legend = FALSE, alpha = 0.05, size = 0.5, color = "#1B9E77") +
+  geom_line(aes(x = antprob, y = opt_clusters), stat = "smooth", method = "loess", show.legend = FALSE) +
+  xlab(" ") + ylab(" ") +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
+plot_final = grid.arrange(ant_plot, pol_plot, seed_plot, nrow = 3)
+
+ggsave(plot_final, filename = "antprob_cheater_clustering.png", dpi = 600,
+       width = 12, height = 24, units = "cm",  bg = "transparent")
+
+
+pdf("Hist_High_Clustering.png", width = 10, height = 10, bg = "transparent")
+par(bg = NA)
+hist(z_mat, # histogram
+     col="peachpuff", # column color
+     border="black",
+     prob = TRUE, # show densities instead of frequencies
+     xlab = "Trait values",
+     main = "", ylim=c(0,0.15))
+lines(density(z_mat), # density plot
+      lwd = 2, # thickness of line
+      col = "black")
+dev.off()

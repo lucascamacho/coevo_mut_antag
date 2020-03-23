@@ -1,18 +1,17 @@
-# Code to run the coevolutionary process with different values of Q and P.
-# This script create all possible combinations between values of P and Q
+# Code to run the coevolutionary process with different values of g and P.
+# This script create all possible combinations between values of p and g
 # - antprob (p) = (0.2, 0.5, 0.8)
-# - prob_change (q) = (0, 0.01, 0.1).
+# - prob_change (g) = (0, 0.01, 0.1).
 #
 # This combinations will be used to run different scenarios of coevolution
-# in context-dependent interactions. Then, we will calculate the 
-# Divergency which is the variance of traits in the last timestep and the
-# Directionality which is the variance of variances of species traits.
+# in interactions shifting in time. Then, we will calculate the 
+# species trait disparity
 #
-# This script returns one graph of Directionality of species and another
-# of Divergency of species. Both graphs with 9 different scenarios of P and Q.
+# This script returns one graph of directionality of species and another
+# of divergency of species. Both graphs with 9 different scenarios of p and g.
 
 # set work directory
-setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/scripts")
+setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/data/")
 
 # load packages
 library(ggplot2)
@@ -28,7 +27,7 @@ combs = combs[rep(seq_len(nrow(combs)), 1000), ]
 data = matrix(NA, nrow = 9000, ncol = 4)
 colnames(data) = c("mean", "var", "antprob", "prob_change")
 
-# loop to define the combination of P and Q and run the coevolution model
+# loop to define the combination of p and g and run the coevolution model
 for(i in 1:nrow(data)){
   print(i)
   antprob = combs[i,1]
@@ -44,10 +43,10 @@ for(i in 1:nrow(data)){
 }
 
 # save or load the data file
-#save(data, file = "~/Dropbox/Master/Code/coevo_mut_antag/data/RUNFREE_Mean_Balan_PQ.RData")
-load(file = "~/Dropbox/Master/Code/coevo_mut_antag/data/Mean_Balan_PQ.RData")
+save(data, file = "Mean_Balan_PQ.RData")
+load(file = "Mean_Balan_PQ.RData")
 
-# plot the measures of Divergency and Directionality by different P and Q combinations
+# plot the measures of Divergency and Directionality by different p and g combinations
 data = as.data.frame(data)
 
 box_plot_mean = ggplot(data = data) +
@@ -59,9 +58,8 @@ box_plot_mean = ggplot(data = data) +
   facet_wrap(~antprob) +
   theme_bw(base_size = 16) +
   scale_fill_discrete(name = "Q") +
-  labs(x = "Valores de probabilidade de mudança de interação no tempo", 
-       y = "Média dos valores de Direcionalidade das espécies")
-box_plot_mean
+  labs(x = "Probability of interaction shift in time", 
+       y = "Species trait directionality")
 
 box_plot_var = ggplot(data = data) +
   geom_point(aes(x = as.character(prob_change), y = var, 
@@ -72,11 +70,11 @@ box_plot_var = ggplot(data = data) +
   facet_wrap(~antprob) +
   theme_bw(base_size = 16) +
   scale_fill_discrete(name = "Q") +
-  labs(x = "Valores de probabilidade de mudança de interação no tempo", 
-       y = "Valores de Discrepância (Variância) das espécies")
+  labs(x = "Probability of interaction shift in time", 
+       y = "Species trait disparity")
 
 # save the plots
-#ggsave(box_plot_mean, fil = "boxplot_balancancia.pdf", 
-#       dpi = 600, width = 12, height = 8, units = "in")
-#ggsave(box_plot_var, filename = "boxplot_discrepancia.pdf", 
-#       dpi = 600, width = 12, height = 8, units = "in")
+ggsave(box_plot_mean, fil = "boxplot_directionality.pdf", 
+       dpi = 600, width = 12, height = 8, units = "in")
+ggsave(box_plot_var, filename = "boxplot_disparity.pdf", 
+       dpi = 600, width = 12, height = 8, units = "in")

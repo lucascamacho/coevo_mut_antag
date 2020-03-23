@@ -32,6 +32,7 @@ camacho = function(list_mats){
 library(ggplot2)
 library(cowplot)
 library(NbClust)
+library(gridExtra)
 
 # read all mutualism networks
 temp = list.files(pattern = "*.txt")
@@ -88,24 +89,14 @@ for(a in 1:nrow(combs)){
   
   opt_clust = camacho(df)
   
-  standev = sd(traits[nrow(traits), ])
   mpd = MeanPairDist(traits[nrow(traits), ])
 
-  results = data.frame(antprob, prob_change, standev, mpd, opt_clust)
+  results = data.frame(antprob, prob_change, mpd, opt_clust)
   condep_data = rbind(condep_data, results) 
 }
 
 save(condep_data, file = "sup_condep_data.RData")
 #load("sup_condep_data.RData")
-
-plot_standev = ggplot(data = condep_data) +
-  geom_violin(aes(x = as.character(prob_change), y = standev), fill = "grey80") +
-  geom_point(aes(x = as.character(prob_change), y = standev), size = 0.4, 
-             shape = 21, alpha = 0.4) +
-  facet_grid(prob_change~antprob) +
-  theme_bw(base_size = 17) +
-  labs(x = "", 
-       y = "Standart deviation of species traits (σ)")
 
 plot_mpd = ggplot(data = condep_data) +
   geom_violin(aes(x = as.character(prob_change), y = mpd), fill = "grey80") +
@@ -113,7 +104,7 @@ plot_mpd = ggplot(data = condep_data) +
              shape = 21, alpha = 0.4) +
   facet_grid(prob_change~antprob) +
   theme_bw(base_size = 17) +
-  labs(y = "MPD - Mean Pairwise Distance", 
+  labs(y = "Mean Pairwise Distance between species traits", 
        x = "")
 
 plot_clust = ggplot(data = condep_data) +
@@ -122,14 +113,13 @@ plot_clust = ggplot(data = condep_data) +
              shape = 21, alpha = 0.4) +
   facet_grid(prob_change~antprob) +
   theme_bw(base_size = 17) +
-  labs(y = "Average optimized number of species traits cluster", 
+  labs(y = "Optimized number of species traits cluster", 
        x = "")
 
-ggsave(plot_standev, filename = "Sup_probchange_standev.png", dpi = 600,
-       width = 18, height = 13, units = "cm")
+plot_total = grid.arrange(plot_mpd, plot_clust, nrow = 2)
 
-ggsave(plot_mpd, filename = "Sup_probchange_mpd.png", dpi = 600,
-       width = 18, height = 13, units = "cm")
+ggsave(plot_total, filename = "Sensibility_ConDep.png", dpi = 600,
+       width = 21, height = 29, units = "cm")
 
-ggsave(plot_clust, filename = "Sup_probchange_clusters.png", dpi = 600,
-       width = 18, height = 13, units = "cm")
+ggsave(plot_total, filename = "Sensibility_ConDep.pdf", dpi = 600,
+       width = 21, height = 29, units = "cm")

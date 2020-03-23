@@ -1,26 +1,26 @@
-# This script will run the coevolutionary process with context-dependency of interactions.
-# Then, will calculate the Divergency and Directionality of species traits.
-# Finally, the script will plot the Divergency by Time.
+# This script will run the coevolutionary process with with interaction shift in time.
+# Then, will calculate the disparity of species traits.
+# Finally, the script will plot the disparity by time.
 
 # The script probably will have some # symbols in parameters like antprob or prob_change.
-# If you will use only this code without a loop, be sure to get the #'s off.
+# Be sure to get the #'s off if you will use only this code, without a loop.
 
 # loading packages and functions
-setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/scripts/")
+setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/data/")
 
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/ConDepCoevoMutAntNet.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/BalanDiver.R")
 
 library(ggplot2)
-library(reshape2)
 library(cowplot)
+library(reshape2)
 
 # initial parameters
-#antprob = 0.1 # current probability value
-#prob_change = 0.2 # current probability of interaction outcome shift
+antprob = 0.1 # current probability value
+prob_change = 0.2 # current probability of interactions shift
 n_sp = 5 # defining number of species
-M = matrix(1, ncol = n_sp, nrow = n_sp) # building matrix M of positive outcomes
+M = matrix(1, ncol = n_sp, nrow = n_sp) # building matrix M of positive effects
 diag(M) = 0 # no intraespecific interactions
 
 # Antagonize M (transform positive links in negative)
@@ -41,28 +41,27 @@ t_max = 1000
 # running coevolution simulation
 simulation = ConDepCoevoMutAntNet(n_sp, M, V, phi, alpha, 
                                   theta, init, p, epsilon, eq_dif, t_max, prob_change)
-traits = simulation[[1]]
-w_time = as.data.frame(simulation[[2]])
+traits = simulation[[1]] # species traits
+w_time = as.data.frame(simulation[[2]]) # which time interactions shifted
 
 # apply the BalanDiver function
 balandiver = BalanDiver(traits)
 balan = balandiver[[1]]
 diver = balandiver[[2]]
 
-#set the times where the interaction oucomes shift occurs
-#colnames(w_time) = "xplace"
-#w_time$yplace = 1
+#set the times where the interaction shift occurs
+colnames(w_time) = "xplace"
+w_time$yplace = 1
 
 # plot the Divergency in time
-#time = seq(1, nrow(traits), 1)
-#diver = data.frame(diver, time)
+time = seq(1, nrow(traits), 1)
+diver = data.frame(diver, time)
 
-#diver_plot = ggplot(data = diver) +
-#  geom_path(aes(x = time, y = diver)) +
-#  ggtitle(paste("Q =", prob_change, ", initial proportion of antagonists = ", antprob)) +
-#  geom_text(data = w_time, aes(x = xplace, y = yplace),label = "*", size = 7) +
-#  theme_bw()
+diver_plot = ggplot(data = diver) +
+  geom_path(aes(x = time, y = diver)) +
+  ggtitle(paste("Q =", prob_change, ", initial proportion of antagonists = ", antprob)) +
+  geom_text(data = w_time, aes(x = xplace, y = yplace),label = "*", size = 7) +
+  theme_bw()
 
-#ggsave(diver_plot, filename = "Diver_Plot.png", width = 19, height = 11, units = "cm")
-#diver_plot
-#dev.off()
+# save plot
+ggsave(diver_plot, filename = "Diver_Plot.pdf", width = 19, height = 11, units = "cm")

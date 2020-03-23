@@ -1,11 +1,11 @@
-# This is a scratch script to simulate coevolution with antagonism and mutualism outcomes.
+# This is a scratch script to simulate coevolution with exploitation and mutualism interactions.
 #
 # Please, check the original matlab code mutantag.m file in this same directory.
 #
 # This was made in the Workshop of Ecological Networks that happened in April, 2018.
 
 # loading packages
-setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
+setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/data/")
 library(ggplot2)
 library(cowplot)
 
@@ -97,7 +97,7 @@ traits_df = data.frame(species = rep(paste("sp", 1:n_sp, sep = ""), each = nrow(
 # plot the results
 plotar = ggplot(traits_df, aes(x = time, y = trait, color = species)) +
   geom_path(size = 1.8, alpha = 0.8) + 
-  ggtitle(paste("proportion antagonists = ", antprob)) +
+  ggtitle(paste("proportion exploitation = ", antprob)) +
   xlab("Time") + 
   ylab("Mean species trait (z)") +
   theme(axis.text.x = element_text(size = 11),

@@ -5,13 +5,6 @@
 # This will allow us to see what's the effect of cheaters in coevolution and
 # how this change's the strcuture of ecological interacions in the community.
 #
-# The nestedness will be calculated using the bipartite package and the modularity
-# with the MODULAR program
-#
-# Marquitti, F. M. D., P. R. Guimaraes, M. M. Pires, L. F. Bittencourt. 2014. 
-# MODULAR: Software for the Autonomous Computation of Modularity in Large Network Sets. 
-# Ecography: 37: 221–224.
-#
 # For each of our 24 empirical networks we gonna run 
 # 3.000 simulations and calculate the nestedness and modularity
 # of out adjancency matrix of interactions.
@@ -23,7 +16,9 @@ source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/SquareMatrix.R")
 
 library(ggplot2)
 library(cowplot)
+library(gridExtra)
 library(bipartite)
+library(igraph)
 library(dplyr)
 
 # read all mutualism networks
@@ -35,19 +30,19 @@ names(redes)  = gsub(".txt", replacement= "", temp)
 antprob_vec = seq(0.01, 1, 0.01)
 final_fl = data.frame()
 
-for(k in 1:length(redes)){ # loop to each matrix of interactions
+for(k in 1:1){ # loop to each matrix of interactions
   print(k)
   
-  for(a in 1:length(antprob_vec)){ # 100 loops to each matrix
+  for(a in 1:1){ # 100 loops to each matrix
     
-    for(q in 1:30){ # 30 simulations per p value
-    M = as.matrix(redes[[k]]) # M is the adjancency matrix of interactions
+    for(q in 1:1){ # 30 simulations per p value
+    M = as.matrix(redes[[10]]) # M is the adjancency matrix of interactions
     M[which(M > 1)] = 1 # if there are any error, correct that
     M = SquareMatrix(M) # square the adjancency matrix
     n_sp = ncol(M) # define the species number
 
     # sample an antprob value
-    antprob = antprob_vec[a]
+    antprob = antprob_vec[99]
     
     # load functions
     source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
@@ -96,46 +91,155 @@ for(k in 1:length(redes)){ # loop to each matrix of interactions
     W[ints] = 0 # of interactions that coevolution breaks
    
     # get nestedness measures
-    #dnest_control = nested(W, method = "NODF2") - nested(init_m, method = "NODF2")
-    #dnest_coevo = nested(last_m, method = "NODF2") - nested(init_m, method = "NODF2")
+    dnest_control = nested(W, method = "NODF2") - nested(init_m, method = "NODF2")
+    dnest_coevo = nested(last_m, method = "NODF2") - nested(init_m, method = "NODF2")
     
-    #results = data.frame(net, rich, antprob, dnest_control, dnest_coevo) # get all the results
-    #final_fl = rbind(final_fl, results) # put results in data.frame
+    # get modularity measures
+    dmod_control = modularity(cluster_louvain(graph_from_incidence_matrix(W))) - 
+      modularity(cluster_louvain(graph_from_incidence_matrix(init_m)))
+    dmod_coevo = modularity(cluster_louvain(graph_from_incidence_matrix(last_m))) - 
+      modularity(cluster_louvain(graph_from_incidence_matrix(init_m)))
     
-    # save the initial adjancency matrix, the control and coevolution adjacency matrix
-    write.table(init_m, file = paste("~/Google Drive File Stream/Meu Drive/Trabalho/matrices/", 
-                                     names(redes[k]), "_init_", a,"_", q, ".txt", sep = ""), row.names = FALSE, 
-                                     col.names = FALSE) # save initial adjacency matrix
-    write.table(last_m, file = paste("~/Google Drive File Stream/Meu Drive/Trabalho/matrices/", 
-                                     names(redes[k]), "_final_coevo_", a,"_", q, ".txt", sep = ""), row.names = FALSE, 
-                                     col.names = FALSE) # save the coevolution adjacency matrix
-    write.table(W, file = paste("~/Google Drive File Stream/Meu Drive/Trabalho/matrices/", 
-                                names(redes[k]), "_final_control_", a,"_", q, ".txt", sep = ""), row.names = FALSE, 
-                                col.names = FALSE) # save the control adjacency matrix
+    # get all the results
+    results = data.frame(net, rich, antprob, dnest_control, dnest_coevo, dmod_control, dmod_coevo)
+    final_fl = rbind(final_fl, results) # put results in data.frame
     }
   }
 }
 
+dat_long <- melt(last_m)
+
+# discrete vs continuous
+dat_long$value <- factor(dat_long$value)
+
+gg <- ggplot(dat_long)
+
+# fill + legend, gray border
+gg <- gg + geom_tile(aes(x=Var1, y=Var2, fill=value), show.legend = FALSE)
+
+# custom fill colors
+gg <- gg + scale_fill_manual(values=c("white", "#7570B3"))
+
+# squares
+gg <- gg + coord_equal()
+
+# no labels
+gg <- gg + labs(x=NULL, y=NULL)
+
+# remove some chart junk
+gg <- gg + theme_bw()
+gg <- gg + theme(panel.grid=element_blank())
+gg <- gg + theme(panel.border=element_blank())
+#gg <- gg + plot.background = theme_rect(fill = "transparent",colour = NA)
+gg
+
+ggsave(gg, filename = "Seed_High_Antprob.pdf", dpi = 600,
+       width = 10, height = 10, units = "cm",  bg = "transparent")
+
+
 # save or load the RData file
-save(final_fl, file = "data_nest.RData")
-#load("data_nest.RData")
-
-# aggregate the data using the net and get the measures average
-final_fl = aggregate(final_fl[ ,4:5], list(final_fl$net), mean)
-
-# create and insert a antprob sequence
-antprob = rep(seq(0.01, 1, 0.01), 24)
-final_fl = cbind(final_fl, antprob)
+#save(final_fl, file = "data_structure.RData")
+load("data_structure.RData")
 
 # create and insert an mutualism type sequence
-type = c(rep("Pollination", 800), rep("Seed dispersal", 800), rep("Ant-Plant", 800))
+type = c(rep("Pollination", 24000), rep("Seed dispersal", 24000), rep("Ant-Plant", 24000))
 final_fl = cbind(final_fl, type)
 
-# forming the data frame to plot, calculating averages
-new_data = final_fl%>%
-  group_by(antprob, type)%>%
-  summarise(mean_nestcontrol = mean(dnest_control), mean_nestcoevo = mean(dnest_coevo))%>%
-  as.data.frame()
+pol = final_fl[which(final_fl$type == "Pollination"), ]
+seed = final_fl[which(final_fl$type == "Seed dispersal"), ]
+ant = final_fl[which(final_fl$type == "Ant-Plant"), ]
+
+mod_pol_plot = ggplot(data = pol) +
+  geom_point(aes(x = antprob, y = dmod_coevo), show.legend = FALSE, alpha = 0.05, size = 0.5, color = "#D95F02") +
+  geom_point(aes(x = antprob, y = dmod_control), show.legend = FALSE, alpha = 0.05, size = 0.5, color = "black") +
+  geom_line(aes(x = antprob, y = dmod_coevo), stat = "smooth", method = "loess", show.legend = FALSE, color = "#D95F02") +
+  geom_line(aes(x = antprob, y = dmod_control), stat = "smooth", method = "loess", show.legend = FALSE, color = "black") +
+  xlab(" ") + ylab(" ") +
+  scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
+nest_pol_plot = ggplot(data = pol) +
+  geom_point(aes(x = antprob, y = dnest_coevo), show.legend = FALSE, alpha = 0.05, size = 0.5, color = "#D95F02") +
+  geom_point(aes(x = antprob, y = dnest_control), show.legend = FALSE, alpha = 0.05, size = 0.5, color = "black") +
+  geom_line(aes(x = antprob, y = dnest_coevo), stat = "smooth", method = "loess", show.legend = FALSE, color = "#D95F02") +
+  geom_line(aes(x = antprob, y = dnest_control), stat = "smooth", method = "loess", show.legend = FALSE, color = "black") +
+  xlab(" ") + ylab(" ") +
+  scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
+###
+
+mod_seed_plot = ggplot(data = seed) +
+  geom_point(aes(x = antprob, y = dmod_coevo), show.legend = FALSE, alpha = 0.05, size = 0.5, color = "#7570B3") +
+  geom_point(aes(x = antprob, y = dmod_control), show.legend = FALSE, alpha = 0.05, size = 0.5, color = "black") +
+  geom_line(aes(x = antprob, y = dmod_coevo), stat = "smooth", method = "loess", show.legend = FALSE, color = "#7570B3") +
+  geom_line(aes(x = antprob, y = dmod_control), stat = "smooth", method = "loess", show.legend = FALSE, color = "black") +
+  xlab(" ") + ylab(" ") +
+  scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
+nest_seed_plot = ggplot(data = seed) +
+  geom_point(aes(x = antprob, y = dnest_coevo), show.legend = FALSE, alpha = 0.05, size = 0.5, color = "#7570B3") +
+  geom_point(aes(x = antprob, y = dnest_control), show.legend = FALSE, alpha = 0.05, size = 0.5, color = "black") +
+  geom_line(aes(x = antprob, y = dnest_coevo), stat = "smooth", method = "loess", show.legend = FALSE, color = "#7570B3") +
+  geom_line(aes(x = antprob, y = dnest_control), stat = "smooth", method = "loess", show.legend = FALSE, color = "black") +
+  xlab(" ") + ylab(" ") +
+  scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
+###
+
+mod_ant_plot = ggplot(data = ant) +
+  geom_point(aes(x = antprob, y = dmod_coevo), show.legend = FALSE, alpha = 0.05, size = 0.5, color = "#1B9E77") +
+  geom_point(aes(x = antprob, y = dmod_control), show.legend = FALSE, alpha = 0.05, size = 0.5, color = "black") +
+  geom_line(aes(x = antprob, y = dmod_coevo), stat = "smooth", method = "loess", show.legend = FALSE, color = "#1B9E77") +
+  geom_line(aes(x = antprob, y = dmod_control), stat = "smooth", method = "loess", show.legend = FALSE, color = "black") +
+  xlab(" ") + ylab(" ") +
+  scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
+nest_ant_plot = ggplot(data = ant) +
+  geom_point(aes(x = antprob, y = dnest_coevo), show.legend = FALSE, alpha = 0.05, size = 0.5, color = "#1B9E77") +
+  geom_point(aes(x = antprob, y = dnest_control), show.legend = FALSE, alpha = 0.05, size = 0.5, color = "black") +
+  geom_line(aes(x = antprob, y = dnest_coevo), stat = "smooth", method = "loess", show.legend = FALSE, color = "#1B9E77") +
+  geom_line(aes(x = antprob, y = dnest_control), stat = "smooth", method = "loess", show.legend = FALSE, color = "black") +
+  xlab(" ") + ylab(" ") +
+  scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
+
+plot_pol = grid.arrange(mod_pol_plot, nest_pol_plot, nrow = 2)
+plot_seed = grid.arrange(mod_seed_plot, nest_seed_plot, nrow = 2)
+plot_ant = grid.arrange(mod_ant_plot, nest_ant_plot, nrow = 2)
+
+plot_total = grid.arrange(plot_ant, plot_pol, plot_seed, nrow = 1)
+
+ggsave(plot_total, filename = "antprob_structure.pdf", dpi = 600,
+       width = 25, height = 12, units = "cm",  bg = "transparent")
 
 # plot and save the nestedness results graph
 plot_nest_coevo = ggplot(data = new_data) +
@@ -155,79 +259,6 @@ plot_nest_coevo = ggplot(data = new_data) +
         legend.key.size = unit(0.6, "cm"),
         legend.text = element_text(size = 11))
 
-ggsave(plot_nest_coevo, filename = "deltanest_coevo_adj.png", dpi = 600,
-       width = 16, height = 12, units = "cm",  bg = "transparent")
-
-# Run MODULAR
-
-# read the MODULAR results
-mod_results = read.table("~/Google Drive File Stream/Meu Drive/Trabalho/matrices/resultsSA/OUT_MOD.txt", 
-                         header=TRUE)
-
-# separate the initial, final control and final coevo matrices
-init = mod_results[grep(mod_results$File, pattern = "init"), ]
-coevo = mod_results[grep(mod_results$File, pattern = "coevo"), ]
-control = mod_results[grep(mod_results$File, pattern = "control"), ]
-
-# separate the data and prepare the data names
-# initia matrices data
-init$net = gsub(init$File, pattern = "_init", replacement = "")
-init$net = gsub(init$net, pattern = ".txt", replacement = "")
-
-final_init = merge(init, final_fl, by = "net", all.x = TRUE, all.y = TRUE)
-
-# coevo matrices data
-coevo$net = gsub(coevo$File, pattern = "_final_coevo", replacement = "")
-coevo$net = gsub(coevo$net, pattern = ".txt", replacement = "")
-
-final_coevo = merge(coevo, final_fl, by="net", all.x=TRUE, all.y=TRUE)
-
-# control matrices data
-control$net = gsub(control$File, pattern = "_final_control", replacement = "")
-control$net = gsub(control$net, pattern = ".txt", replacement = "")
-
-final_control = merge(control, final_fl, by = "net", all.x = TRUE, all.y = TRUE)
-
-# calculate the delta modularity and get the community richness
-dmcontrol = final_control$Modularity - final_init$Modularity
-dmcoevo = final_coevo$Modularity - final_init$Modularity
-rich = final_init$rich
-
-# Rearranje data to plot the results
-# final data.frame to plot the results
-dados = data.frame(final_init$net, rich, final_init$antprob, dmcontrol, dmcoevo)
-final_mod = dados
-
-# save or load the RData file
-save(final_mod, file = "data_mod.RData")
-#load("data_mod.RData")
-
-# check modularity
-
-novo = final_mod
-novo[,1]=gsub('[0-9]+', "", novo[,1])
-
-novo %>% group_by(final_init.net) %>% arrange(final_init.antprob, .by_group = TRUE)
-
-
-novo = as.data.frame(novo)
-final_mod = aggregate(novo[ ,4:5], list(novo$final_init.net), mean)
-
-
-# create and insert an antprob sequence
-antprob = rep(seq(0.01, 1, 0.01), 24)
-final_fl = cbind(final_fl, antprob)
-
-# create and insert an mutualism type sequence
-type = c(rep("Pollination", 800), rep("Seed dispersal", 800), rep("Ant-Plant", 800))
-final_fl = cbind(final_fl, type)
-
-# prepare data frame to plot using the averages
-new_data = final_mod%>%
-  group_by(antprob, type)%>%
-  summarise(mean_modcontrol = mean(dmod_control), mean_modcoevo = mean(dmod_coevo))%>%
-  as.data.frame()
-
 #plot and save the modularity data
 plot_mod_coevo = ggplot(data = new_data) +
   geom_point(aes(x = final_init.antprob, y = mod_coevo, colour = type, group = type), show.legend = FALSE) +
@@ -246,5 +277,113 @@ plot_mod_coevo = ggplot(data = new_data) +
         legend.key.size = unit(0.6, "cm"),
         legend.text = element_text(size = 11))
 
+ggsave(plot_nest_coevo, filename = "deltanest_coevo_adj.png", dpi = 600,
+       width = 16, height = 12, units = "cm",  bg = "transparent")
+
 ggsave(plot_mod_coevo, filename = "deltamod_coevo_adj.png", dpi = 600,
        width = 16, height = 12, units = "cm",  bg = "transparent")
+
+plot_mpd_ant = ggplot(data = new_data[1:2,], aes(x = as.factor(c_ch), 
+                                                 y = mean_mpd)) +
+  geom_pointrange(aes(x = as.factor(c_ch), 
+                      y = mean_mpd, ymin = min_mpd, ymax = max_mpd), 
+                  show.legend = FALSE, color = "#1B9E77") +
+  geom_line(aes(x = as.factor(c_ch), 
+                y = mean_mpd), show.legend = FALSE, group = 1, color = "#1B9E77") +
+  scale_x_discrete(limits = rev(levels(new_data$c_ch)), labels = c("Random", "Central")) +
+  ylab("Mean Pairwise Distance between species traits") +
+  xlab("") +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
+plot_mpd_pol = ggplot(data = new_data[3:4,], aes(x = as.factor(c_ch), 
+                                                 y = mean_mpd)) +
+  geom_pointrange(aes(x = as.factor(c_ch), 
+                      y = mean_mpd, ymin = min_mpd, ymax = max_mpd), 
+                  show.legend = FALSE, color = "#D95F02") +
+  geom_line(aes(x = as.factor(c_ch), 
+                y = mean_mpd), show.legend = FALSE, group = 1, color = "#D95F02") +
+  scale_x_discrete(limits = rev(levels(new_data$c_ch)), labels = c("Random", "Central")) +
+  ylab("Mean Pairwise Distance between species traits") +
+  xlab("") +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
+plot_mpd_seed = ggplot(data = new_data[5:6,], aes(x = as.factor(c_ch), 
+                                                  y = mean_mpd)) +
+  geom_pointrange(aes(x = as.factor(c_ch), 
+                      y = mean_mpd, ymin = min_mpd, ymax = max_mpd), 
+                  show.legend = FALSE, color = "#7570B3") +
+  geom_line(aes(x = as.factor(c_ch), 
+                y = mean_mpd), show.legend = FALSE, group = 1, color = "#7570B3") +
+  scale_x_discrete(limits = rev(levels(new_data$c_ch)), labels = c("Random", "Central")) +
+  ylab("Mean Pairwise Distance between species traits") +
+  xlab("") +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
+up = grid.arrange(plot_mpd_ant, plot_mpd_pol, plot_mpd_seed, nrow = 1)
+
+plot_clust_ant = ggplot(data = new_data[1:2,], aes(x = as.factor(c_ch), 
+                                                   y = mean_clust)) +
+  geom_pointrange(aes(x = as.factor(c_ch), 
+                      y = mean_clust, ymin = min_clust, ymax = max_clust), 
+                  show.legend = FALSE, color = "#1B9E77") +
+  geom_line(aes(x = as.factor(c_ch), 
+                y = mean_clust), show.legend = FALSE, group = 1, color = "#1B9E77") +
+  scale_x_discrete(limits = rev(levels(new_data$c_ch)), labels = c("Random", "Central")) +
+  ylab("Mean Pairwise Distance between species traits") +
+  xlab("") +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
+plot_clust_pol = ggplot(data = new_data[3:4,], aes(x = as.factor(c_ch), 
+                                                   y = mean_clust)) +
+  geom_pointrange(aes(x = as.factor(c_ch), 
+                      y = mean_clust, ymin = min_clust, ymax = max_clust), 
+                  show.legend = FALSE, color = "#D95F02") +
+  geom_line(aes(x = as.factor(c_ch), 
+                y = mean_clust), show.legend = FALSE, group = 1, color = "#D95F02") +
+  scale_x_discrete(limits = rev(levels(new_data$c_ch)), labels = c("Random", "Central")) +
+  ylab("Mean Pairwise Distance between species traits") +
+  xlab("") +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
+plot_clust_seed = ggplot(data = new_data[5:6,], aes(x = as.factor(c_ch), 
+                                                    y = mean_clust)) +
+  geom_pointrange(aes(x = as.factor(c_ch), 
+                      y = mean_clust, ymin = min_clust, ymax = max_clust), 
+                  show.legend = FALSE, color = "#7570B3") +
+  geom_line(aes(x = as.factor(c_ch), 
+                y = mean_clust), show.legend = FALSE, group = 1, color = "#7570B3") +
+  scale_x_discrete(limits = rev(levels(new_data$c_ch)), labels = c("Random", "Central")) +
+  ylab("Mean Pairwise Distance between species traits") +
+  xlab("") +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
+down = grid.arrange(plot_clust_ant, plot_clust_pol, plot_clust_seed, nrow = 1)
+
+plot_total = grid.arrange(up, down, nrow = 2)
+
+ggsave(plot_total, filename = "antprob_central.pdf", dpi = 600,
+       width = 25, height = 12, units = "cm",  bg = "transparent")

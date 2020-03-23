@@ -1,7 +1,7 @@
-# Code to run the script of coevolution with context-dependent interactions and
-# calculate 4 metrics of trait disparity for several values of P and Q.
+# Code to run the script of coevolution with interactions shifting in time and
+# calculate 4 metrics of trait disparity for several values of p and g.
 # - antprob (p) = (0.2, 0.5, 0.8)
-# - prob_change (q) = (0, 0.1, 0.5).
+# - prob_change (g) = (0, 0.1, 0.5).
 #
 # This code runs the ConDep_Disparity.R 9000 times and for each time
 # calculate 4 metrics of disparity.
@@ -10,14 +10,16 @@
 # - Participation Ratio
 # - Near Pairwise Distance with min and max
 #
+# Make sure that the ConDep_Disparity funciton has #'s on certain lines
+#
 # This script returns a data.Rdata file with a data.frame of all the results
-# and a plot for each disparity measure and different values of P and Q.
+# and a plot for each disparity measure and different values of p and q.
 
 # set work directory
-setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/scripts")
+setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/data/")
 
 # load packages
-if(!require(ggplot2)) {install.packages("ggplot2"); library(ggplot2)}
+library(ggplot2)
 
 # define the vector of p and q and combine 2-by-2 these values
 antprob_vec = c(0.2, 0.5, 0.8)
@@ -30,7 +32,7 @@ data = matrix(NA, nrow = 9000, ncol = 7)
 colnames(data) = c("variance", "meanpairdist", "partratio", "neardist_min", 
                    "neardist_max", "antprob", "prob_change")
 
-# loop to define the combination of P and Q and run the coevolution model
+# loop to define the combination of p and q and run the coevolution model
 for(i in 1:nrow(data)){
   print(i)
   antprob = combs[i,1]
@@ -49,12 +51,14 @@ for(i in 1:nrow(data)){
 }
 
 # save or load the data file
-#save(data, file = "~/Dropbox/Master/Code/coevo_mut_antag/data/ConDep_Disparity.RData")
-#load(file = "~/Dropbox/Master/Code/coevo_mut_antag/data/ConDep_Disparity.RData")
+save(data, file = "ConDep_Disparity.RData")
+load(file = "ConDep_Disparity.RData")
+
+# data in data.frame to plot
 data = as.data.frame(data)
 
 # prepare and plot the results
-# first the var plot
+# var plot
 var_boxplot = ggplot(data = data) +
   geom_point(aes(x = as.character(prob_change), y = variance, 
                  color = as.factor(prob_change)), size = 1, 
@@ -63,8 +67,8 @@ var_boxplot = ggplot(data = data) +
                   fill = as.factor(prob_change)), alpha = 0.2) +
   facet_wrap(antprob) +
   theme_bw(base_size = 16) +
-  labs(x = "Valores de probabilidade de mudança de interação no tempo", 
-       y = "Variância")
+  labs(x = "Probability of interaction shift in time (g)", 
+       y = "Variance")
   
 # the mean pairwise distance plot
 meanpairdist_boxplot = ggplot(data = data) +
@@ -75,7 +79,7 @@ meanpairdist_boxplot = ggplot(data = data) +
                   fill = as.factor(prob_change)), alpha = 0.2) +
   facet_wrap(~antprob) +
   theme_bw(base_size = 16) +
-  labs(x = "Valores de probabilidade de mudança de interação no tempo", 
+  labs(x = "Probability of interaction shift in time (g)", 
        y = "Mean Pairwise Distance")
 
 # the participation ratio plot
@@ -87,7 +91,7 @@ partratio_boxplot = ggplot(data = data) +
                   fill = as.factor(prob_change)), alpha = 0.2) +
   facet_wrap(~antprob) +
   theme_bw(base_size = 16) +
-  labs(x = "Valores de probabilidade de mudança de interação no tempo", 
+  labs(x = "Probability of interaction shift in time (g)", 
        y = "Participation Ratio")
 
 # Near and Long Pairwise Distance plot
@@ -99,7 +103,7 @@ nearlong_boxplot = ggplot(data = data) +
                   fill = as.factor(prob_change)), alpha = 0.2) +
   facet_wrap(~antprob) +
   theme_bw(base_size = 16) +
-  labs(x = "Valores de probabilidade de mudança de interação no tempo", 
+  labs(x = "Probability of interaction shift in time (g)", 
        y = "Near and Longest Pairwise Distance")
 
 # save plots

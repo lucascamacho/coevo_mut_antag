@@ -1,4 +1,4 @@
-# Cheaters coevolution in mutualistic networks
+# Coevolution of exploitation interactions in mutualistic networks
 
 Links of the code that generate my figures:
 
@@ -15,7 +15,6 @@ I run my simulations in two different computers:
 The softwares used was:
 - Dropbox 70.4.93
 - GitHub Desktop 1.6.5
-- MODULAR 0.1(1)
 - R 3.5.3
 - RStudio 1.1.453
 - TexMaker 5.0.2
@@ -58,4 +57,5 @@ List of R packages used:
 - [bipartite](https://cran.r-project.org/web/packages/bipartite/index.html)
 - [plyr](https://www.rdocumentation.org/packages/plyr/versions/1.8.4)
 - [dplyr](https://dplyr.tidyverse.org/)
-
+- [igraph](https://igraph.org/)
+- [NbClust](https://www.rdocumentation.org/packages/NbClust/versions/3.0/topics/NbClust)

@@ -8,6 +8,7 @@
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/data/")
 
 library(bipartite)
+library(igraph)
 
 # create a single matrix with all networks informations
 networks = matrix(NA, nrow = 24, ncol = 4)
@@ -18,14 +19,12 @@ temp = list.files(pattern = "*.txt")
 redes = lapply(temp, read.table)
 names(redes) = gsub(".txt", replacement = "", temp)
 
-# loop to get the Name, Richness and Connectance of each network
+# loop to get the metrics
 for(i in 1:length(redes)){
   networks[i,1] = names(redes[i])
   networks[i,2] = (sum(redes[[i]])) / (dim(redes[[i]])[1] * dim(redes[[i]])[2])
-  networks[i,3] = 0
+  networks[i,3] = modularity(cluster_louvain(graph_from_incidence_matrix(redes[[i]])))
   networks[i,4] = nested(redes[[i]], method = "NODF2")
 }
 
-# save the table in a excell file
-write.table(networks, file = "infos_sup_networks.txt", sep = ",",
-            row.names = FALSE, col.names = TRUE)
+write.table(networks, file = "table_sup.txt")

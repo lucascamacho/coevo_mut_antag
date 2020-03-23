@@ -26,6 +26,7 @@ camacho = function(list_mats){
 library(ggplot2)
 library(cowplot)
 library(NbClust)
+library(gridExtra)
 
 # read all the empirical networks
 temp = list.files(pattern="*.txt")
@@ -72,11 +73,10 @@ for(a in 1:300){ # 100 simulations per empirical matrix
   opt_clust = camacho(df)
   
   # get my results
-  standev = sd(z_mat[nrow(z_mat), ])
   mpd = MeanPairDist(z_mat[nrow(z_mat), ])
   
   # insert these results in the data.frame
-  results = data.frame(eq_dif, standev, mpd, opt_clust)
+  results = data.frame(eq_dif, mpd, opt_clust)
   p_data = rbind(p_data, results)
   
   # 10^6
@@ -114,11 +114,10 @@ for(a in 1:300){ # 100 simulations per empirical matrix
   opt_clust = camacho(df)
   
   # get my results
-  standev = sd(z_mat[nrow(z_mat), ])
   mpd = MeanPairDist(z_mat[nrow(z_mat), ])
   
   # insert these results in the data.frame
-  results = data.frame(eq_dif, standev, mpd, opt_clust)
+  results = data.frame(eq_dif, mpd, opt_clust)
   p_data = rbind(p_data, results)
   
   # 10^8
@@ -156,32 +155,21 @@ for(a in 1:300){ # 100 simulations per empirical matrix
   opt_clust = camacho(df)
   
   # get my results
-  standev = sd(z_mat[nrow(z_mat), ])
   mpd = MeanPairDist(z_mat[nrow(z_mat), ])
   
   # insert these results in the data.frame
-  results = data.frame(eq_dif, standev, mpd, opt_clust)
+  results = data.frame(eq_dif, mpd, opt_clust)
   p_data = rbind(p_data, results)
 }
 
-save(p_data, "sup_breakcondition_data.RData")
+save(p_data, "sup_break_data.RData")
 #load("sup_breakcondition_data.RData")
 
-plot_standev = ggplot(data = p_data) +
-  geom_boxplot(aes(x = as.factor(eq_dif), y = standev), fill = "grey90") +
-  ylab("Standart deviation of species traits (σ)") +
-  xlab("Minimum trait difference between species to stop simulation") +
-  scale_y_continuous(expand = c(0,0)) +
-  theme(axis.text.x = element_text(size = 11),
-        axis.text.y = element_text(size = 11),
-        axis.title = element_text(size = 18), 
-        legend.key.size = unit(0.6, "cm"),
-        legend.text = element_text(size = 11))
 
 plot_mpd = ggplot(data = p_data) +
   geom_boxplot(aes(x = as.factor(eq_dif), y = mpd), fill = "grey90") +
   xlab("Minimum trait difference between species to stop simulation") +
-  ylab("MPD - Mean Pairwise Distance") +
+  ylab("Mean Pairwise Distance between species traits") +
   scale_y_continuous(expand = c(0,0)) +
   theme(axis.text.x = element_text(size = 11),
         axis.text.y = element_text(size = 11),
@@ -192,7 +180,7 @@ plot_mpd = ggplot(data = p_data) +
 plot_clust = ggplot(data = p_data) +
   geom_boxplot(aes(x = as.factor(eq_dif), y = opt_clust), fill = "grey90") +
   xlab("Minimum trait difference between species to stop simulation") +
-  ylab("Average optimizaed number of species traits clusters") +
+  ylab("Optimized number of species traits clusters") +
   scale_y_continuous(expand = c(0,0)) +
   theme(axis.text.x = element_text(size = 11),
         axis.text.y = element_text(size = 11),
@@ -200,11 +188,10 @@ plot_clust = ggplot(data = p_data) +
         legend.key.size = unit(0.6, "cm"),
         legend.text = element_text(size = 11))
 
-ggsave(plot_standev, filename = "Sensibility_Standev_Break.png", dpi = 600,
-       width = 20, height = 14, units = "cm")
+plot_total = grid.arrange(plot_mpd, plot_clust, nrow = 2)
 
-ggsave(plot_mpd, filename = "Sensibility_MPD_Break.png", dpi = 600,
-       width = 20, height = 14, units = "cm")
+ggsave(plot_total, filename = "Sensibility_Break.png", dpi = 600,
+       width = 21, height = 29, units = "cm")
 
-ggsave(plot_clust, filename = "Sensibility_Clustering_Break.png", dpi = 600,
-       width = 20, height = 14, units = "cm")
+ggsave(plot_total, filename = "Sensibility_Break.pdf", dpi = 600,
+       width = 21, height = 29, units = "cm")
