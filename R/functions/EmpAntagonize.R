@@ -1,12 +1,12 @@
 #-----------------------------------------------------------------------------------------------------#
 EmpAntagonize = function(M, antprob){
-  # Following a certain probability, transform outcomes of empirical networks 
+  # Following a certain probability, transform interactions of empirical networks 
   # from positive to negative. 
   # These networks need to be squared, otherwise, these funciton will return an error
   #
   # Args:
   #   M: empirical square matrix of positive outcomes
-  #   antprob: probability of a link become antagonist
+  #   antprob: probability of a link become negative
   # Return:
   #   mats: list of mutualistic adjacency matrix and antagonistic adjacency matrix, respectively
   V = M * 0 # create V matrix

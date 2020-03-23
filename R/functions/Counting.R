@@ -1,7 +1,7 @@
 #----------------------------------------------------------------------------------------------#
 Counting = function(M, V){
   # Count the number of double-negative (AA), negative-positive (AM) 
-  # and double-positive (MM) outcomes between species.
+  # and double-positive (MM) interactions between species.
   #
   # Args:
   #   M: matrix of positive interaction outcomes

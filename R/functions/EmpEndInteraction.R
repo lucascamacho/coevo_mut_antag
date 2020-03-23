@@ -3,10 +3,10 @@ EmpEndInteraction = function(M, V, interaction){
   # Choose a type of outcome to ignore in your empirical adjacency matrices
   #
   #Args:
-  # M: empirical matrix of mutualism
+  # M: matrix f positive effects
   # V: matrix of negative effects
   # interaction: type on interaction outcome you want to ignore
-  #  You can choose between Interferences, Antagonisms and Mutualisms
+  #  You can choose between Interferences, Exploitation and Mutualisms
   #
   #Return:
   # list of matrices M and V with 0 in effects that you choose

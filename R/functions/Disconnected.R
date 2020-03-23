@@ -3,8 +3,8 @@ Disconnected = function(M, V){
   # Identify and count which species are disconnected of the network based on the M and V.
   # If the line and collum are zero, the species are exclude of the network.
   # Args:
-  #   M: matrix of positive interaction outcomes
-  #   V: matrix of negative interaction outcomes
+  #   M: matrix of positive effects
+  #   V: matrix of negative effects
   # Return:
   #   res: list with which species are disconnected and how many are disconnected
   
