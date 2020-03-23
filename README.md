@@ -59,3 +59,6 @@ List of R packages used:
 - [dplyr](https://dplyr.tidyverse.org/)
 - [igraph](https://igraph.org/)
 - [NbClust](https://www.rdocumentation.org/packages/NbClust/versions/3.0/topics/NbClust)
+- [gridExtra](https://cran.r-project.org/web/packages/gridExtra/index.html)
+- [rlist](https://cran.r-project.org/web/packages/list/list.pdf)
+- [parallel](https://www.rdocumentation.org/packages/parallel/versions/3.6.2)
