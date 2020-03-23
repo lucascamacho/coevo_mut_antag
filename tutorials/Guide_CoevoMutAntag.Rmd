@@ -20,7 +20,7 @@ text-align: justify}
 
 ## Introduction
 
-I write this guide to help the understanding of the model that we gonna work and explain the code to run the simulations. For that, we gonna start speaking a little bit about our model, how it works and after I will explain step-by-step what the R function CoevoMutAntNet does. Hope it helps.
+I write this guide to help the understanding of the model and explain the code to run the simulations. For that, we gonna start speaking a little bit about our model, how it works and after I will explain step-by-step what the R function CoevoMutAntNet does. Hope it helps.
 
 ## The model
 
@@ -28,23 +28,23 @@ We are trying to describe how a certain average trait $Z$ of a specie $i$ change
 
 $$Z_{ i } ^ { (t+1) } = Z_{ i } ^ { t } + \varphi_{ i }[\sum_{j} m_{ij}^{t}(Z_{j}^{t} - Z_{i}^{t}) + \sum_{j}v_{ij}^{t}(Z_{j}^{t} \pm \epsilon_{ij} - Z_{i}^{t}) + p_{i}(\theta_{i} - Z_{i}^{t})]$$
 
-This trait $Z$ of specie $i$ in the timestep $t+1$ depends of $Z$ one timestep further $Z_{i}^{t}$. The traits change also depends on the heritability and additive genetic variance of $Z$ which is given by the $\varphi_{i}$ parameter. After that we have 3 components changing the trait $Z$: the mutualism, the cheater exploitation and the environmental selection.
+This trait $Z$ of specie $i$ in the timestep $t+1$ depends of $Z$ one timestep further $Z_{i}^{t}$. The traits change also depends on the heritability and additive genetic variance of $Z$ which is given by the $\varphi_{i}$ parameter. After that we have 3 components changing the trait $Z$: the mutualism, the exploitation and the environmental selection.
 Let`s see the mutualism component first.
 
 $$\sum_{j} m_{ij}^{t}(Z_{j}^{t} - Z_{i}^{t})$$
 
 In this component we have $m_{ij}^{t}$ that is the mutualistic evolutionary effects of a species $j$ to the specie $i$. These component favours the trait matching between $Z_{i}$ and $Z_{j}$. In other words, these values $Z_{i}$ and $Z_{j}$ tend to become more similar in time.
-The second component is the cheater exploitation component
+The second component is the exploitation component
 
 $$\sum_{j}v_{ij}^{t}(Z_{j}^{t} \pm \epsilon_{ij} - Z_{i}^{t})$$
 
-Similar to mutualism, we also have an evolutionary exploitation effect of $j$ in $i$ which is $v_{ij}^{t}$. Note that we have a parameter $\epsilon$, which is our "trait barrier" or the maximum differente of $Z_{i}$ and $Z_{j}$ for this cheater interaction happen. Finally, we have the environment component
+Similar to mutualism, we also have an evolutionary exploitation effect of $j$ in $i$ which is $v_{ij}^{t}$. Note that we have a parameter $\epsilon$, which is our "trait barrier" or the maximum differente of $Z_{i}$ and $Z_{j}$ for this exploitation interaction happen. Finally, we have the environment component
 
 $$p_{i}(\theta_{i} - Z_{i}^{t})$$
 
 which $\theta_{i}$ are the vector with the environmental trait optima for each specie.
 
-For the cheater exploitation and mutualism component we have the evolutionary effects of these interactions, that we called $v_{ij}^{t}$ and $m_{ij}^{t}$. These evolutionary effects are defined as a relative effect of specie $j$ in $i$ normalized by all the other interactions that $i$ has with other species. We have
+For the exploitation and mutualism component, we have the evolutionary effects of these interactions, that we called $v_{ij}^{t}$ and $m_{ij}^{t}$. These evolutionary effects are defined as a relative effect of specie $j$ in $i$ normalized by all the other interactions that $i$ has with other species. We have
 
 
 $$m_{ ij }^{ (t) } = M_{ ij }^{ (t) }\frac {e^{-\alpha(Z_{j}^{(t)} - Z_{i}^{(t)})^{2}}}{\sum_{k,i \neq k}^{N} e^{-\alpha(Z_{k}^{(t)} - Z_{i}^{(t)})^{2}}}$$
@@ -89,7 +89,7 @@ diag(M) = 0
 V = M * 0 
 ```
 
-Great, we have our parameters defined, a matrix of positive effects completely connected and an empty negative effects matrix. Now, we have to transform some links of our *M* network in negative links. For each interaction in our *M* matrix, we are going to sample a number between 0 and 1 and following the probability of a certain link become cheater exploitation which is our *antprob* parameter, transform or not the positive effect in negative.
+Great, we have our parameters defined, a matrix of positive effects completely connected and an empty negative effects matrix. Now, we have to transform some links of our *M* network in negative links. For each interaction in our *M* matrix, we are going to sample a number between 0 and 1 and following the probability of a certain link become exploitation which is our *antprob* parameter, transform or not the positive effect in negative.
 
 ```{r}
   # define the matrix upper triangle
@@ -117,7 +117,7 @@ V
 ```
 
 Great, but there a couple of things we have to see at this point.
-First, when we transform an interaction from mutualism to cheater exploitation we are defining an explorer and a victim. In these scenario, we introduce an negative effect of $j$ in $i$, but not an negative effect of $i$ in $j$. The *V* matrix tell us the negative effects of species in the collums to the species in the rows. Second (and more intuitive), the *V* and *M* matrix are complementar. The sum of *V* and *M* gives us all the interactions in the network.
+First, when we transform an interaction from mutualism to exploitation, we are defining an explorer and a victim. In these scenario, we introduce an negative effect of $j$ in $i$, but not an negative effect of $i$ in $j$. The *V* matrix tell us the negative effects of species in the collums to the species in the rows. Second (and more intuitive), the *V* and *M* matrix are complementar. The sum of *V* and *M* gives us all the interactions in the network.
 
 Ok, we have our interactions, now we can start thinking in the simulations.
 For start, let's create a empty matrix called *z_mat* which is our results matrix. In the matrix *z_mat* we have the species in the collums and the timesteps of simulation in the rows. The first line of *z_mat* is the initial trait values.
@@ -189,7 +189,7 @@ Great, now the mutualism part. First we get only the mutualistic interactions an
     r_mut = phi * apply(sel_dif_mut, 1, sum) 
 ```
 
-Ok, finally we compute the cheaters exploitation part of trait changes. Before that, we have some conditions in exploitation interactions. First, the trait difference between $i$ and $j$ has to be minor than our parameter $\epsilon$. The second condition tell us that if the trait of $i$ is minor than $j$, we have the sum of $\epsilon$ in the trait differences $(Z_{j}^{t} + \epsilon_{ij} - Z_{i}^{t})$. Otherwise, we have the subtract of $\epsilon$ in trait differences $Z_{j}^{t} - \epsilon_{ij} - Z_{i}^{t}$. In other words, in one situation we are increasing the trait values for the victins and another situation we are decreasing these trait values.
+Ok, finally we compute the exploitation part of trait changes. Before that, we have some conditions in exploitation interactions. First, the trait difference between $i$ and $j$ has to be minor than our parameter $\epsilon$. The second condition tell us that if the trait of $i$ is minor than $j$, we have the sum of $\epsilon$ in the trait differences $(Z_{j}^{t} + \epsilon_{ij} - Z_{i}^{t})$. Otherwise, we have the subtract of $\epsilon$ in trait differences $Z_{j}^{t} - \epsilon_{ij} - Z_{i}^{t}$. In other words, in one situation we are increasing the trait values for the victins and another situation we are decreasing these trait values.
 
 ```{r}
     # create V_m to use in exploitation selection differential 
