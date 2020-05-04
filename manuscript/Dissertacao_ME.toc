@@ -1,0 +1,35 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\defcounter {refsection}{1}\relax 
+\contentsline {section}{Do we split or we merge? Exploitative interactions increase trait disparity and modularity through coevolution in mutualistic networks}{7}{Doc-Start}%
+\defcounter {refsection}{1}\relax 
+\contentsline {subsection}{Resumo}{8}{section*.1}%
+\defcounter {refsection}{1}\relax 
+\contentsline {subsection}{Abstract}{9}{section*.1}%
+\defcounter {refsection}{1}\relax 
+\contentsline {subsection}{Introduction}{10}{section*.1}%
+\defcounter {refsection}{1}\relax 
+\contentsline {subsection}{Material and Methods}{10}{section*.1}%
+\defcounter {refsection}{1}\relax 
+\contentsline {subsection}{Results}{11}{equation.0.13}%
+\defcounter {refsection}{1}\relax 
+\contentsline {subsection}{Discussion}{11}{equation.0.13}%
+\defcounter {refsection}{1}\relax 
+\contentsline {subsection}{Figures and Tables}{11}{equation.0.13}%
+\defcounter {refsection}{1}\relax 
+\contentsline {subsection}{References}{15}{table.caption.6}%
+\defcounter {refsection}{1}\relax 
+\contentsline {section}{Supplemental Informations}{16}{table.caption.6}%
+\defcounter {refsection}{2}\relax 
+\contentsline {subsection}{Coevolution model}{16}{section*.7}%
+\defcounter {refsection}{2}\relax 
+\contentsline {subsection}{Networks characterization}{16}{equation.0.6}%
+\defcounter {refsection}{2}\relax 
+\contentsline {subsection}{Interaction shift}{17}{table.caption.8}%
+\defcounter {refsection}{2}\relax 
+\contentsline {subsection}{Trait clustering analisys}{18}{table.caption.8}%
+\defcounter {refsection}{2}\relax 
+\contentsline {subsection}{Figures and tables}{18}{table.caption.8}%
+\defcounter {refsection}{2}\relax 
+\contentsline {subsection}{Code and data accessibility}{23}{figure.caption.14}%
+\defcounter {refsection}{2}\relax 
+\contentsline {subsection}{References}{24}{figure.caption.14}%

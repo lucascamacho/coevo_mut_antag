@@ -32,11 +32,10 @@ library(gridExtra)
 temp = list.files(pattern="*.txt")
 redes = lapply(temp, read.table)
 names(redes)  = gsub(".txt", replacement= "", temp)
-# redes[[6]] is the biggest
 
 p_data = data.frame() # create data.frame to allocate results
 
-for(a in 1:300){ # 100 simulations per empirical matrix
+for(a in 1:50){ 
   # 10^4
   print(a)
   M = as.matrix(redes[[6]]) # M is the adjancency matrix of interactions
@@ -162,36 +161,39 @@ for(a in 1:300){ # 100 simulations per empirical matrix
   p_data = rbind(p_data, results)
 }
 
-save(p_data, "sup_break_data.RData")
-#load("sup_breakcondition_data.RData")
-
+#save(p_data, file = "sup_break_data.RData")
+load("sup_break_data.RData")
 
 plot_mpd = ggplot(data = p_data) +
-  geom_boxplot(aes(x = as.factor(eq_dif), y = mpd), fill = "grey90") +
-  xlab("Minimum trait difference between species to stop simulation") +
-  ylab("Mean Pairwise Distance between species traits") +
-  scale_y_continuous(expand = c(0,0)) +
-  theme(axis.text.x = element_text(size = 11),
-        axis.text.y = element_text(size = 11),
-        axis.title = element_text(size = 18), 
+  geom_point(aes(x = as.factor(eq_dif), y = mpd), 
+             position=position_jitter(h=0, w=0.2), fill = "grey90", alpha = 0.4) +
+  xlab("") +
+  ylab("Mean Pairwise Distance between traits") +
+  scale_y_continuous(limits = c(0.5, 0.65)) +
+  scale_x_discrete(limits = rev(levels(as.factor(p_data$eq_dif))), labels = c("1e-4", "1e-6", "1e-8")) +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 14), 
         legend.key.size = unit(0.6, "cm"),
-        legend.text = element_text(size = 11))
+        legend.text = element_text(size = 13))
 
 plot_clust = ggplot(data = p_data) +
-  geom_boxplot(aes(x = as.factor(eq_dif), y = opt_clust), fill = "grey90") +
-  xlab("Minimum trait difference between species to stop simulation") +
-  ylab("Optimized number of species traits clusters") +
-  scale_y_continuous(expand = c(0,0)) +
-  theme(axis.text.x = element_text(size = 11),
-        axis.text.y = element_text(size = 11),
-        axis.title = element_text(size = 18), 
+  geom_point(aes(x = as.factor(eq_dif), y = opt_clust), 
+             position=position_jitter(h=0, w=0.2), fill = "grey90", alpha = 0.4) +
+  xlab("Minimum trait difference between generations to stop simulation") +
+  ylab("Number of species trait clusters") +
+  scale_y_continuous(limits = c(2, 3)) +
+  scale_x_discrete(limits = rev(levels(as.factor(p_data$eq_dif))), labels = c("1e-4", "1e-6", "1e-8")) +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 14), 
         legend.key.size = unit(0.6, "cm"),
-        legend.text = element_text(size = 11))
+        legend.text = element_text(size = 13))
 
 plot_total = grid.arrange(plot_mpd, plot_clust, nrow = 2)
 
-ggsave(plot_total, filename = "Sensibility_Break.png", dpi = 600,
-       width = 21, height = 29, units = "cm")
+#ggsave(plot_total, filename = "Sup_Figura_5.pdf", dpi = 600,
+#       width = 21, height = 29, units = "cm")
 
-ggsave(plot_total, filename = "Sensibility_Break.pdf", dpi = 600,
+ggsave(plot_total, filename = "Sup_Figura_5.png", dpi = 600,
        width = 21, height = 29, units = "cm")

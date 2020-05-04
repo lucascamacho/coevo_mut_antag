@@ -19,9 +19,9 @@ library(ggplot2)
 library(cowplot)
 library(gridExtra)
 library(dplyr)
-library(NbClust)
-library(rlist)
-library(parallel)
+#library(NbClust)
+#library(rlist)
+#library(parallel)
 
 # read all the empirical networks
 temp = list.files(pattern="*.txt")
@@ -80,23 +80,22 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
       # get my results
       net = names(redes[k])
       rich = as.numeric(ncol(M))
-      standev = sd(z_mat[nrow(z_mat), ])
       mpd = MeanPairDist(z_mat[nrow(z_mat), ])
       
       # insert these results in the data.frame
-      results = data.frame(net, rich, antprob, standev, mpd)
+      results = data.frame(net, rich, antprob, mpd)
       p_data = rbind(p_data, results)
     }
   }
 }
 
 # save or load the data created
-save(p_data, file = "antprob_var.RData")
+#save(p_data, file = "antprob_var.RData")
 #save(list_mats, file = "~/Google Drive File Stream/Meu Drive/Trabalho/list_mats.RData")
-load("antprob_var.RData")
+#load("antprob_var.RData")
 
 # create an empty document to allocate the apply results
-write("clustering", "clustering.vec")
+#write("clustering", "clustering.vec")
 
 # simple function to apply the NbCluster in my results and save in clusterig.vec
 camacho = function(list_mats){
@@ -138,58 +137,58 @@ stopCluster(cl)
 p_data = cbind(p_data, opt_clusters)
 
 #save(p_data, file = "antprob_var.RData")
-load("antprob_var.RData")
+#load("antprob_var.RData")
 
 # create and insert an mutualism type sequence
-type = c(rep("Pollination", 24000), rep("Seed dispersal", 24000), rep("Ant-Plant", 24000))
-p_data = cbind(p_data, type)
+#type = c(rep("Pollination", 24000), rep("Seed dispersal", 24000), rep("Ant-Plant", 24000))
+#p_data = cbind(p_data, type)
 
-pol = p_data[which(p_data$type == "Pollination"), ]
-seed = p_data[which(p_data$type == "Seed dispersal"), ]
-ant = p_data[which(p_data$type == "Ant-Plant"), ]
+#pol = p_data[which(p_data$type == "Pollination"), ]
+#seed = p_data[which(p_data$type == "Seed dispersal"), ]
+#ant = p_data[which(p_data$type == "Ant-Plant"), ]
 
-pol_plot = ggplot(data = pol) +
-  geom_point(aes(x = antprob, y = mpd), show.legend = FALSE, alpha = 0.05, size = 0.5, color = "#D95F02") +
-  geom_line(aes(x = antprob, y = mpd), stat = "smooth", method = "lm", show.legend = FALSE) +
-  ylim(0, 2) +
-  xlab(" ") + ylab(" ") +
-  scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
-  theme(axis.text.x = element_text(size = 13),
-        axis.text.y = element_text(size = 13),
-        axis.title = element_text(size = 16), 
-        legend.key.size = unit(0.9, "cm"),
-        legend.text = element_text(size = 13))
+#pol_plot = ggplot(data = pol) +
+#  geom_point(aes(x = antprob, y = mpd), show.legend = FALSE, alpha = 0.05, size = 0.5, color = "#D95F02") +
+#  geom_line(aes(x = antprob, y = mpd), stat = "smooth", method = "lm", show.legend = FALSE) +
+#  ylim(0, 2) +
+#  xlab(" ") + ylab(" ") +
+#  scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
+#  theme(axis.text.x = element_text(size = 13),
+#        axis.text.y = element_text(size = 13),
+#        axis.title = element_text(size = 16), 
+#        legend.key.size = unit(0.9, "cm"),
+#       legend.text = element_text(size = 13))
 
-seed_plot = ggplot(data = seed) +
-  geom_point(aes(x = antprob, y = mpd), show.legend = FALSE, alpha = 0.05, size = 0.5, color = "#7570B3", size = 2) +
-  geom_line(aes(x = antprob, y = mpd), stat = "smooth", method = "lm", show.legend = FALSE) +
-  ylim(0, 2) +
-  xlab(" ") + ylab(" ") +
-  scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
-  theme(axis.text.x = element_text(size = 13),
-        axis.text.y = element_text(size = 13),
-        axis.title = element_text(size = 16), 
-        legend.key.size = unit(0.9, "cm"),
-        legend.text = element_text(size = 13))
-
-ant_plot = ggplot(data = ant) +
-  geom_point(aes(x = antprob, y = mpd, size = 0.5), show.legend = FALSE, alpha = 0.05, size = 0.5, color = "#1B9E77") +
-  geom_line(aes(x = antprob, y = mpd), stat = "smooth", method = "lm", show.legend = FALSE) +
-  ylim(0, 4) +
-  xlab(" ") + ylab(" ") +
-  scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
-  theme(axis.text.x = element_text(size = 13),
-        axis.text.y = element_text(size = 13),
-        axis.title = element_text(size = 16), 
-        legend.key.size = unit(0.9, "cm"),
-        legend.text = element_text(size = 13))
-
-plot_final = grid.arrange(ant_plot, pol_plot, seed_plot, nrow = 3)
-
-ggsave(plot_final, filename = "antprob_cheater_mpd.pdf", dpi = 600,
-       width = 12, height = 24, units = "cm",  bg = "transparent")
-
-load("clustering_empirical.RData")
+# # seed_plot = ggplot(data = seed) +
+#   geom_point(aes(x = antprob, y = mpd), show.legend = FALSE, alpha = 0.05, size = 0.5, color = "#7570B3", size = 2) +
+#   geom_line(aes(x = antprob, y = mpd), stat = "smooth", method = "lm", show.legend = FALSE) +
+#   ylim(0, 2) +
+#   xlab(" ") + ylab(" ") +
+#   scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
+#   theme(axis.text.x = element_text(size = 13),
+#         axis.text.y = element_text(size = 13),
+#         axis.title = element_text(size = 16), 
+#         legend.key.size = unit(0.9, "cm"),
+#         legend.text = element_text(size = 13))
+# 
+# ant_plot = ggplot(data = ant) +
+#   geom_point(aes(x = antprob, y = mpd, size = 0.5), show.legend = FALSE, alpha = 0.05, size = 0.5, color = "#1B9E77") +
+#   geom_line(aes(x = antprob, y = mpd), stat = "smooth", method = "lm", show.legend = FALSE) +
+#   ylim(0, 4) +
+#   xlab(" ") + ylab(" ") +
+#   scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
+#   theme(axis.text.x = element_text(size = 13),
+#         axis.text.y = element_text(size = 13),
+#         axis.title = element_text(size = 16), 
+#         legend.key.size = unit(0.9, "cm"),
+#         legend.text = element_text(size = 13))
+# 
+# plot_final = grid.arrange(ant_plot, pol_plot, seed_plot, nrow = 3)
+# 
+# ggsave(plot_final, filename = "antprob_cheater_mpd.pdf", dpi = 600,
+#        width = 12, height = 24, units = "cm",  bg = "transparent")
+# 
+# load("clustering_empirical.RData")
 
 type = c(rep("Pollination", 24000), rep("Seed dispersal", 24000), rep("Ant-Plant", 24000))
 p_data = cbind(p_data, type)
@@ -228,21 +227,21 @@ ant_plot = ggplot(data = ant) +
         legend.key.size = unit(0.9, "cm"),
         legend.text = element_text(size = 13))
 
-plot_final = grid.arrange(ant_plot, pol_plot, seed_plot, nrow = 3)
+plot_final = grid.arrange(ant_plot, pol_plot, seed_plot, nrow = 1)
 
-ggsave(plot_final, filename = "antprob_cheater_clustering.png", dpi = 600,
+ggsave(plot_final, filename = "Sup_antprob_cheater_clustering.png", dpi = 600,
        width = 12, height = 24, units = "cm",  bg = "transparent")
 
-
-pdf("Hist_High_Clustering.png", width = 10, height = 10, bg = "transparent")
-par(bg = NA)
-hist(z_mat, # histogram
-     col="peachpuff", # column color
-     border="black",
-     prob = TRUE, # show densities instead of frequencies
-     xlab = "Trait values",
-     main = "", ylim=c(0,0.15))
-lines(density(z_mat), # density plot
-      lwd = 2, # thickness of line
-      col = "black")
-dev.off()
+# # histograms 
+# pdf("Hist_High_Clustering.png", width = 10, height = 10, bg = "transparent")
+# par(bg = NA)
+# hist(z_mat, # histogram
+#      col="peachpuff", # column color
+#      border="black",
+#      prob = TRUE, # show densities instead of frequencies
+#      xlab = "Trait values",
+#      main = "", ylim=c(0,0.15))
+# lines(density(z_mat), # density plot
+#       lwd = 2, # thickness of line
+#       col = "black")
+# dev.off()

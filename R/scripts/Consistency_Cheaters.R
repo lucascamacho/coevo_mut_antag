@@ -8,7 +8,7 @@
 # for different values of p (called antprob).
 
 # load functions and packages
-setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/data/")
+setwd("~/Dropbox/Master/Code/coevo_mut_antag/output")
 
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Counting.R")
