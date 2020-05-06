@@ -1,13 +1,13 @@
 #-----------------------------------------------------------------------------------------------------#
 FindInteractors = function(M, V){
-  # Identify which species have double-positive, positive-negative or double-negative outcomes.
+  # Identify which species have double-positive, positive-negative or double-negative effects.
   #
   # Args:
-  #   M: matrix of positive interaction outcomes
-  #   V: matrix of negative interaction outcomes
+  #   M: matrix of positive effects
+  #   V: matrix of negative effects
   #
   # Return:
-  #  index: data frame with species indexation separate by type of outcomes combinations
+  #  index: data frame with species indexation separate by type of effects combinations
   
   # AA outcomes
   v = (V == 1) == (t(V) == 1)

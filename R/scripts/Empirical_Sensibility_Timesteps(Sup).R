@@ -60,9 +60,11 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
   }
 }
 
+# save the simulation results
 save(time_data, file = "sup_timesteps_data.RData")
 #load("sup_timesteps_data.RData")
 
+#plot and save the plot
 plot = ggplot(time_data, aes(time_simu, group = net)) + 
   geom_density(show.legend = FALSE) +
   xlab("Length of simulations (in timesteps)") +
@@ -74,6 +76,5 @@ plot = ggplot(time_data, aes(time_simu, group = net)) +
         legend.key.size = unit(0.6, "cm"),
         legend.text = element_text(size = 11))
 
-
-ggsave(plot, filename = "Sensibility_Timesteps.png", dpi = 600,
+ggsave(plot, filename = "Sensibility_Timesteps.pdf", dpi = 600,
                          width = 20, height = 14, units = "cm")

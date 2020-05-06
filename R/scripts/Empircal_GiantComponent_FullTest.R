@@ -1,9 +1,7 @@
-# Run the coevolutionary model with interaction outcomes that are context-dependent.
-# Based on a probability prob_change (Q), in each timestep of the simulation, an interaction
-# outcome shifts (AA -> AM and AM -> MM).
-#
-# This script returns a simple graph with species traits changing in time due to coevolution.
-# The asteriscs in the graph shows the timesteps in which the interactions shift occurs.
+# Giant Component analisys
+# In this script we run primary analisys of Giant Components
+# in our matrices. This analisys didn't enter the main paper
+# but give us a comprehension of the network structure.
 
 # loading packages and functions
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/data/")
@@ -165,5 +163,5 @@ plot_component =
 
 plot_component
 
-ggsave(plot_component, filename = "component_cheaters.png", dpi = 600,
-       width = 16, height = 12, units = "cm", bg = "transparent")
+#ggsave(plot_component, filename = "component_cheaters.png", dpi = 600,
+#       width = 16, height = 12, units = "cm", bg = "transparent")

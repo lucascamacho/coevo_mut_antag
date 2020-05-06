@@ -1,14 +1,14 @@
 #----------------------------------------------------------------------------------------------#
 Counting = function(M, V){
   # Count the number of double-negative (AA), negative-positive (AM) 
-  # and double-positive (MM) interactions between species.
+  # and double-positive (MM) effects between species.
   #
   # Args:
-  #   M: matrix of positive interaction outcomes
-  #   V: matrix of negative interaction outcomes
+  #   M: matrix of positive effects
+  #   V: matrix of negative effects
   #
   # Return:
-  #   A list with the number of AA, AM and MM outcomes
+  #   A list with the number of AA, AM and MM interactions
   n_cheat = sum(V) #counting AM
 
   m1 = which(M == 1)

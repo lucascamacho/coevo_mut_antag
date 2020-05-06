@@ -1,10 +1,10 @@
 #-----------------------------------------------------------------------------------------------------#
 SpDegree = function(M, V){
-  # Count the number of AA, AM and MM outcomes for all the species in the matrix
+  # Count the number of AA, AM and MM effects for all the species in the matrix
   #
   # Args:
-  #   M: matrix of positive interaction outcomes
-  #   V: matrix of negative interaction outcomes
+  #   M: matrix of positive effects
+  #   V: matrix of negative effects
   #
   # Return:
   #  degree: matrix with species in rows and number of AA, AM and MM in collums.
@@ -12,7 +12,7 @@ SpDegree = function(M, V){
   rownames(degree) = c("AA", "AM", "MM")
   colnames(degree) = c(seq(1, ncol(M), 1))
   
-  # using M and V to find the outcomes classes
+  # using M and V to find the effects classes
   v = (V == 1) == (t(V) == 1) # AA
   v[V == 0] = FALSE # ignore the zero's
   
@@ -26,7 +26,7 @@ SpDegree = function(M, V){
   degree[2,] = apply(c, 2, sum)
   degree[3,] = apply(m, 2, sum)
   
-  # return the matrix with degree of species separating by outcomes
+  # return the matrix with degree of species separating by effects
   return(t(degree))
 }
 #-----------------------------------------------------------------------------------------------------#

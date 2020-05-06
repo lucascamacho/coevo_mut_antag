@@ -1,12 +1,15 @@
 ### For empirical networks of interactions only
-# Run the coevolutionary model with interaction outcomes that are context-dependent.
-# Based on a probability prob_change (Q), in each timestep of the simulation, an interaction
-# outcome shifts (AA -> AM and AM -> MM).
+# Run the coevolutionary model with interaction shifting in time.
+# Based on a probability prob_change (G), in each timestep of the simulation, 
+# an interaction shifts (AA -> AM and AM -> MM).
 #
 # This script returns a simple graph with species traits changing in time due to coevolution.
 # The asteriscs in the graph shows the timesteps in which the interactions shift occurs.
+
+# set word directory
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/")
 
+#load packages and functions
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/SquareMatrix.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/ConDepCoevoMutAntNet.R")
@@ -20,7 +23,8 @@ antprob = 0.8 # current probability value
 prob_change = 0.01 # Q or current probability of an interaction outcome shift
 
 # read and square the empirical network
-net = as.matrix(read.table("~/Dropbox/Master/Code/coevo_mut_antag/data/B_SY-AP-IzzomtcPAcamp.txt"))
+net = as.matrix(read.table("~/Dropbox/Master/Code/coevo_mut_antag/data/
+                           B_SY-AP3-fonseca&ganade-1996.txt"))
 M = SquareMatrix(net)
 n_sp = ncol(M)
   
@@ -62,7 +66,7 @@ plotar = ggplot() +
   geom_path(data=traits_df, aes(x = time, y = trait, group=species, 
                                 color = species),size = 1.8, alpha = 0.7) +
   geom_text(data = w_time, aes(x=xplace, y=yplace),label = "*", size = 7) +
-  ggtitle(paste("IzzomtcPAcamp, ", "Q =", prob_change, ", initial proportion of antagonists = ", antprob)) +
+  ggtitle(paste("G =", prob_change, ", P = ", antprob)) +
   geom_text(data = w_time, aes(x=xplace, y=yplace),label = "*", size = 7) +
   xlab("Time") + 
   ylab("Mean species trait (z)") +
@@ -71,7 +75,7 @@ plotar = ggplot() +
         axis.title = element_text(size = 14), 
         legend.key.size = unit(0.6, "cm"),
         legend.text = element_text(size = 12))
-
-#ggsave(plotar, filename = "10_Basic_Traits.png", width = 19, height = 11, units = "cm")
 plotar
-#dev.off()
+
+# save the plot
+#ggsave(plotar, filename = "10_Basic_Traits.png", width = 19, height = 11, units = "cm")

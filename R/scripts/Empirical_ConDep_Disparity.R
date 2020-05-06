@@ -1,11 +1,9 @@
 ### For empirical networks of interactions only
 # Script to run the coevolution in a empirical network of interactions
-# with context-dependent interactions, plotting the species traits in time
-# Also, this script calculates our 4 metrics of trait disparity for each timestep:
+# with interactions shifts in time, plotting the species traits in time
+# Also, this script calculates our 2 metrics of trait disparity for each timestep:
 #  1. Variance
 #  2. Mean Pairwise Distance
-#  3. Participation Ratio
-#  4. Mean Nearest and Distant Neighbor Distance
 #
 # This script returns one graph and the four measures of trait disparity
 # in the same order as described above.
@@ -17,18 +15,18 @@
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/scripts/")
 
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/SquareMatrix.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CentralAntagonize.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/ConDepCoevoMutAntNet.R")
-#source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/MeanPairDist.R")
-#source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/PartRatio.R")
-#source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/NearDist.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/MeanPairDist.R")
 
-if(!require(ggplot2)) {install.packages("ggplot2"); library(ggplot2)}
-if(!require(cowplot)) {install.packages("cowplot"); library(cowplot)}
+
+library(ggplot2)
+library(cowplot)
 
 # initial parameters
-#antprob = 0.5 # current probability value
-#prob_change = 0 # current probability of interaction outcome shift
+antprob = 0.5 # current probability value
+prob_change = 0.01 # current probability of interaction outcome shift
 
 # read and square the empirical network
 net = as.matrix(read.table(
@@ -40,7 +38,6 @@ n_sp = ncol(M)
 antagonize = Antagonize(M, antprob)
 M = antagonize[[1]]
 V = antagonize[[2]]
-p_vl = antagonize[[3]]
 
 # coevolutionary model parameters
 phi = 0.2
@@ -60,15 +57,13 @@ w_time = as.matrix(simulation[[2]])
 
 # an apply for each line of z_mat
 variance = apply(traits, 1, var)
-#meanpairdist = apply(traits, 1, MeanPairDist)
-#partratio = apply(traits, 1, PartRatio)
-#neardist = apply(traits, 1, NearDist)
+meanpairdist = apply(traits, 1, MeanPairDist)
 
 # set the times where the interaction oucomes shift occurs
-#colnames(w_time) = "xplace"
-#yplace = rep(1, nrow(w_time))
-#w_time = cbind(w_time, yplace)
-#w_time = as.data.frame(w_time)
+colnames(w_time) = "xplace"
+yplace = rep(1, nrow(w_time))
+w_time = cbind(w_time, yplace)
+w_time = as.data.frame(w_time)
 
 # plot the Divergency in time
 time = seq(1, nrow(traits), 1)
@@ -80,28 +75,28 @@ diver_plot = ggplot(data = diver) +
 
 
 # prepare data frame to plot
-#traits = as.data.frame(traits)
-#n_sp = ncol(traits)
-#traits_vec = c(as.matrix(traits))
-#traits_df = data.frame(species = rep(paste("sp", 1:n_sp, sep = ""), each = nrow(traits)),
-#                      time = rep(1:nrow(traits), times = n_sp),
-#                       trait = traits_vec)
+traits = as.data.frame(traits)
+n_sp = ncol(traits)
+traits_vec = c(as.matrix(traits))
+traits_df = data.frame(species = rep(paste("sp", 1:n_sp, sep = ""), each = nrow(traits)),
+                      time = rep(1:nrow(traits), times = n_sp),
+                       trait = traits_vec)
 
 # plotting traits through time
-#plotar = ggplot() +
-#  geom_path(data=traits_df, aes(x = time, y = trait, group=species, 
-#                                color = species),size = 1.8, alpha = 0.7) +
-#  geom_text(data = w_time, aes(x=xplace, y=yplace),label = "*", size = 7) +
-#  ggtitle(paste("Q =", prob_change, ", initial proportion of antagonists = ", antprob)) +
-#  xlab("Time") + 
-#  ylab("Mean species trait (z)") +
-#  theme(axis.text.x = element_text(size = 11),
-#        axis.text.y = element_text(size = 11),
-#        axis.title = element_text(size = 14), 
-#        legend.key.size = unit(0.6, "cm"),
-#        legend.text = element_text(size = 12))
+plotar = ggplot() +
+  geom_path(data=traits_df, aes(x = time, y = trait, group=species, 
+                                color = species),size = 1.8, alpha = 0.7) +
+  geom_text(data = w_time, aes(x=xplace, y=yplace),label = "*", size = 7) +
+  ggtitle(paste("G =", prob_change, ", P = ", antprob)) +
+  xlab("Time") + 
+  ylab("Mean species trait (z)") +
+  theme(axis.text.x = element_text(size = 11),
+        axis.text.y = element_text(size = 11),
+        axis.title = element_text(size = 14), 
+        legend.key.size = unit(0.6, "cm"),
+        legend.text = element_text(size = 12))
 
-#ggsave(plotar, filename = "10_Basic_Traits.png", width = 19, height = 11, units = "cm")
-diver_plot
-#dev.off()
-p_vl
+plotar
+
+#save plot
+#ggsave(plotar, filename = "ConDep_Basic_Traits.pdf", width = 19, height = 11, units = "cm")

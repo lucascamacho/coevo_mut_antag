@@ -1,12 +1,10 @@
 # Script to run the coevolution in a theoretical network of interactions
 # with interactions shifting in time, plotting the species traits in time.
-# Also, this script calculates our 4 metrics of trait disparity for each timestep:
+# Also, this script calculates our 2 metrics of trait disparity for each timestep:
 #  1. Variance
 #  2. Mean Pairwise Distance
-#  3. Participation Ratio
-#  4. Mean Nearest and Distant Neighbor Distance
 #
-# This script returns one graph and the four measures of trait disparity
+# This script returns one graph and the two measures of trait disparity
 # in the same order as described above.
 #
 # The script probably will have some # symbols in parameters like antprob.
@@ -18,16 +16,14 @@ setwd("~/Dropbox/Master/Code/coevo_mut_antag/R/data/")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/ConDepCoevoMutAntNet.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/MeanPairDist.R")
-source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/PartRatio.R")
-source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/NearDist.R")
 
 library(ggplot2)
 library(cowplot)
 
 # initial parameters
 antprob = 0.1 # current probability value
-prob_change = 0 # current probability of interaction shift
-n_sp = 36 # defining number of species
+prob_change = 0.01 # current probability of interaction shift
+n_sp = 50 # defining number of species
 M = matrix(1, ncol = n_sp, nrow = n_sp) # building matrix M of positive effects
 diag(M) = 0 # no intraespecific interactions
 
@@ -55,8 +51,6 @@ w_time = as.matrix(simulation[[2]])
 # an apply for each line of z_mat
 variance = apply(traits, 1, var)
 meanpairdist = apply(traits, 1, MeanPairDist)
-partratio = apply(traits, 1, PartRatio)
-neardist = apply(traits, 1, NearDist)
 
 # set the times where the interaction oucomes shift occurs
 colnames(w_time) = "xplace"
@@ -74,10 +68,10 @@ traits_df = data.frame(species = rep(paste("sp", 1:n_sp, sep = ""), each = nrow(
 
 # plotting traits through time
 plotar = ggplot() +
-  geom_path(data=traits_df, aes(x = time, y = trait, group=species, 
+  geom_path(data=traits_df, aes(x = time, y = trait, group = species, 
                                 color = species),size = 1.8, alpha = 0.7) +
-  geom_text(data = w_time, aes(x=xplace, y=yplace),label = "*", size = 7) +
-  ggtitle(paste("Q =", prob_change, ", initial proportion of antagonists = ", antprob)) +
+  geom_text(data = w_time, aes(x=xplace, y = yplace),label = "*", size = 7) +
+  ggtitle(paste("Q =", prob_change, ", P = ", antprob)) +
   geom_text(data = w_time, aes(x=xplace, y=yplace),label = "*", size = 7) +
   xlab("Time") + 
   ylab("Mean species trait (z)") +
@@ -86,5 +80,7 @@ plotar = ggplot() +
         axis.title = element_text(size = 14), 
         legend.key.size = unit(0.6, "cm"),
         legend.text = element_text(size = 12))
+plotar
 
+#save plot
 ggsave(plotar, filename = "Basic_Traits.pdf", width = 19, height = 11, units = "cm")

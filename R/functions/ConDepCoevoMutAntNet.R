@@ -1,18 +1,18 @@
 #-------------------------------------------------------------------------------------------------------------#
 ConDepCoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max, prob_change){
-  # Simulates the coevolutionary dynamics of mutualists and antagonists outcomes in a network
-  # with context dependent interactions. The interactions change in time following a 
-  # certain probability prob_change.
+  # Simulates the coevolutionary dynamics of mutualists and exploitative interactions in a network
+  # with interactions shifs in time. The interactions change in time following a 
+  # certain probability prob_change (G).
   # Args:
   #   n_sp: total number of species in the network
   #   M: square adjacency matrix representing the mutualistic interactions
-  #   V: square adjacency matrix representing the antagonistic interactions
+  #   V: square adjacency matrix representing the exploiative interactions
   #   phi: vector of phi values (additive genetic variance * heritability)
   #   alpha: alpha value (sensitivity of selection to trait matching)
   #   theta: vector of environmental optimum values
   #   init: vector of initial trait values
   #   p: vector of strength of selection due to the environment
-  #   epsilon: barrier value for antagonistic interactions
+  #   epsilon: barrier value for exploitative interactions
   #   eq_dif: value to determine when equilibrium is reached
   #   t_max: maximum number of timesteps allowed
   #   prob_change: probability that in each timestep the interaction shift between M and V
@@ -41,7 +41,7 @@ ConDepCoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon,
     
     c[[r]] = Counting(M, V)
     
-    A = M + V # matrix with all interactions (mutualistic and antagonistic)
+    A = M + V # matrix with all interactions (mutualistic and exploitative)
     z_dif = t(A * z) - A * z # matrix with all trait differences
     Q = A * (exp(-alpha * (z_dif ^ 2))) # matrix Q
     diag(Q) = 0 # intraespecific effects are not allowed
@@ -54,13 +54,13 @@ ConDepCoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon,
     sel_dif_mut = M * Q_m * z_dif # calculating selection differentials to mutualism
     r_mut = phi * apply(sel_dif_mut, 1, sum) # response to selection related to mutualism
     
-    V_m = V # create V_m to use in antagonism selection differential 
+    V_m = V # create V_m to use in exploitative selection differential 
     V_m[abs(z_dif) > epsilon] = 0 # excluding interactions of traits that are larger than the barrier
     epsilon_plus = (z_dif < 0) * matrix(epsilon, n_sp, n_sp) # matrix with barrier (epsilon) values
     epsilon_minus = (z_dif > 0) * matrix(-epsilon, n_sp, n_sp) # matrix wih -epsilon values
     z_dif_a = z_dif + epsilon_plus + epsilon_minus # adding barrier values to trait differences
     sel_dif_ant = V * Q_m * z_dif_a # calculating selection differentials
-    r_ant = phi * apply(sel_dif_ant, 1, sum) # response to selection related to antagonisms
+    r_ant = phi * apply(sel_dif_ant, 1, sum) # response to selection related to exploitative interactions
     
     z_mat[r+1, ] = z + r_mut + r_ant + r_env # updating z values
     

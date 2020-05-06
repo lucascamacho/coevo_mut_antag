@@ -3,6 +3,9 @@
 # The break condition says that if the difference between traits is
 # smaller than 10^4, the simulations stops. We gonna test if the
 # trait matching metrics that we use changes with vlues of 10^6 and 10^8.
+#
+# We are using the biggest network in our data set
+# rede[6] = "B_NS-PP-vazquez_CerroLopez_2002"
 
 # change WD and load packages/functions
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/data/")
@@ -10,6 +13,7 @@ setwd("~/Dropbox/Master/Code/coevo_mut_antag/data/")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/SquareMatrix.R")
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/MeanPairDist.R")
 
+# function to count the number of optimized trait clusters
 camacho = function(list_mats){
   maximo = nrow(list_mats) - 1
   
@@ -43,13 +47,13 @@ for(a in 1:50){
   M = SquareMatrix(M) # square the adjancency matrix
   n_sp = ncol(M) # define the species number
   
-  antprob = 0.8 # draw a antprob value from 0 to 1
+  antprob = 0.8 # p value
   
   # load functions
   source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
   source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
 
-  # insert cheaters exploitation outcomes
+  # insert exploitative interactions
   empantagonize = Antagonize(M, antprob)
   M = empantagonize[[1]]
   V = empantagonize[[2]]
@@ -68,7 +72,6 @@ for(a in 1:50){
   z_mat = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
   
   df = scale(t(z_mat))
-  
   opt_clust = camacho(df)
   
   # get my results
@@ -84,13 +87,13 @@ for(a in 1:50){
   M = SquareMatrix(M) # square the adjancency matrix
   n_sp = ncol(M) # define the species number
   
-  antprob = 0.8 # draw a antprob value from 0 to 1
+  antprob = 0.8 # p value
   
   # load functions
   source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
   source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
   
-  # insert cheaters exploitation outcomes
+  # insert exploitative interactions
   empantagonize = Antagonize(M, antprob)
   M = empantagonize[[1]]
   V = empantagonize[[2]]
@@ -109,7 +112,6 @@ for(a in 1:50){
   z_mat = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
   
   df = scale(t(z_mat))
-  
   opt_clust = camacho(df)
   
   # get my results
@@ -125,13 +127,13 @@ for(a in 1:50){
   M = SquareMatrix(M) # square the adjancency matrix
   n_sp = ncol(M) # define the species number
   
-  antprob = 0.8 # draw a antprob value from 0 to 1
+  antprob = 0.8 # p value
   
   # load functions
   source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
   source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
   
-  # insert cheaters exploitation outcomes
+  # insert exploitative interactions
   empantagonize = Antagonize(M, antprob)
   M = empantagonize[[1]]
   V = empantagonize[[2]]
@@ -150,7 +152,6 @@ for(a in 1:50){
   z_mat = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
   
   df = scale(t(z_mat))
-  
   opt_clust = camacho(df)
   
   # get my results
@@ -161,9 +162,11 @@ for(a in 1:50){
   p_data = rbind(p_data, results)
 }
 
+# save or load our results
 #save(p_data, file = "sup_break_data.RData")
 load("sup_break_data.RData")
 
+#plot graphs to see our results
 plot_mpd = ggplot(data = p_data) +
   geom_point(aes(x = as.factor(eq_dif), y = mpd), 
              position=position_jitter(h=0, w=0.2), fill = "grey90", alpha = 0.4) +
@@ -190,8 +193,10 @@ plot_clust = ggplot(data = p_data) +
         legend.key.size = unit(0.6, "cm"),
         legend.text = element_text(size = 13))
 
+# arrange plots in a better way
 plot_total = grid.arrange(plot_mpd, plot_clust, nrow = 2)
 
+# save our plots
 #ggsave(plot_total, filename = "Sup_Figura_5.pdf", dpi = 600,
 #       width = 21, height = 29, units = "cm")
 

@@ -1,20 +1,24 @@
-# Code to make one of the figures of Sup. Materialls
+# Code to make one of the figures of Sup. Materials
 # In this figure, I show the influence of interaction shifts
 # during the coevolutionary process. The interaction shift happend
-# in time don't change our main result of cheaters exploitation
+# in time don't change our main result of exploitation
 # causing higher trait disparity in mutualistic networks.
 #
 # For each of our 24 empirical networks we gonna run 
-# 100 simulations and calculate the SD and MPD of
-# species traits in the last timestep of simulations.
+# 100 simulations and calculate the MPD and the number of
+# species trait clusters in the last timestep of simulations.
 #
-# In each simulation we have a new probability q that an 
+# In each simulation we have a new probability G that an 
 # positive effect pass to negative. Also, one negative effect 
 # will pass to positive.
+#
+# Here we are using the biggest of our networks
+# rede[6] = "B_NS-PP-vazquez_CerroLopez_2002"
 
-# load packages and functions
+# set WD
 setwd("~/Dropbox/Master/Code/coevo_mut_antag/data/")
 
+# load packages and functions
 source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/SquareMatrix.R")
 
 camacho = function(list_mats){
@@ -39,7 +43,7 @@ temp = list.files(pattern = "*.txt")
 redes = lapply(temp, read.table)
 names(redes)  = gsub(".txt", replacement = "", temp)
 
-# define the vector of p and q and combine 2-by-2 these values
+# define the vector of p and g and combine 2-by-2 these values
 antprob_vec = c(0.2, 0.5, 0.8)
 prob_change_vec = c(0.01, 0.1, 0.5)
 combs = expand.grid(antprob_vec, prob_change_vec)
@@ -51,11 +55,12 @@ condep_data = data.frame()
 for(a in 1:nrow(combs)){
   print(a)
   
-  n_sp = 50 # defining number of species
-  M = matrix(1, ncol = n_sp, nrow = n_sp) # building matrix M of positive outcomes
-  diag(M) = 0 # no intraespecific interactions
-  n_sp = ncol(M)
-   
+  M = as.matrix(redes[[6]]) # M is the adjancency matrix of interactions
+  M[which(M > 1)] = 1 # if there are any error, correct that
+  M = SquareMatrix(M) # square the adjancency matrix
+  n_sp = ncol(M) # define the species number
+  
+  # define p  and g values
   antprob = combs[a,1]
   prob_change = combs[a,2]
    
@@ -85,19 +90,23 @@ for(a in 1:nrow(combs)){
   traits = as.matrix(simulation[[1]])
   w_time = as.matrix(simulation[[2]])    
   
+  #calculate number of species trait clusters
   df = scale(t(traits))
-  
   opt_clust = camacho(df)
   
+  # calculate MPD
   mpd = MeanPairDist(traits[nrow(traits), ])
-
+  
+  # allocate results in data.frame
   results = data.frame(antprob, prob_change, mpd, opt_clust)
   condep_data = rbind(condep_data, results) 
 }
 
+#save or load ou data
 save(condep_data, file = "sup_condep_data.RData")
 #load("sup_condep_data.RData")
 
+# plot the results
 plot_mpd = ggplot(data = condep_data) +
   geom_violin(aes(x = as.character(prob_change), y = mpd), fill = "grey80") +
   geom_point(aes(x = as.character(prob_change), y = mpd), size = 0.4, 
@@ -116,10 +125,11 @@ plot_clust = ggplot(data = condep_data) +
   labs(y = "Optimized number of species traits cluster", 
        x = "")
 
+# arrange the plots and save the final plot
 plot_total = grid.arrange(plot_mpd, plot_clust, nrow = 2)
 
-ggsave(plot_total, filename = "Sensibility_ConDep.png", dpi = 600,
-       width = 21, height = 29, units = "cm")
+#ggsave(plot_total, filename = "Sensibility_ConDep.png", dpi = 600,
+#       width = 21, height = 29, units = "cm")
 
-ggsave(plot_total, filename = "Sensibility_ConDep.pdf", dpi = 600,
-       width = 21, height = 29, units = "cm")
+#ggsave(plot_total, filename = "Sensibility_ConDep.pdf", dpi = 600,
+#       width = 21, height = 29, units = "cm")

@@ -1,13 +1,13 @@
 #----------------------------------------------------------------------------------------------#
 Antagonize = function(M, antprob){
-  # Following a certain probability, transform interactions outcomes from positive to negative. 
+  # Following a certain probability, transform effects from positive to negative. 
   #
   # Args:
-  #   M = matrix of positive interaction outcomes
-  #   antprob = probability of a certain link became a negative link
+  #   M = matrix of positive effects
+  #   antprob = probability of a certain link became negative
   #
   # Return:
-  #   mats = list of positive and negative outcomes, respectively
+  #   mats = list of positive and negative effects, respectively
   
   # create V matrix with the same size of mat
   V = M * 0 

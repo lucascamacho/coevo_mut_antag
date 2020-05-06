@@ -1,17 +1,18 @@
 #-------------------------------------------------------------------------------------------------------#
 CoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max) {
-  # Simulates the coevolutionary dynamics of mutualists and antagonists outcomes in a network
+  # Simulates the coevolutionary dynamics of mutualists and exploitative interactions
+  # in a network
   #
   # Args:
   #   n_sp: total number of species in the network
-  #   M: square matrix representing the mutualistic outcomes
-  #   V: square matrix representing the antagonistic outcomes
+  #   M: square matrix representing the mutualistic interactions
+  #   V: square matrix representing the exploitative interactions
   #   phi: vector of phi values (additive genetic variance * heritability)
   #   alpha: alpha value (sensitivity of selection to trait matching)
   #   theta: vector of environmental optimum values
   #   init: vector of initial trait values
   #   p: vector of strength of selection due to the environment
-  #   epsilon: barrier value for antagonistic interactions happend
+  #   epsilon: barrier value for exploitative interactions happend
   #   eq_dif: value to determine when equilibrium is reached
   #   t_max: maximum number of timesteps allowed
   #   
@@ -26,7 +27,7 @@ CoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_di
 
   for (r in 1:(t_max - 1)) { # simulation runs for a maximum of t_max timesteps
     z = z_mat[r, ] # current z values
-    A = M + V # matrix with all interactions (mutualistic and antagonistic)
+    A = M + V # matrix with all interactions (mutualistic and exploitative)
     z_dif = t(A * z) - A * z # matrix with all trait differences
     Q = A * (exp(-alpha * (z_dif ^ 2))) # matrix Q
     diag(Q) = 0 # intraespecific effects are not allowed
@@ -39,13 +40,13 @@ CoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_di
     sel_dif_mut = M * Q_m * z_dif # calculating selection differentials to mutualism
     r_mut = phi * apply(sel_dif_mut, 1, sum) # response to selection related to mutualism
     
-    V_m = V # create V_m to use in antagonism selection differential 
+    V_m = V # create V_m to use in exploitative selection differential 
     V_m[abs(z_dif) > epsilon] = 0 # excluding interactions of traits that are larger than the barrier
     epsilon_plus = (z_dif < 0) * matrix(epsilon, n_sp, n_sp) # matrix with barrier (epsilon) values
     epsilon_minus = (z_dif > 0) * matrix(-epsilon, n_sp, n_sp) # matrix wih -epsilon values
     z_dif_a = z_dif + epsilon_plus + epsilon_minus # adding barrier values to trait differences
     sel_dif_ant = V_m * Q_m * z_dif_a # calculating selection differentials
-    r_ant = phi * apply(sel_dif_ant, 1, sum) # response to selection related to antagonisms
+    r_ant = phi * apply(sel_dif_ant, 1, sum) # response to selection related to exploitative
     
     z_mat[r+1, ] = z + r_mut + r_ant + r_env # updating z values
     

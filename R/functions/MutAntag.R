@@ -1,20 +1,20 @@
 #-----------------------------------------------------------------------------------------------------#
 MutAntag = function(M, V, r, prob_change){
-  # Follow the probability in prob_change, transform a random mutualism outcome in antagonism,
-  # also, transform a antagonist outcome in mutualism. This function tracks in which
+  # Follow the probability in prob_change, transform a random mutualism interactions in exploitative,
+  # also, transform a exploitative interactions in mutualism. This function tracks in which
   # timestep occurs the interactions shifts.
   #
   # obs: if you use this function in a loop, the w_time object is usefull.
   #
   # Args:
-  #  M: matrix of mutualistic outcomes
-  #  V: matrix of antagonistic outcomes
+  #  M: matrix of mutualistic effects
+  #  V: matrix of antagonistic effects
   #  r: timestep of simulation
   #  prob_change: probability that in each timestep the interaction shift between M and V
   #
   # Return:
-  #  M: new matrix of mutualistic outcomes
-  #  V: new matrix of antagonistic outcomes
+  #  M: new matrix of mutualistic effects
+  #  V: new matrix of antagonistic effects
   #  w_time: timestep in which the outcomes change. 
   #
   p = runif(1, 0, 1) # sample a number between 0 and 1
