@@ -86,7 +86,7 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
     init = runif(n_sp, 0, 10)
     p = 0.1
     epsilon = 5
-    eq_dif = 0.00000001
+    eq_dif = 0.000001
     t_max = 1000
     
     # simulate coevolution
@@ -132,7 +132,7 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
     init = runif(n_sp, 0, 10)
     p = 0.1
     epsilon = 5
-    eq_dif = 0.00000001
+    eq_dif = 0.000001
     t_max = 1000
     
     # simulate coevolution
@@ -157,6 +157,7 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
 # save of load our results
 save(central_results, file = "central_results.RData")
 save(list_mats, file = "~/Google Drive File Stream/Meu Drive/Trabalho/central_list_mats.RData")
+rm(list = ls())
 
 load("central_results.RData")
 load("~/Google Drive File Stream/Meu Drive/Trabalho/central_list_mats.RData")

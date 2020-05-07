@@ -31,8 +31,6 @@ camacho = function(list_mats){
   return(n_cl)
 }
 
-
-
 library(ggplot2)
 library(cowplot)
 library(gridExtra)
@@ -81,7 +79,7 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
       init = runif(n_sp, 0, 10)
       p = 0.1
       epsilon = 5
-      eq_dif = 0.0001
+      eq_dif = 0.000001
       t_max = 1000
       
       # simulate coevolution

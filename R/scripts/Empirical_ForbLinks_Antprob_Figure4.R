@@ -71,7 +71,7 @@ for(k in 1:length(redes)){ # loop to each matrix of interactions
     init = runif(n_sp, 0, 10)
     p = 0.1
     epsilon = 5
-    eq_dif = 0.0001
+    eq_dif = 0.000001
     t_max = 1000
     bar = 7
     
@@ -232,7 +232,7 @@ plot_seed = grid.arrange(mod_seed_plot, nest_seed_plot, nrow = 2)
 plot_ant = grid.arrange(mod_ant_plot, nest_ant_plot, nrow = 2)
 
 plot_total = grid.arrange(plot_ant, plot_pol, plot_seed, nrow = 1)
-plot_total
+
 # save the final plot
 ggsave(plot_total, filename = "antprob_structure.pdf", dpi = 600,
        width = 25, height = 12, units = "cm",  bg = "transparent")
