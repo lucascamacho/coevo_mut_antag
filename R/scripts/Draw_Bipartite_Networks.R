@@ -22,8 +22,8 @@ e <-  c(1,5, 6,3, 2,6, 3,7, 3,5, 4,7, 1,7, 2,5, 7,5, 5,4,
 g <- graph(e, n = 7, directed = TRUE)
 
 # define colors and types (bipartite)
-col = c(rep("red", 5), rep("blue", 15))
-type = c(rep(FALSE, 4), rep(TRUE, 3))
+col = c(rep("red", 9), rep("blue", 11))
+type = c(rep(FALSE, 1), rep(TRUE, 6))
 
 # use igraph to plot networks
 curve.reciprocal.edges <- function(g, curve=.3){
@@ -40,7 +40,7 @@ curve.reciprocal.edges <- function(g, curve=.3){
 }
 
 # save the current plotted network
-pdf("1_not_central_net.pdf", width = 10, height = 10, bg = "transparent")
+png("2_not_central_net.png", bg = "transparent")#, width = 10, height = 10)
 par(bg = NA)
 plot(curve.reciprocal.edges(g), layout=layout.circle, vertex.size=15,
      edge.arrow.size=0.4, vertex.label = NA)

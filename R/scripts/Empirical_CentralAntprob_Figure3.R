@@ -10,10 +10,10 @@
 # number of species traits in the last timestep of simulations
 
 # load packages and functions
-setwd("~/Dropbox/Master/Code/coevo_mut_antag/data/")
+setwd("E:/Lucas")
 
-source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/SquareMatrix.R")
-source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/MeanPairDist.R")
+source("E:/Lucas/SquareMatrix.R")
+source("E:/Lucas/MeanPairDist.R")
 
 # simple function to apply the NbCluster in my results and save in clusterig.vec
 # create an empty document to allocate the apply results
@@ -61,15 +61,15 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
     n_sp = ncol(M) # define the species number
     
     # load functions
-    source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CentralAntagonize.R")
-    source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
+    source("E:/Lucas/CentralAntagonize.R")
+    source("E:/Lucas/CoevoMutAntNet.R")
     
     # insert cheaters outcomes based on degree centrality
     centralantagonize = CentralAntagonize(M)
     M = centralantagonize[[1]]
     V = centralantagonize[[2]]
     
-    source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Counting.R")
+    source("E:/Lucas/Counting.R")
     
     # counting interactions AA, AM and MM (AA must be zero)
     c = Counting(M, V)
@@ -86,7 +86,7 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
     init = runif(n_sp, 0, 10)
     p = 0.1
     epsilon = 5
-    eq_dif = 0.000001
+    eq_dif = 0.0001
     t_max = 1000
     
     # simulate coevolution
@@ -117,8 +117,8 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
     antprob = centralantagonize[[3]]
     
     #load functions
-    source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
-    source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
+    source("E:/Lucas/Antagonize.R")
+    source("E:/Lucas/CoevoMutAntNet.R")
     
     # insert cheaters outcomes in the network
     antagonize = Antagonize(M, antprob)
@@ -132,7 +132,7 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
     init = runif(n_sp, 0, 10)
     p = 0.1
     epsilon = 5
-    eq_dif = 0.000001
+    eq_dif = 0.0001
     t_max = 1000
     
     # simulate coevolution
@@ -156,14 +156,13 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
 
 # save of load our results
 save(central_results, file = "central_results.RData")
-save(list_mats, file = "~/Google Drive File Stream/Meu Drive/Trabalho/central_list_mats.RData")
-rm(list = ls())
+save(list_mats, file = "central_list_mats.RData")
 
 load("central_results.RData")
-load("~/Google Drive File Stream/Meu Drive/Trabalho/central_list_mats.RData")
+load("central_list_mats.RData")
 
 # NbCluster using 14 computer cores
-cl = makeCluster(detectCores() - 2)
+cl = makeCluster(detectCores())
 clusterEvalQ(cl, {
   library(NbClust)
   camacho = function(list_mats){
@@ -186,13 +185,20 @@ stopCluster(cl)
 # bind the results with the original data table
 central_results = cbind(central_results, opt_clusters)
 
-# save or load our results
-save(central_results, file = "central_results.RData")
-load("central_results.RData")
-
 # create and insert and mutualism type sequence
 type = c(rep("Pollination", 24000), rep("Seed dispersal", 24000), rep("Ant-Plant", 24000))
 central_results = cbind(central_results, type)
+
+# save or load our results
+save(central_results, file = "central_results.RData")
+#load("central_results.RData")
+
+
+
+# read all mutualism networks
+temp = list.files(pattern = "*.txt")
+redes = lapply(temp, read.table)
+names(redes)  = gsub(".txt", replacement = "", temp)
 
 # subset results for each mutualism type
 pol = central_results[which(central_results$type == "Pollination"), ]

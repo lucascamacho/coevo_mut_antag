@@ -13,7 +13,7 @@ library(cowplot)
 library(reshape2)
 
 # initial parameters
-antprob = 0.2 # current probability value
+antprob = 0.8 # current probability value
 n_sp = 10 # defining number of species
 M = matrix(1, ncol = n_sp, nrow = n_sp) # building matrix M of positive effects
 diag(M) = 0 # no intraespecific interactions
@@ -55,6 +55,9 @@ plotar = ggplot(traits_df, aes(x = time, y = trait, color = species)) +
         axis.title = element_text(size = 14), 
         legend.key.size = unit(0.6, "cm"),
         legend.text = element_text(size = 12))
+plotar
+
+save(z_mat, file = "dados_plot.RData")
 
 # save plot
 ggsave(plotar, filename = "Basic_Traits.pdf", dpi = 600, width = 16, height = 12, 

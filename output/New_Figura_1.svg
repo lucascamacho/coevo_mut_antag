@@ -884,11 +884,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.49497475"
-     inkscape:cx="521.06878"
-     inkscape:cy="539.73646"
+     inkscape:zoom="0.7"
+     inkscape:cx="613.17369"
+     inkscape:cy="746.91321"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g9323"
      showgrid="false"
      inkscape:window-width="1280"
      inkscape:window-height="699"
@@ -1048,27 +1048,12 @@
         <g
            id="g9255"
            transform="matrix(7.874014e-5,0,0,-7.874014e-5,53.99038,277.6952)"
-           style="opacity:0.2;fill:#000000;fill-opacity:1">
-          <path
-             d="M -0.02856798,0.03916955 H 900240.87 V 792810.14 H -0.02856798 Z"
-             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:9525;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
-             id="path9257"
-             inkscape:connector-curvature="0" />
-        </g>
+           style="opacity:0.2;fill:#000000;fill-opacity:1" />
         <path
            d="m 52.29559,431.4016 c 0,20.0644 16.15257,36.3298 36.07778,36.3298 19.92523,0 36.07783,-16.2654 36.07783,-36.3298 0,-20.0644 -16.1526,-36.3298 -36.07783,-36.3298 -19.92521,0 -36.07778,16.2654 -36.07778,36.3298 z"
            style="fill:#ffffff;fill-opacity:0.63919995;fill-rule:evenodd;stroke:none"
            id="path9259"
            inkscape:connector-curvature="0" />
-        <g
-           id="g9261"
-           transform="matrix(7.874014e-5,0,0,-7.874014e-5,52.29559,467.7314)">
-          <path
-             d="M -0.02282967,461387.7 C -0.02282967,206570.3 205137.7,-0.1062868 458188,-0.1062868 711238.2,-0.1062868 916375.9,206570.3 916375.9,461387.7 916375.9,716205.5 711238.2,922775.9 458188,922775.9 205137.7,922775.9 -0.02282967,716205.5 -0.02282967,461387.7 Z"
-             style="opacity:0.2;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:9525;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
-             id="path9263"
-             inkscape:connector-curvature="0" />
-        </g>
       </g>
     </g>
     <g
@@ -1097,23 +1082,7 @@
         <g
            id="g9323"
            transform="matrix(7.874014e-5,0,0,-7.874014e-5,513.8364,277.6952)"
-           style="opacity:0.2;fill:#000000;fill-opacity:1">
-          <path
-             d="M 0.1110086,0.03916955 H 900241.41 V 792810.14 H 0.1110086 Z"
-             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:9525;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
-             id="path9325"
-             inkscape:connector-curvature="0" />
-        </g>
-        <g
-           id="g9327"
-           transform="matrix(7.874014e-5,0,0,-7.874014e-5,512.1417,467.7314)"
-           style="opacity:0.2;fill:#000000;fill-opacity:1;stroke:none;stroke-width:7649.93017578;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">
-          <path
-             d="M 0.1152669,461387.7 C 0.1152669,206570.3 205138,-0.1062868 458187.7,-0.1062868 711238.2,-0.1062868 916376.1,206570.3 916376.1,461387.7 c 0,254817.8 -205137.9,461388.2 -458188.4,461388.2 C 205138,922775.9 0.1152669,716205.5 0.1152669,461387.7 Z"
-             style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:7649.93017578;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             id="path9329"
-             inkscape:connector-curvature="0" />
-        </g>
+           style="opacity:0.2;fill:#000000;fill-opacity:1" />
         <path
            style="fill:#0000ff;fill-opacity:1;stroke:#0a0afd;stroke-width:4.11108351;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#TriangleOutM)"
            d="m 75.164041,288.30618 c -0.536653,29.24759 -1.073292,58.49439 -1.341604,73.11739 -0.268312,14.62301 -0.268312,14.62301 -0.268312,14.62301"

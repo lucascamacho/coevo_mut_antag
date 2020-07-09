@@ -79,14 +79,14 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
       init = runif(n_sp, 0, 10)
       p = 0.1
       epsilon = 5
-      eq_dif = 0.000001
+      eq_dif = 0.0001
       t_max = 1000
       
       # simulate coevolution
       z_mat = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
       
-      df = scale(t(z_mat))
-      list_mats = list.append(list_mats, df)
+      #df = scale(t(z_mat))
+      #list_mats = list.append(list_mats, df)
  
       # get my results
       net = names(redes[k])
@@ -129,27 +129,28 @@ stopCluster(cl)
 # bind the clustering results with our data table
 p_data = cbind(p_data, opt_clusters)
 
-# save or load the results
-save(p_data, file = "antprob_var.RData")
-load("antprob_var.RData")
-
 # create and insert an mutualism type sequence
 type = c(rep("Pollination", 24000), rep("Seed dispersal", 24000), rep("Ant-Plant", 24000))
 p_data = cbind(p_data, type)
+
+# save or load the results
+#save(p_data, file = "antprob_var.RData")
+load("antprob_var.RData")
 
 # subset the results to plot mutualism types
 pol = p_data[which(p_data$type == "Pollination"), ]
 seed = p_data[which(p_data$type == "Seed dispersal"), ]
 ant = p_data[which(p_data$type == "Ant-Plant"), ]
 
+summary(lm(mpd ~ antprob, data = ant))
+
 # MPD Plots
 # Pollination plot
 pol_plot = ggplot(data = pol) +
-  geom_point(aes(x = antprob, y = mpd), show.legend = FALSE, alpha = 0.05, 
+  geom_point(aes(x = antprob, y = mpd), show.legend = FALSE, alpha = 0.05,
              size = 0.5, color = "#D95F02") +
   geom_line(aes(x = antprob, y = mpd), stat = "smooth", method = "lm", 
             show.legend = FALSE) +
-  ylim(0, 2) +
   xlab(" ") + ylab(" ") +
   scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
   theme(axis.text.x = element_text(size = 13),
@@ -164,7 +165,6 @@ seed_plot = ggplot(data = seed) +
               size = 0.5, color = "#7570B3", size = 2) +
    geom_line(aes(x = antprob, y = mpd), stat = "smooth", method = "lm", 
              show.legend = FALSE) +
-   ylim(0, 2) +
    xlab(" ") + ylab(" ") +
    scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
    theme(axis.text.x = element_text(size = 13),
@@ -179,7 +179,6 @@ ant_plot = ggplot(data = ant) +
               size = 0.5, color = "#1B9E77") +
    geom_line(aes(x = antprob, y = mpd), stat = "smooth", method = "lm", 
              show.legend = FALSE) +
-   ylim(0, 4) +
    xlab(" ") + ylab(" ") +
    scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
    theme(axis.text.x = element_text(size = 13),
@@ -195,6 +194,9 @@ plot_final = grid.arrange(ant_plot, pol_plot, seed_plot, nrow = 3)
 ggsave(plot_final, filename = "antprob_cheater_mpd.pdf", dpi = 600,
         width = 12, height = 24, units = "cm",  bg = "transparent")
 
+ggsave(plot_final, filename = "antprob_cheater_mpd.png", dpi = 600,
+       width = 12, height = 24, units = "cm",  bg = "transparent")
+
 # Clusters plots
 #Pollination plot
 pol_plot = ggplot(data = pol) +
@@ -203,6 +205,7 @@ pol_plot = ggplot(data = pol) +
   geom_line(aes(x = antprob, y = opt_clusters), stat = "smooth", method = "loess", 
             show.legend = FALSE) +
   xlab(" ") + ylab(" ") +
+  scale_y_continuous(limits = c(0,6)) +
   theme(axis.text.x = element_text(size = 13),
         axis.text.y = element_text(size = 13),
         axis.title = element_text(size = 16), 
@@ -216,6 +219,7 @@ seed_plot = ggplot(data = seed) +
   geom_line(aes(x = antprob, y = opt_clusters), stat = "smooth", method = "loess", 
             show.legend = FALSE) +
   xlab(" ") + ylab(" ") +
+  scale_y_continuous(limits = c(0,6)) +
   theme(axis.text.x = element_text(size = 13),
         axis.text.y = element_text(size = 13),
         axis.title = element_text(size = 16), 
@@ -229,6 +233,7 @@ ant_plot = ggplot(data = ant) +
   geom_line(aes(x = antprob, y = opt_clusters), stat = "smooth", method = "loess", 
             show.legend = FALSE) +
   xlab(" ") + ylab(" ") +
+  scale_y_continuous(limits = c(0,7)) +
   theme(axis.text.x = element_text(size = 13),
         axis.text.y = element_text(size = 13),
         axis.title = element_text(size = 16), 
@@ -240,4 +245,7 @@ plot_final = grid.arrange(ant_plot, pol_plot, seed_plot, nrow = 3)
 
 #save Clusters plot
 ggsave(plot_final, filename = "antprob_cheater_cluster.pdf", dpi = 600,
+       width = 12, height = 24, units = "cm",  bg = "transparent")
+
+ggsave(plot_final, filename = "antprob_cheater_cluster.png", dpi = 600,
        width = 12, height = 24, units = "cm",  bg = "transparent")

@@ -109,7 +109,7 @@ for(k in 1:length(redes)){ # loop to each matrix of interactions
 }
 
 # save or load the RData file
-#save(final_fl, file = "data_structure.RData")
+save(final_fl, file = "data_structure.RData")
 load("data_structure.RData")
 
 # create and insert an mutualism type sequence
@@ -121,16 +121,32 @@ pol = final_fl[which(final_fl$type == "Pollination"), ]
 seed = final_fl[which(final_fl$type == "Seed dispersal"), ]
 ant = final_fl[which(final_fl$type == "Ant-Plant"), ]
 
+new_data = final_fl%>%
+  group_by(type)%>%
+  summarise(mean_nest_control = mean(dnest_control),
+            mean_nest_coevo = mean(dnest_coevo),
+            mean_mod_control = mean(dmod_control),
+            mean_mod_coevo = mean(dmod_coevo))%>%
+  as.data.frame()
+
+sd_new_data = final_fl%>%
+  group_by(type)%>%
+  summarise(sd_nest_control = sd(dnest_control),
+            sd_nest_coevo = sd(dnest_coevo),
+            sd_mod_control = sd(dmod_control),
+            sd_mod_coevo = sd(dmod_coevo))%>%
+  as.data.frame()
+
 # Pollintation plots
 mod_pol_plot = ggplot(data = pol) +
-  geom_point(aes(x = antprob, y = dmod_coevo), show.legend = FALSE, alpha = 0.05, 
+  geom_point(aes(x = antprob, y = dmod_coevo), show.legend = FALSE, alpha = 0.1, 
              size = 0.5, color = "#D95F02") +
-  geom_point(aes(x = antprob, y = dmod_control), show.legend = FALSE, alpha = 0.05, 
+  geom_point(aes(x = antprob, y = dmod_control), show.legend = FALSE, alpha = 0.1, 
              size = 0.5, color = "black") +
-  geom_line(aes(x = antprob, y = dmod_coevo), stat = "smooth", method = "loess", 
-            show.legend = FALSE, color = "#D95F02") +
-  geom_line(aes(x = antprob, y = dmod_control), stat = "smooth", method = "loess", 
-            show.legend = FALSE, color = "black") +
+#  geom_line(aes(x = antprob, y = dmod_coevo), stat = "smooth", method = "loess", 
+#            show.legend = FALSE, color = "#D95F02") +
+#  geom_line(aes(x = antprob, y = dmod_control), stat = "smooth", method = "loess", 
+#            show.legend = FALSE, color = "black") +
   xlab(" ") + ylab(" ") +
   scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
   theme(axis.text.x = element_text(size = 13),
@@ -140,14 +156,14 @@ mod_pol_plot = ggplot(data = pol) +
         legend.text = element_text(size = 13))
 
 nest_pol_plot = ggplot(data = pol) +
-  geom_point(aes(x = antprob, y = dnest_coevo), show.legend = FALSE, alpha = 0.05, 
+  geom_point(aes(x = antprob, y = dnest_coevo), show.legend = FALSE, alpha = 0.1, 
              size = 0.5, color = "#D95F02") +
-  geom_point(aes(x = antprob, y = dnest_control), show.legend = FALSE, alpha = 0.05, 
+  geom_point(aes(x = antprob, y = dnest_control), show.legend = FALSE, alpha = 0.1, 
              size = 0.5, color = "black") +
-  geom_line(aes(x = antprob, y = dnest_coevo), stat = "smooth", method = "loess", 
-            show.legend = FALSE, color = "#D95F02") +
-  geom_line(aes(x = antprob, y = dnest_control), stat = "smooth", method = "loess", 
-            show.legend = FALSE, color = "black") +
+#  geom_line(aes(x = antprob, y = dnest_coevo), stat = "smooth", method = "loess", 
+#            show.legend = FALSE, color = "#D95F02") +
+#  geom_line(aes(x = antprob, y = dnest_control), stat = "smooth", method = "loess", 
+#            show.legend = FALSE, color = "black") +
   xlab(" ") + ylab(" ") +
   scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
   theme(axis.text.x = element_text(size = 13),
@@ -158,14 +174,14 @@ nest_pol_plot = ggplot(data = pol) +
 
 # Seed dispersal plots plots
 mod_seed_plot = ggplot(data = seed) +
-  geom_point(aes(x = antprob, y = dmod_coevo), show.legend = FALSE, alpha = 0.05, 
+  geom_point(aes(x = antprob, y = dmod_coevo), show.legend = FALSE, alpha = 0.1, 
              size = 0.5, color = "#7570B3") +
-  geom_point(aes(x = antprob, y = dmod_control), show.legend = FALSE, alpha = 0.05, 
+  geom_point(aes(x = antprob, y = dmod_control), show.legend = FALSE, alpha = 0.1, 
              size = 0.5, color = "black") +
-  geom_line(aes(x = antprob, y = dmod_coevo), stat = "smooth", method = "loess", 
-            show.legend = FALSE, color = "#7570B3") +
-  geom_line(aes(x = antprob, y = dmod_control), stat = "smooth", method = "loess", 
-            show.legend = FALSE, color = "black") +
+#  geom_line(aes(x = antprob, y = dmod_coevo), stat = "smooth", method = "loess", 
+#            show.legend = FALSE, color = "#7570B3") +
+#  geom_line(aes(x = antprob, y = dmod_control), stat = "smooth", method = "loess", 
+#            show.legend = FALSE, color = "black") +
   xlab(" ") + ylab(" ") +
   scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
   theme(axis.text.x = element_text(size = 13),
@@ -175,14 +191,14 @@ mod_seed_plot = ggplot(data = seed) +
         legend.text = element_text(size = 13))
 
 nest_seed_plot = ggplot(data = seed) +
-  geom_point(aes(x = antprob, y = dnest_coevo), show.legend = FALSE, alpha = 0.05, 
+  geom_point(aes(x = antprob, y = dnest_coevo), show.legend = FALSE, alpha = 0.1, 
              size = 0.5, color = "#7570B3") +
-  geom_point(aes(x = antprob, y = dnest_control), show.legend = FALSE, alpha = 0.05, 
+  geom_point(aes(x = antprob, y = dnest_control), show.legend = FALSE, alpha = 0.1, 
              size = 0.5, color = "black") +
-  geom_line(aes(x = antprob, y = dnest_coevo), stat = "smooth", method = "loess", 
-            show.legend = FALSE, color = "#7570B3") +
-  geom_line(aes(x = antprob, y = dnest_control), stat = "smooth", method = "loess", 
-            show.legend = FALSE, color = "black") +
+#  geom_line(aes(x = antprob, y = dnest_coevo), stat = "smooth", method = "loess", 
+#            show.legend = FALSE, color = "#7570B3") +
+#  geom_line(aes(x = antprob, y = dnest_control), stat = "smooth", method = "loess", 
+#            show.legend = FALSE, color = "black") +
   xlab(" ") + ylab(" ") +
   scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
   theme(axis.text.x = element_text(size = 13),
@@ -193,14 +209,14 @@ nest_seed_plot = ggplot(data = seed) +
 
 # Ant-plant plots
 mod_ant_plot = ggplot(data = ant) +
-  geom_point(aes(x = antprob, y = dmod_coevo), show.legend = FALSE, alpha = 0.05, 
+  geom_point(aes(x = antprob, y = dmod_coevo), show.legend = FALSE, alpha = 0.1, 
              size = 0.5, color = "#1B9E77") +
-  geom_point(aes(x = antprob, y = dmod_control), show.legend = FALSE, alpha = 0.05, 
+  geom_point(aes(x = antprob, y = dmod_control), show.legend = FALSE, alpha = 0.1, 
              size = 0.5, color = "black") +
-  geom_line(aes(x = antprob, y = dmod_coevo), stat = "smooth", method = "loess", 
-            show.legend = FALSE, color = "#1B9E77") +
-  geom_line(aes(x = antprob, y = dmod_control), stat = "smooth", method = "loess", 
-            show.legend = FALSE, color = "black") +
+#  geom_line(aes(x = antprob, y = dmod_coevo), stat = "smooth", method = "loess", 
+#            show.legend = FALSE, color = "#1B9E77") +
+#  geom_line(aes(x = antprob, y = dmod_control), stat = "smooth", method = "loess", 
+#            show.legend = FALSE, color = "black") +
   xlab(" ") + ylab(" ") +
   scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
   theme(axis.text.x = element_text(size = 13),
@@ -210,14 +226,14 @@ mod_ant_plot = ggplot(data = ant) +
         legend.text = element_text(size = 13))
 
 nest_ant_plot = ggplot(data = ant) +
-  geom_point(aes(x = antprob, y = dnest_coevo), show.legend = FALSE, alpha = 0.05, 
+  geom_point(aes(x = antprob, y = dnest_coevo), show.legend = FALSE, alpha = 0.1, 
              size = 0.5, color = "#1B9E77") +
-  geom_point(aes(x = antprob, y = dnest_control), show.legend = FALSE, alpha = 0.05, 
+  geom_point(aes(x = antprob, y = dnest_control), show.legend = FALSE, alpha = 0.1, 
              size = 0.5, color = "black") +
-  geom_line(aes(x = antprob, y = dnest_coevo), stat = "smooth", method = "loess", 
-            show.legend = FALSE, color = "#1B9E77") +
-  geom_line(aes(x = antprob, y = dnest_control), stat = "smooth", method = "loess", 
-            show.legend = FALSE, color = "black") +
+#  geom_line(aes(x = antprob, y = dnest_coevo), stat = "smooth", method = "loess", 
+#            show.legend = FALSE, color = "#1B9E77") +
+#  geom_line(aes(x = antprob, y = dnest_control), stat = "smooth", method = "loess", 
+#            show.legend = FALSE, color = "black") +
   xlab(" ") + ylab(" ") +
   scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
   theme(axis.text.x = element_text(size = 13),
@@ -235,4 +251,6 @@ plot_total = grid.arrange(plot_ant, plot_pol, plot_seed, nrow = 1)
 
 # save the final plot
 ggsave(plot_total, filename = "antprob_structure.pdf", dpi = 600,
+       width = 25, height = 12, units = "cm",  bg = "transparent")
+ggsave(plot_total, filename = "antprob_structure.png", dpi = 600,
        width = 25, height = 12, units = "cm",  bg = "transparent")
