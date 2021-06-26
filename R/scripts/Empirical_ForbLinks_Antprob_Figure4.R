@@ -122,12 +122,122 @@ seed = final_fl[which(final_fl$type == "Seed dispersal"), ]
 ant = final_fl[which(final_fl$type == "Ant-Plant"), ]
 
 new_data = final_fl%>%
-  group_by(type)%>%
+  group_by(antprob, type)%>%
   summarise(mean_nest_control = mean(dnest_control),
             mean_nest_coevo = mean(dnest_coevo),
+            up_nest_coevo = quantile(dnest_coevo, probs = 0.95),
+            down_nest_coevo = quantile(dnest_coevo, probs = 0.05),
             mean_mod_control = mean(dmod_control),
-            mean_mod_coevo = mean(dmod_coevo))%>%
+            mean_mod_coevo = mean(dmod_coevo),
+            up_mod_coevo = quantile(dmod_coevo, probs = 0.95),
+            down_mod_coevo = quantile(dmod_coevo, probs = 0.05))%>%
   as.data.frame()
+
+pol = new_data[which(new_data$type == "Pollination"), ]
+seed = new_data[which(new_data$type == "Seed dispersal"), ]
+ant = new_data[which(new_data$type == "Ant-Plant"), ]
+
+# Pol
+nest_pol_plot = ggplot(data = pol) +
+  geom_point(aes(x = antprob, y = mean_nest_control)) +
+  geom_point(aes(x = antprob, y = mean_nest_coevo), show.legend = FALSE, 
+             alpha = 0.5,size = 2, color = "#1B9E77") +
+  geom_pointrange(aes(x = antprob, y = mean_nest_coevo, 
+                      ymin = down_nest_coevo, ymax = up_nest_coevo), width = .2, 
+                  show.legend = FALSE, alpha = 0.5, color = "#D95F02") +
+  xlab(" ") + ylab(" ") +
+  scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
+mod_pol_plot = ggplot(data = pol) +
+  geom_point(aes(x = antprob, y = mean_mod_control)) +
+  geom_point(aes(x = antprob, y = mean_mod_coevo), show.legend = FALSE, 
+             alpha = 0.5,size = 2, color = "#1B9E77") +
+  geom_pointrange(aes(x = antprob, y = mean_mod_coevo, 
+                      ymin = down_mod_coevo, ymax = up_mod_coevo), width = .2, 
+                  show.legend = FALSE, alpha = 0.5, color = "#D95F02") +
+  xlab(" ") + ylab(" ") +
+  scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
+# Ant
+nest_ant_plot = ggplot(data = ant) +
+  geom_point(aes(x = antprob, y = mean_nest_control)) +
+  geom_point(aes(x = antprob, y = mean_nest_coevo), show.legend = FALSE, 
+             alpha = 0.5,size = 2, color = "#1B9E77") +
+  geom_pointrange(aes(x = antprob, y = mean_nest_coevo, 
+                      ymin = down_nest_coevo, ymax = up_nest_coevo), width = .2, 
+                  show.legend = FALSE, alpha = 0.5, color = "#1B9E77") +
+  xlab(" ") + ylab(" ") +
+  scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
+mod_ant_plot = ggplot(data = ant) +
+  geom_point(aes(x = antprob, y = mean_mod_control)) +
+  geom_point(aes(x = antprob, y = mean_mod_coevo), show.legend = FALSE, 
+             alpha = 0.5,size = 2, color = "#1B9E77") +
+  geom_pointrange(aes(x = antprob, y = mean_mod_coevo, 
+                      ymin = down_mod_coevo, ymax = up_mod_coevo), width = .2, 
+                  show.legend = FALSE, alpha = 0.5, color = "#1B9E77") +
+  xlab(" ") + ylab(" ") +
+  scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
+# Seed
+nest_seed_plot = ggplot(data = seed) +
+  geom_point(aes(x = antprob, y = mean_nest_control)) +
+  geom_point(aes(x = antprob, y = mean_nest_coevo), show.legend = FALSE, 
+             alpha = 0.5,size = 2, color = "#1B9E77") +
+  geom_pointrange(aes(x = antprob, y = mean_nest_coevo, 
+                      ymin = down_nest_coevo, ymax = up_nest_coevo), width = .2, 
+                  show.legend = FALSE, alpha = 0.5, color = "#7570B3") +
+  xlab(" ") + ylab(" ") +
+  scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
+mod_seed_plot = ggplot(data = seed) +
+  geom_point(aes(x = antprob, y = mean_mod_control)) +
+  geom_point(aes(x = antprob, y = mean_mod_coevo), show.legend = FALSE, 
+             alpha = 0.5,size = 2, color = "#1B9E77") +
+  geom_pointrange(aes(x = antprob, y = mean_mod_coevo, 
+                      ymin = down_mod_coevo, ymax = up_mod_coevo), width = .2, 
+                  show.legend = FALSE, alpha = 0.5, color = "#7570B3") +
+  xlab(" ") + ylab(" ") +
+  scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
+plot_final_nest = grid.arrange(nest_ant_plot, nest_pol_plot, nest_seed_plot, nrow = 1)
+plot_final_mod = grid.arrange(mod_ant_plot, mod_pol_plot, mod_seed_plot, nrow = 1)
+
+plot_final = grid.arrange(plot_final_mod, plot_final_nest, nrow = 2)
+
+ggsave(plot_final, filename = "antprob_structure_2.png", dpi = 600,
+       width = 25, height = 12, units = "cm",  bg = "transparent")
+
 
 sd_new_data = final_fl%>%
   group_by(type)%>%

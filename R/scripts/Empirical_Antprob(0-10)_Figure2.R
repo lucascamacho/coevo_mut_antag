@@ -137,11 +137,147 @@ p_data = cbind(p_data, type)
 #save(p_data, file = "antprob_var.RData")
 load("antprob_var.RData")
 
+# MPD Plots
 # subset the results to plot mutualism types
 pol = p_data[which(p_data$type == "Pollination"), ]
 seed = p_data[which(p_data$type == "Seed dispersal"), ]
 ant = p_data[which(p_data$type == "Ant-Plant"), ]
 
+# Ant
+new_ant = ant%>%
+  group_by(antprob)%>%
+  summarise(mean_mpd = mean(mpd), up_mpd = quantile(mpd, probs = 0.95),
+            down_mpd = quantile(mpd, probs = 0.05))%>%
+  as.data.frame()
+
+ant_plot = ggplot(data = new_ant) +
+  geom_point(aes(x = antprob, y = mean_mpd), show.legend = FALSE, alpha = 0.5,
+             size = 2, color = "#1B9E77") +
+  geom_pointrange(aes(x = antprob, y = mean_mpd, ymin = down_mpd, ymax = up_mpd), width = .2, 
+                  show.legend = FALSE, alpha = 0.5, color = "#1B9E77") +
+  xlab(" ") + ylab(" ") +
+  scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
+# Pol
+new_pol = pol%>%
+  group_by(antprob)%>%
+  summarise(mean_mpd = mean(mpd), up_mpd = quantile(mpd, probs = 0.95),
+            down_mpd = quantile(mpd, probs = 0.05))%>%
+  as.data.frame()
+
+pol_plot = ggplot(data = new_pol) +
+  geom_point(aes(x = antprob, y = mean_mpd), show.legend = FALSE, alpha = 0.5,
+             size = 2, color = "#1B9E77") +
+  geom_pointrange(aes(x = antprob, y = mean_mpd, ymin = down_mpd, ymax = up_mpd), width = .2, 
+                  show.legend = FALSE, alpha = 0.5, color = "#D95F02") +
+  xlab(" ") + ylab(" ") +
+  scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
+# Seed
+new_seed = seed%>%
+  group_by(antprob)%>%
+  summarise(mean_mpd = mean(mpd), up_mpd = quantile(mpd, probs = 0.95),
+            down_mpd = quantile(mpd, probs = 0.05))%>%
+  as.data.frame()
+
+seed_plot = ggplot(data = new_seed) +
+  geom_point(aes(x = antprob, y = mean_mpd), show.legend = FALSE, alpha = 0.5,
+             size = 2, color = "#7570B3") +
+  geom_pointrange(aes(x = antprob, y = mean_mpd, ymin = down_mpd, ymax = up_mpd), width = .2, 
+                  show.legend = FALSE, alpha = 0.5, color = "#7570B3") +
+  xlab(" ") + ylab(" ") +
+  scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
+plot_final = grid.arrange(ant_plot, pol_plot, seed_plot, nrow = 3)
+
+ggsave(plot_final, filename = "antprob_cheater_mpd_2.png", dpi = 600,
+       width = 12, height = 24, units = "cm",  bg = "transparent")
+
+# Clusters plots
+type = c(rep("Pollination", 24000), rep("Seed dispersal", 24000), rep("Ant-Plant", 24000))
+p_data = cbind(p_data, type)
+
+pol = p_data[which(p_data$type == "Pollination"), ]
+seed = p_data[which(p_data$type == "Seed dispersal"), ]
+ant = p_data[which(p_data$type == "Ant-Plant"), ]
+
+# Ant
+new_ant = ant%>%
+  group_by(antprob)%>%
+  summarise(mean_clusters = mean(opt_clusters), up_clusters = quantile(opt_clusters, probs = 0.95),
+            down_clusters = quantile(opt_clusters, probs = 0.05))%>%
+  as.data.frame()
+
+ant_plot = ggplot(data = new_ant) +
+  geom_point(aes(x = antprob, y = mean_clusters), show.legend = FALSE, alpha = 0.5,
+             size = 2, color = "#1B9E77") +
+  #geom_pointrange(aes(x = antprob, y = mean_clusters, ymin = down_clusters, ymax = up_clusters), width = .2, 
+  #                show.legend = FALSE, alpha = 0.5, color = "#1B9E77") +
+  xlab(" ") + ylab(" ") +
+  scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
+# Pol
+new_pol = pol%>%
+  group_by(antprob)%>%
+  summarise(mean_clusters = mean(opt_clusters), up_clusters = quantile(opt_clusters, probs = 0.95),
+            down_clusters = quantile(opt_clusters, probs = 0.05))%>%
+  as.data.frame()
+
+pol_plot = ggplot(data = new_pol) +
+  geom_point(aes(x = antprob, y = mean_clusters), show.legend = FALSE, alpha = 0.5,
+             size = 2, color = "#D95F02") +
+  xlab(" ") + ylab(" ") +
+  scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
+# Seed
+new_seed = seed%>%
+  group_by(antprob)%>%
+  summarise(mean_clusters = mean(opt_clusters), up_clusters = quantile(opt_clusters, probs = 0.95),
+            down_clusters = quantile(opt_clusters, probs = 0.05))%>%
+  as.data.frame()
+
+seed_plot = ggplot(data = new_seed) +
+  geom_point(aes(x = antprob, y = mean_clusters), show.legend = FALSE, alpha = 0.5,
+             size = 2, color = "#7570B3") +
+  xlab(" ") + ylab(" ") +
+  scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title = element_text(size = 16), 
+        legend.key.size = unit(0.9, "cm"),
+        legend.text = element_text(size = 13))
+
+plot_final = grid.arrange(ant_plot, pol_plot, seed_plot, nrow = 3)
+
+ggsave(plot_final, filename = "antprob_cheater_clusters_2.pdf", dpi = 600,
+       width = 12, height = 24, units = "cm",  bg = "transparent")
+
+# Supplementary Figures
 summary(lm(mpd ~ antprob, data = ant))
 
 # MPD Plots

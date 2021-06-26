@@ -884,11 +884,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.7"
-     inkscape:cx="613.17369"
-     inkscape:cy="746.91321"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="427.98676"
+     inkscape:cy="352.90946"
      inkscape:document-units="mm"
-     inkscape:current-layer="g9323"
+     inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1280"
      inkscape:window-height="699"
@@ -1129,14 +1129,14 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:7.05555534px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="159.38947"
-       y="22.941292"
+       x="163.09358"
+       y="23.999626"
        id="text10012"><tspan
          sodipodi:role="line"
          id="tspan10010"
-         x="159.38947"
-         y="22.941292"
-         style="font-size:7.05555534px;stroke-width:0.26458332">Exploitation</tspan></text>
+         x="163.09358"
+         y="23.999626"
+         style="font-size:7.76111126px;stroke-width:0.26458332">Cheating</tspan></text>
     <text
        id="text10020"
        y="65.414009"
@@ -2364,7 +2364,7 @@
          id="tspan11874"
          x="53.56662"
          y="182.51392"
-         style="font-size:2.82222223px;stroke-width:0.26458332">Frequency of exploitation interactions (p)</tspan></text>
+         style="font-size:2.82222223px;stroke-width:0.26458332">Frequency of cheating interactions (p)</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:0.15000001;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -2680,39 +2680,6 @@
          id="tspan562"
          sodipodi:role="line">Number of species trait clusters</tspan></text>
     <text
-       id="text573"
-       y="181.4556"
-       x="145.64137"
-       style="font-style:normal;font-weight:normal;font-size:2.82222223px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       xml:space="preserve"><tspan
-         style="font-size:2.82222223px;stroke-width:0.26458332"
-         y="181.4556"
-         x="145.64137"
-         id="tspan571"
-         sodipodi:role="line">Frequency of exploitation interactions (p)</tspan></text>
-    <text
-       id="text577"
-       y="293.43097"
-       x="53.561249"
-       style="font-style:normal;font-weight:normal;font-size:2.82222223px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       xml:space="preserve"><tspan
-         style="font-size:2.82222223px;stroke-width:0.26458332"
-         y="293.43097"
-         x="53.561249"
-         id="tspan575"
-         sodipodi:role="line">Frequency of exploitation interactions (p)</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:2.82222223px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="145.63603"
-       y="293.43097"
-       id="text581"><tspan
-         sodipodi:role="line"
-         id="tspan579"
-         x="145.63603"
-         y="293.43097"
-         style="font-size:2.82222223px;stroke-width:0.26458332">Frequency of exploitation interactions (p)</tspan></text>
-    <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:2.82222223px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
        x="-179.6002"
@@ -2807,5 +2774,38 @@
          x="1.360715"
          id="tspan585"
          sodipodi:role="line">b)</tspan></text>
+    <text
+       id="text566"
+       y="182.51392"
+       x="145.64137"
+       style="font-style:normal;font-weight:normal;font-size:2.82222223px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"><tspan
+         style="font-size:2.82222223px;stroke-width:0.26458332"
+         y="182.51392"
+         x="145.64137"
+         id="tspan564"
+         sodipodi:role="line">Frequency of cheating interactions (p)</tspan></text>
+    <text
+       id="text570"
+       y="293.10934"
+       x="53.56662"
+       style="font-style:normal;font-weight:normal;font-size:2.82222223px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"><tspan
+         style="font-size:2.82222223px;stroke-width:0.26458332"
+         y="293.10934"
+         x="53.56662"
+         id="tspan568"
+         sodipodi:role="line">Frequency of cheating interactions (p)</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:2.82222223px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="145.11221"
+       y="293.10934"
+       id="text574"><tspan
+         sodipodi:role="line"
+         id="tspan572"
+         x="145.11221"
+         y="293.10934"
+         style="font-size:2.82222223px;stroke-width:0.26458332">Frequency of cheating interactions (p)</tspan></text>
   </g>
 </svg>
