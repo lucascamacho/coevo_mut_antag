@@ -117,8 +117,8 @@ for(k in 1:length(redes)){ # loop to each matrix of interactions
 }
 
 # save or load the RData file
-save(final_fl, file = "Major_Rewiewing.RData")
-#load("Major_Rewiewing.RData")
+#save(final_fl, file = "Major_Rewiewing.RData")
+load("Major_Rewiewing.RData")
 
 new_data = final_fl%>%
   group_by(antprob)%>%
@@ -134,13 +134,13 @@ new_data = final_fl%>%
 
 plot_nest = ggplot(data = new_data, aes(x = antprob, y = mean_nest_coevo)) +
   geom_point(alpha = 0.5,size = 2,) +
-  xlab("Frequency of cheaters interactions (p)") + ylab("Delta nestedness with Rewiewing") +
+  xlab("Frequency of cheaters interactions (p)") + ylab("Delta nestedness with Rewiring") +
   scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
   theme_classic()
 
 plot_mod = ggplot(data = new_data, aes(x = antprob, y = mean_mod_coevo)) +
   geom_point(alpha = 0.5,size = 2,) +
-  xlab("Frequency of cheaters interactions (p)") + ylab("Delta modularity with Rewiewing") +
+  xlab("Frequency of cheaters interactions (p)") + ylab("Delta modularity with Rewiring") +
   scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
   theme_classic()
 

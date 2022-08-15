@@ -29,9 +29,13 @@ CoevoMutAntNet = function(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_di
     z = z_mat[r, ] # current z values
     A = M + V # matrix with all interactions (mutualistic and exploitative)
     z_dif = t(A * z) - A * z # matrix with all trait differences
-    Q = (A * (exp(-alpha * (z_dif ^ 2)))) * 100
+    Q = A * (exp(-alpha * (z_dif ^ 2))) # matrix Q
     diag(Q) = 0 # intraespecific effects are not allowed
-    Q_n = Q / 1 + (0.2 * (apply(Q, 1, sum)) * 100)
+    degree = rowSums(A)
+    abnd = rlnorm(n_sp, meanlog = 1, sdlog = 1)
+    abnd = abnd[order(match(rank(abnd), rank(degree)))] # cor abnd and degree
+    Q = t(abnd * Q)
+    Q_n = Q / apply(Q, 1, sum) # normalizing the matrix
     Q_n[is.nan(Q_n)] = 0 # transform NaN values to 0 when a species don't have interactions
     Q_m = Q_n * (1 - p) # multiplying each row i of matrix Q by (1 - p)
     
