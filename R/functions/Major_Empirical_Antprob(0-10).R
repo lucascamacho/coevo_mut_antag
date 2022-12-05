@@ -34,7 +34,7 @@ temp = list.files(pattern="*.txt")
 redes = lapply(temp, read.table)
 names(redes)  = gsub(".txt", replacement= "", temp)
 
-antprob_vec = seq(0.1, 1, 0.1)
+antprob_vec = seq(0.01, 1, 0.01)
 
 p_data = data.frame()
 list_mats = list()
@@ -55,7 +55,7 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
       
       # load functions
       source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
-      source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/EcoEvoCoevoMutAntag.R")
+      source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
       
       # insert cheaters exploitation outcomes
       empantagonize = Antagonize(M, antprob)
@@ -91,12 +91,13 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
 }
 
 # save or load the data created
-save(p_data, file = "Major_Cor_antprob_var.RData")
-#save(list_mats, file = "~/Google Drive File Stream/Meu Drive/Trabalho/list_mats.RData")
-#load("Major_antprob_var.RData")
+save(p_data, file = "antprob_var.RData")
+save(list_mats, file = "~/list_mats.RData")
+#load("antprob_var.RData")
+#load("~/list_mats.RData")
 
 # NbCluster using 14 computer cores
-cl = makeCluster(detectCores() - 1)
+cl = makeCluster(detectCores())
 clusterEvalQ(cl, {
   library(NbClust)
   camacho = function(list_mats){
@@ -120,12 +121,12 @@ stopCluster(cl)
 p_data = cbind(p_data, opt_clusters)
 
 # create and insert an mutualism type sequence
-type = c(rep("Pollination", 800), rep("Seed dispersal", 800), rep("Ant-Plant", 800))
-p_data = cbind(p_data, type)
+#type = c(rep("Pollination", 8000), rep("Seed dispersal", 8000), rep("Ant-Plant", 8000))
+#p_data = cbind(p_data, type)
 
 # save or load the results
-save(p_data, file = "Major_Cor_antprob_var.RData")
-#load("Major_antprob_var.RData")
+save(p_data, file = "antprob_var.RData")
+#load("antprob_var.RData")
 #type = c(rep("Pollination", 800), rep("Seed dispersal", 800), rep("Ant-Plant", 800))
 #p_data = cbind(p_data, type)
 
@@ -207,7 +208,7 @@ seed_plot = ggplot(data = new_seed) +
 
 plot_final = grid.arrange(ant_plot, pol_plot, seed_plot, nrow = 3)
 
-ggsave(plot_final, filename = "Major_Cor_antprob_cheater_mpd_2.png", dpi = 600,
+ggsave(plot_final, filename = "Minor_antprob_cheater_mpd.pdf", dpi = 600,
        width = 12, height = 24, units = "cm",  bg = "transparent")
 
 # Clusters plots
@@ -222,8 +223,8 @@ new_ant = ant%>%
 ant_plot = ggplot(data = new_ant) +
   geom_point(aes(x = antprob, y = mean_clusters), show.legend = FALSE, alpha = 0.5,
              size = 2, color = "#1B9E77") +
-  geom_pointrange(aes(x = antprob, y = mean_clusters, ymin = down_clusters, ymax = up_clusters), width = .2, 
-                  show.legend = FALSE, alpha = 0.5, color = "#1B9E77") +
+#  geom_pointrange(aes(x = antprob, y = mean_clusters, ymin = down_clusters, ymax = up_clusters), width = .2, 
+#                  show.legend = FALSE, alpha = 0.5, color = "#1B9E77") +
   xlab(" ") + ylab(" ") +
   scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
   theme(plot.background = element_rect(fill = "transparent",colour = NA),
@@ -245,8 +246,8 @@ new_pol = pol%>%
 pol_plot = ggplot(data = new_pol) +
   geom_point(aes(x = antprob, y = mean_clusters), show.legend = FALSE, alpha = 0.5,
              size = 2, color = "#D95F02") +
-  geom_pointrange(aes(x = antprob, y = mean_clusters, ymin = down_clusters, ymax = up_clusters), width = .2, 
-                  show.legend = FALSE, alpha = 0.5, color = "#D95F02") +
+#  geom_pointrange(aes(x = antprob, y = mean_clusters, ymin = down_clusters, ymax = up_clusters), width = .2, 
+#                  show.legend = FALSE, alpha = 0.5, color = "#D95F02") +
   xlab(" ") + ylab(" ") +
   scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
   theme(plot.background = element_rect(fill = "transparent",colour = NA),
@@ -268,8 +269,8 @@ new_seed = seed%>%
 seed_plot = ggplot(data = new_seed) +
   geom_point(aes(x = antprob, y = mean_clusters), show.legend = FALSE, alpha = 0.5,
              size = 2, color = "#7570B3") +
-  geom_pointrange(aes(x = antprob, y = mean_clusters, ymin = down_clusters, ymax = up_clusters), width = .2, 
-                  show.legend = FALSE, alpha = 0.5, color = "#7570B3") +
+#  geom_pointrange(aes(x = antprob, y = mean_clusters, ymin = down_clusters, ymax = up_clusters), width = .2, 
+#                  show.legend = FALSE, alpha = 0.5, color = "#7570B3") +
   xlab(" ") + ylab(" ") +
   scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
   theme(plot.background = element_rect(fill = "transparent",colour = NA),
@@ -283,7 +284,7 @@ seed_plot = ggplot(data = new_seed) +
 
 plot_final = grid.arrange(ant_plot, pol_plot, seed_plot, nrow = 3)
 
-ggsave(plot_final, filename = "Major_Cor_antprob_cheater_clusters_2.png", dpi = 600,
+ggsave(plot_final, filename = "antprob_cheater_clusters.pdf", dpi = 600,
        width = 12, height = 24, units = "cm",  bg = "transparent")
 
 # Supplementary Figures

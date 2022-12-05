@@ -111,7 +111,7 @@ save(p_data, file = "Major_sensibility_e.RData")
 #load("antprob_var.RData")
 
 # NbCluster using 14 computer cores
-cl = makeCluster(detectCores() - 2)
+cl = makeCluster(detectCores()-1)
 clusterEvalQ(cl, {
   library(NbClust)
   camacho = function(list_mats){
@@ -137,6 +137,8 @@ p_data = cbind(p_data, opt_clusters)
 # save or load the results
 #save(p_data, file = "Major_sensibility_e.RData")
 load("Major_sensibility_e.RData")
+
+plot(p_data$antprob, p_data$opt_clusters)
 
 new_data = p_data%>%
   group_by(antprob, epsilon)%>%

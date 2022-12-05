@@ -12,15 +12,20 @@ Antagonize = function(M, antprob){
   # create V matrix with the same size of mat
   V = M * 0 
   
-  # define the matrix upper triangle
+  # define the matrix lower tree triangle
   index = which(upper.tri(M), arr.ind = TRUE)
   
   for(i in 1:nrow(index)){ # for each element in index
     if(M[index[i,][1], index[i,][2]] == 1){ # if this element is equal to 1
       p = runif(1, 0, 1) # sample a number between 0 and 1
       if(p <= antprob){ # if this number is equal or lower than antprob...
-        M[index[i,][2], index[i,][1]] = 0 # inverse element is zero (M[j,i])
-        V[index[i,][2], index[i,][1]] = 1 # inverse element in V is "on" (V[j,i])
+        both_groups = runif(1, 0, 1)
+        if(both_groups <= 0.5){
+          M[index[i,][2], index[i,][1]] = 0 # inverse element is zero (M[j,i])
+          V[index[i,][2], index[i,][1]] = 1} # inverse element in V is "on" (V[j,i])
+        else{
+          M[index[i,][1], index[i,][2]] = 0 
+          V[index[i,][1], index[i,][2]] = 1}
       }
     }
   }

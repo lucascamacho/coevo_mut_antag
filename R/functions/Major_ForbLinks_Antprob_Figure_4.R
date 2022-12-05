@@ -24,7 +24,7 @@ for(k in 1:length(redes)){ # loop to each matrix of interactions
   
   for(a in 1:length(antprob_vec)){ # 10 loops to each matrix
     
-    for(q in 1:10){ # 30 simulations per p value
+    for(q in 1:30){ # 30 simulations per p value
       M = as.matrix(redes[[k]]) # M is the adjancency matrix of interactions
       M[which(M > 1)] = 1 # if there are any error, correct that
       M = SquareMatrix(M) # square the adjancency matrix
@@ -241,7 +241,7 @@ plot_final_mod = grid.arrange(mod_ant_plot, mod_pol_plot, mod_seed_plot, nrow = 
 
 plot_final = grid.arrange(plot_final_mod, plot_final_nest, nrow = 2)
 
-ggsave(plot_final, filename = "Major_Cor_antprob_structure_2.png", dpi = 600,
+ggsave(plot_final, filename = "To Minor_antprob_structure_.pdf", dpi = 600,
        width = 25, height = 12, units = "cm",  bg = "transparent")
 
 

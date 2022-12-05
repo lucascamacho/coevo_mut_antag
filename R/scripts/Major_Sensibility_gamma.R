@@ -109,7 +109,7 @@ save(p_data, file = "Major_sensibility_gamma.RData")
 #load("antprob_var.RData")
 
 # NbCluster using 14 computer cores
-cl = makeCluster(detectCores() - 2)
+cl = makeCluster(detectCores())
 clusterEvalQ(cl, {
   library(NbClust)
   camacho = function(list_mats){

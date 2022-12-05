@@ -44,7 +44,7 @@ temp = list.files(pattern="*.txt")
 redes = lapply(temp, read.table)
 names(redes)  = gsub(".txt", replacement= "", temp)
 
-antprob_vec = seq(0.01, 1, 0.01)
+antprob_vec = seq(0.1, 1, 0.1)
 
 p_data = data.frame()
 list_mats = list()
@@ -55,7 +55,7 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
   
   for(a in 1:length(antprob_vec)){ # loop to each antprob (p) value
     
-    for(q in 1:30){ # 30 simulations per p value
+    for(q in 1:5){ # 30 simulations per p value
       M = as.matrix(redes[[k]]) # M is the adjancency matrix of interactions
       M[which(M > 1)] = 1 # if there are any error, correct that
       M = SquareMatrix(M) # square the adjancency matrix
@@ -65,7 +65,7 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
       
       # load functions
       source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
-      source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
+      source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/EcoEvoCoevoMutAntag.R")
       
       # insert cheaters exploitation outcomes
       empantagonize = Antagonize(M, antprob)
@@ -85,8 +85,8 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
       # simulate coevolution
       z_mat = CoevoMutAntNet(n_sp, M, V, phi, alpha, theta, init, p, epsilon, eq_dif, t_max)
       
-      #df = scale(t(z_mat))
-      #list_mats = list.append(list_mats, df)
+      df = scale(t(z_mat))
+      list_mats = list.append(list_mats, df)
  
       # get my results
       net = names(redes[k])
@@ -101,12 +101,12 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
 }
 
 # save or load the data created
-save(p_data, file = "antprob_var.RData")
-save(list_mats, file = "~/Google Drive File Stream/Meu Drive/Trabalho/list_mats.RData")
-load("antprob_var.RData")
+save(p_data, file = "Abnd_Cor_minor_antprob_var.RData")
+#save(list_mats, file = "~/Desktop")
+#load("Abnd_minor_antprob_var.RData")
 
 # NbCluster using 14 computer cores
-cl = makeCluster(detectCores() - 2)
+cl = makeCluster(detectCores())
 clusterEvalQ(cl, {
   library(NbClust)
   camacho = function(list_mats){
@@ -130,12 +130,12 @@ stopCluster(cl)
 p_data = cbind(p_data, opt_clusters)
 
 # create and insert an mutualism type sequence
-type = c(rep("Pollination", 24000), rep("Seed dispersal", 24000), rep("Ant-Plant", 24000))
+type = c(rep("Pollination", 400), rep("Seed dispersal", 400), rep("Ant-Plant", 400))
 p_data = cbind(p_data, type)
 
 # save or load the results
-#save(p_data, file = "antprob_var.RData")
-load("antprob_var.RData")
+save(p_data, file = "Abnd_Cor_cluster_minor_antprob_var.RData")
+#load("minor_antprob_var.RData")
 
 # MPD Plots
 # subset the results to plot mutualism types
@@ -205,12 +205,8 @@ seed_plot = ggplot(data = new_seed) +
 
 plot_final = grid.arrange(ant_plot, pol_plot, seed_plot, nrow = 3)
 
-ggsave(plot_final, filename = "antprob_cheater_mpd_2.png", dpi = 600,
+ggsave(plot_final, filename = "Abnd_Cor_antprob_cheater_mpd_2.pdf", dpi = 600,
        width = 12, height = 24, units = "cm",  bg = "transparent")
-
-# Clusters plots
-type = c(rep("Pollination", 24000), rep("Seed dispersal", 24000), rep("Ant-Plant", 24000))
-p_data = cbind(p_data, type)
 
 pol = p_data[which(p_data$type == "Pollination"), ]
 seed = p_data[which(p_data$type == "Seed dispersal"), ]
@@ -274,7 +270,7 @@ seed_plot = ggplot(data = new_seed) +
 
 plot_final = grid.arrange(ant_plot, pol_plot, seed_plot, nrow = 3)
 
-ggsave(plot_final, filename = "antprob_cheater_clusters_2.pdf", dpi = 600,
+ggsave(plot_final, filename = "Abnd_Cor_antprob_cheater_clusters_2.pdf", dpi = 600,
        width = 12, height = 24, units = "cm",  bg = "transparent")
 
 # Supplementary Figures

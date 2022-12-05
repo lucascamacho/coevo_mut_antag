@@ -114,7 +114,7 @@ for(k in 1:length(redes)){ # loop to each matrix of interactions
 
 # save or load the RData file
 save(final_fl, file = "Major_sensibility_b.RData")
-load("Major_sensibility_b.RData")
+#load("Major_sensibility_b.RData")
 
 new_data = final_fl%>%
   group_by(antprob, bar)%>%

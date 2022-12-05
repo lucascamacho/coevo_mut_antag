@@ -28,7 +28,7 @@ redes = lapply(temp, read.table)
 names(redes)  = gsub(".txt", replacement= "", temp)
 
 # create data.frame to store all my results
-antprob_vec = seq(0.01, 1, 0.01)
+antprob_vec = seq(0.1, 1, 0.1)
 final_fl = data.frame()
 
 for(k in 1:length(redes)){ # loop to each matrix of interactions
@@ -36,7 +36,7 @@ for(k in 1:length(redes)){ # loop to each matrix of interactions
   
   for(a in 1:length(antprob_vec)){ # 100 loops to each matrix
     
-    for(q in 1:30){ # 30 simulations per p value
+    for(q in 1:5){ # 30 simulations per p value
     M = as.matrix(redes[[k]]) # M is the adjancency matrix of interactions
     M[which(M > 1)] = 1 # if there are any error, correct that
     M = SquareMatrix(M) # square the adjancency matrix
@@ -109,12 +109,15 @@ for(k in 1:length(redes)){ # loop to each matrix of interactions
 }
 
 # save or load the RData file
-save(final_fl, file = "data_structure.RData")
-load("data_structure.RData")
+save(final_fl, file = "Abnd_Cor_minor_data_structure.RData")
+#load("minor_data_structure.RData")
 
 # create and insert an mutualism type sequence
-type = c(rep("Pollination", 24000), rep("Seed dispersal", 24000), rep("Ant-Plant", 24000))
+type = c(rep("Pollination", 400), rep("Seed dispersal", 400), rep("Ant-Plant", 400))
 final_fl = cbind(final_fl, type)
+
+save(final_fl, file = "Abnd_Cor_minor_data_structure.RData")
+#load("Abnd_minor_data_structure.RData")
 
 # subset for plotting
 pol = final_fl[which(final_fl$type == "Pollination"), ]
@@ -235,7 +238,7 @@ plot_final_mod = grid.arrange(mod_ant_plot, mod_pol_plot, mod_seed_plot, nrow = 
 
 plot_final = grid.arrange(plot_final_mod, plot_final_nest, nrow = 2)
 
-ggsave(plot_final, filename = "antprob_structure_2.png", dpi = 600,
+ggsave(plot_final, filename = "Abnd_Cor_antprob_structure_2.png", dpi = 600,
        width = 25, height = 12, units = "cm",  bg = "transparent")
 
 
@@ -340,10 +343,10 @@ nest_ant_plot = ggplot(data = ant) +
              size = 0.5, color = "#1B9E77") +
   geom_point(aes(x = antprob, y = dnest_control), show.legend = FALSE, alpha = 0.1, 
              size = 0.5, color = "black") +
-#  geom_line(aes(x = antprob, y = dnest_coevo), stat = "smooth", method = "loess", 
-#            show.legend = FALSE, color = "#1B9E77") +
-#  geom_line(aes(x = antprob, y = dnest_control), stat = "smooth", method = "loess", 
-#            show.legend = FALSE, color = "black") +
+  geom_line(aes(x = antprob, y = dnest_coevo), stat = "smooth", method = "loess", 
+            show.legend = FALSE, color = "#1B9E77") +
+  geom_line(aes(x = antprob, y = dnest_control), stat = "smooth", method = "loess", 
+            show.legend = FALSE, color = "black") +
   xlab(" ") + ylab(" ") +
   scale_x_continuous(limits = c(0,1.1), expand = c(0,0)) +
   theme(axis.text.x = element_text(size = 13),

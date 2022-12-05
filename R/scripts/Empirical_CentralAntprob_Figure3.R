@@ -10,10 +10,10 @@
 # number of species traits in the last timestep of simulations
 
 # load packages and functions
-setwd("E:/Lucas")
+setwd("~/Dropbox/Master/Code/coevo_mut_antag/data/")
 
-source("E:/Lucas/SquareMatrix.R")
-source("E:/Lucas/MeanPairDist.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/SquareMatrix.R")
+source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/MeanPairDist.R")
 
 # simple function to apply the NbCluster in my results and save in clusterig.vec
 # create an empty document to allocate the apply results
@@ -53,7 +53,7 @@ list_mats = list()
 for(k in 1:length(redes)){ # loop to each empirical matrix
   print(k)
   
-  for(a in 1:1500){ #  loops to each matrix, 2 simulations per loop
+  for(a in 1:50){ #  loops to each matrix, 2 (central and coevo scenarios) simulations per loop
     # Cheater centrality simulation
     M = as.matrix(redes[[k]]) # M is the adjancency matrix of interactions
     M[which(M > 1)] = 1 # if there are any error, correct that
@@ -61,15 +61,15 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
     n_sp = ncol(M) # define the species number
     
     # load functions
-    source("E:/Lucas/CentralAntagonize.R")
-    source("E:/Lucas/CoevoMutAntNet.R")
+    source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CentralAntagonize.R")
+    source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
     
     # insert cheaters outcomes based on degree centrality
     centralantagonize = CentralAntagonize(M)
     M = centralantagonize[[1]]
     V = centralantagonize[[2]]
     
-    source("E:/Lucas/Counting.R")
+    source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Counting.R")
     
     # counting interactions AA, AM and MM (AA must be zero)
     c = Counting(M, V)
@@ -117,8 +117,8 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
     antprob = centralantagonize[[3]]
     
     #load functions
-    source("E:/Lucas/Antagonize.R")
-    source("E:/Lucas/CoevoMutAntNet.R")
+    source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/Antagonize.R")
+    source("~/Dropbox/Master/Code/coevo_mut_antag/R/functions/CoevoMutAntNet.R")
     
     # insert cheaters outcomes in the network
     antagonize = Antagonize(M, antprob)
@@ -156,10 +156,9 @@ for(k in 1:length(redes)){ # loop to each empirical matrix
 
 # save of load our results
 save(central_results, file = "central_results.RData")
-save(list_mats, file = "central_list_mats.RData")
-
-load("central_results.RData")
-load("central_list_mats.RData")
+save(list_mats, file = "~/Desktop/central_list_mats.RData")
+#load("central_results.RData")
+#load("central_list_mats.RData")
 
 # NbCluster using 14 computer cores
 cl = makeCluster(detectCores())
@@ -186,14 +185,12 @@ stopCluster(cl)
 central_results = cbind(central_results, opt_clusters)
 
 # create and insert and mutualism type sequence
-type = c(rep("Pollination", 24000), rep("Seed dispersal", 24000), rep("Ant-Plant", 24000))
+type = c(rep("Pollination", 400), rep("Seed dispersal", 400), rep("Ant-Plant", 400))
 central_results = cbind(central_results, type)
 
 # save or load our results
 save(central_results, file = "central_results.RData")
 #load("central_results.RData")
-
-
 
 # read all mutualism networks
 temp = list.files(pattern = "*.txt")
@@ -227,11 +224,11 @@ for(i in 1:(length(redes)*2)){
   sub = subset(central_results, central_results$net == mut)
   sub = subset(sub, sub$c_ch == exp)
   
-   new_data[i,6] = quantile(sub$mpd, probs = c(0.05, 0.95))[1]
-   new_data[i,7] = quantile(sub$mpd, probs = c(0.05, 0.95))[2]
+   new_data[i,5] = quantile(sub$mpd, probs = c(0.05, 0.95))[1]
+   new_data[i,6] = quantile(sub$mpd, probs = c(0.05, 0.95))[2]
    
-   new_data[i,8] = quantile(sub$opt_clusters, probs = c(0.05, 0.95))[1]
-   new_data[i,9] = quantile(sub$opt_clusters, probs = c(0.05, 0.95))[2]
+   new_data[i,7] = quantile(sub$opt_clusters, probs = c(0.05, 0.95))[1]
+   new_data[i,8] = quantile(sub$opt_clusters, probs = c(0.05, 0.95))[2]
 }
 
 # MPD plots
@@ -343,9 +340,9 @@ plot_cluster_ant = ggplot(data = new_data[c(33:48),], aes(x = as.factor(c_ch),
         legend.text = element_text(size = 13))
 
 # arrange the clusters plot and final plot
-plot_total = grid.arrange(plot_cluster_ant, plot_cluster_pol, plot_cluster_seed, nrow = 1)
+plot_clust = grid.arrange(plot_cluster_ant, plot_cluster_pol, plot_cluster_seed, nrow = 1)
 plot_total = grid.arrange(plot_mpd, plot_clust, nrow = 2)
 
 # save the final plot
-ggsave(plot_total, filename = "Sup_central_mpd_clust.png", dpi = 600,
+ggsave(plot_total, filename = "Sup_Central_mpd_clust.png", dpi = 600,
        width = 18, height = 12, units = "cm", bg = "transparent")
